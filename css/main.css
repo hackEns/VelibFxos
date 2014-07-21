@@ -1,0 +1,107 @@
+html, body {
+    height: 100%;
+}
+
+body {
+    /*font-size: 2em;*/
+    font-family: 'Open Sans', sans-serif;
+    text-align: center;
+    background-color: #26292c;
+    color: white;
+}
+
+body>div {
+    display: none;
+}
+
+.station-info {
+    background-color: white;
+    border: 1px solid #cfcfcf;
+    border-radius: 3px;
+    box-shadow: 0px 0px 3px 3px rgba(0, 0, 0, 0.15);
+    padding: 10px;
+    width: 400px;
+    height: 50%;
+    margin: 20px auto;
+}
+
+.station-info .name {
+    text-transform: uppercase;
+    text-align: left;
+    color: #545454;
+}
+
+.station-info .update {
+    float: right;
+    text-transform: uppercase;
+    font-size: 0.5em;
+    color: #979797;
+    margin-top: -16px;
+}
+
+.station-info .update .date {
+    font-size: 1.2em;
+    color: #545454;
+}
+
+.station-info .entry {
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 5px;
+    color: white;
+    text-transform: uppercase;
+    font-size: 1.5em;
+    font-weight: 200;
+}
+
+.station-info .entry .nb {
+    font-weight: bold;
+    font-size: 3em;
+}
+
+.station-info .bikes {
+    background-color: #dc1681;
+}
+
+.station-info .bikes:hover {
+    background-color: #9c105b;
+}
+
+.station-info .parking {
+    background-color: #009bb7;
+}
+
+.station-info .parking:hover {
+    background-color: #006678;
+}
+
+
+#home {
+    display: block;
+}
+
+header h1 {
+    font-size: 3em;
+    font-weight: 500;
+}
+
+header h1 a {
+    text-decoration: none;
+}
+
+a {
+    color: white;
+}
+
+footer {
+    text-align: right;
+    margin-right: 1.5em;
+}
+
+.centre {
+    text-align: center;
+}
+
+.station-info .map-circle {
+    border-radius: 50%;
+}

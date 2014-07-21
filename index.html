@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="utf-8"/>
+		<title>Vélib</title>
+        <link rel="stylesheet" href="css/main.css" type="text/css" media="screen">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <header>
+            <h1><a href="#home">Vélib'</a></h1>
+        </header>
+        <div id="home">
+            <p>Chargement en cours…</p>
+        </div>
+        <div id="station-1">
+            <div class="station-info">
+                <div class="name">Rue d'Ulm</div>
+                <div class="update">
+                    Dernière mise à jour :
+                    <span class="date">21/07/2014 23:19</span>
+                </div>
+
+                <div class="entry bikes">
+                    <span class="nb">8</span>
+                    vélos disponibles
+                </div>
+                <div class="entry parking">
+                    <span class="nb">21</span>
+                    places libres
+                </div>
+
+                <div class="map-circle">
+                </div>
+            </div>
+
+            <footer>
+                <p><a href="#infos">Plus d'infos</a></p>
+            </footer>
+        </div>
+
+        <div id="station-2">
+            <div class="station-info">
+                <div class="name">Rue d'Ulm</div>
+                <div class="update">
+                    Dernière mise à jour :
+                    <span class="date">21/07/2014 23:19</span>
+                </div>
+
+                <button class="entry bikes">
+                    <span class="nb">8</span>
+                    vélos disponibles
+                </button>
+                <button class="entry parking">
+                    <span class="nb">21</span>
+                    places libres
+                </button>
+
+                <div class="map-circle">
+                    <p><a href="#carte-ID"><div id="map-circle-map"></div></a></p>
+                </div>
+            </div>
+
+            <footer>
+                <p><a href="#infos">Plus d'infos</a></p>
+            </footer>
+        </div>
+
+        <div id="infos">
+            <p>Map is handled thanks to the <a href="http://leafletjs.com/">Leaflet</a> library, using © <a href="http://osm.org/copyright">OpenStreetMap</a> contributors tiles. Reverse geolocation (Nominatim) are provided by the <a href="http://www.mapquest.com/" alt="MapQuest icon">MapQuest</a> <img src="http://developer.mapquest.com/content/osm/mq_logo.png"> open API. Routes are provided by <a href='http://project-osrm.org/'>the OSRM project</a> (OSRM is a free and open source program under GNU Affero GPL).</p>
+            <p>N'hésitez pas à m'envoyer vos suggestions à <a href="mailto:webmaster@phyks.me">webmaster@phyks.me</a>.</p>
+
+            <footer>
+                <p><a href="#home">Retour</a></p>
+            </footer>
+        </div>
+
+        <script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>
+        <script type="text/javascript" src="js/leaflet.js"></script>
+        <script type="text/javascript" src="js/main.js"></script>
+    </body>
+</html>
