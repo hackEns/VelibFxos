@@ -1,4 +1,4 @@
-var tiles_provider = 'http://c.tile.stamen.com/toner-lite/{z}/{x}/{y}.jpg' // Stamen Toner
+var tiles_provider = 'http://otile1.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpg';
 
 if ( typeof String.prototype.startsWith != 'function' ) {
   String.prototype.startsWith = function( str ) {
@@ -45,7 +45,8 @@ function station_map_circle(id) {
     if(margin != 0) {
         $('#'+map_id).css('margin-top', margin+'px');
     }
-    map = L.map(map_id, { zoomControl: false}).setView([latitude, longitude], 18);
+    var map = L.map(map_id, { zoomControl: false}).setView([latitude, longitude], 16);
+    L.marker([latitude, longitude]).addTo(map);
     map.dragging.disable();
     map.touchZoom.disable();
     map.doubleClickZoom.disable();
