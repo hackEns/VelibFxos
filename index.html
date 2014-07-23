@@ -3,17 +3,15 @@
 	<head>
 		<meta charset="utf-8"/>
 		<title>Vélib</title>
+        <link rel="stylesheet" href="css/leaflet.css" />
         <link rel="stylesheet" href="css/main.css" type="text/css" media="screen">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
     </head>
     <body>
-        <header>
-            <h1><a href="#home">Vélib'</a></h1>
-        </header>
         <div id="home">
             <p>Chargement en cours…</p>
         </div>
-        <div id="station-1">
+        <div id="station-0">
             <div class="station-info">
                 <div class="name">Rue d'Ulm</div>
                 <div class="update">
@@ -29,14 +27,9 @@
                     <span class="nb">21</span>
                     places libres
                 </div>
-
-                <div class="map-circle">
-                </div>
             </div>
-
-            <footer>
-                <p><a href="#infos">Plus d'infos</a></p>
-            </footer>
+            <div class="map-circle" id="map-circle-0">
+            </div>
         </div>
 
         <div id="station-2">
@@ -55,15 +48,7 @@
                     <span class="nb">21</span>
                     places libres
                 </button>
-
-                <div class="map-circle">
-                    <p><a href="#carte-ID"><div id="map-circle-map"></div></a></p>
-                </div>
             </div>
-
-            <footer>
-                <p><a href="#infos">Plus d'infos</a></p>
-            </footer>
         </div>
 
         <div id="infos">
@@ -74,6 +59,10 @@
                 <p><a href="#home">Retour</a></p>
             </footer>
         </div>
+
+        <footer>
+            <p><a href="#infos">Plus d'infos</a></p>
+        </footer>
 
         <script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>
         <script type="text/javascript" src="js/leaflet.js"></script>

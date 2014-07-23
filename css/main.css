@@ -1,9 +1,4 @@
-html, body {
-    height: 100%;
-}
-
 body {
-    /*font-size: 2em;*/
     font-family: 'Open Sans', sans-serif;
     text-align: center;
     background-color: #26292c;
@@ -12,18 +7,15 @@ body {
 
 body>div {
     display: none;
-}
-
-.station-info {
+    padding: 20px;
+    margin: 20px;
+    height: calc(100vh - 100px - 2em);
     background-color: white;
     border: 1px solid #cfcfcf;
     border-radius: 3px;
     box-shadow: 0px 0px 3px 3px rgba(0, 0, 0, 0.15);
-    padding: 10px;
-    width: 400px;
-    height: 50%;
-    margin: 20px auto;
 }
+
 
 .station-info .name {
     text-transform: uppercase;
@@ -75,18 +67,8 @@ body>div {
     background-color: #006678;
 }
 
-
 #home {
     display: block;
-}
-
-header h1 {
-    font-size: 3em;
-    font-weight: 500;
-}
-
-header h1 a {
-    text-decoration: none;
 }
 
 a {
@@ -95,13 +77,19 @@ a {
 
 footer {
     text-align: right;
-    margin-right: 1.5em;
+    margin-right: 20px;
 }
 
 .centre {
     text-align: center;
 }
 
-.station-info .map-circle {
+.map-circle {
     border-radius: 50%;
+    margin: auto;
+    margin-top: 20px;
+}
+
+.leaflet-control-attribution {
+    display: none !important;
 }
