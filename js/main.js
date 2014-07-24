@@ -6,59 +6,62 @@ if ( typeof String.prototype.startsWith != 'function' ) {
   }
 };
 
-function show(id) {
-    $('body>div').css('display', 'none');
-    $(id).toggle();
-    location.hash = id;
+var stations = [
+    {'latitude': 48.84249, 'longitude': 2.34462},
+    {'latitude': 48.84249, 'longitude': 2.34462},
+]
 
-    if(id.startsWith('#station-')) {
-        station_map_circle(id.replace('#station-', ''));
-    }
-}
-
-window.onhashchange = function() {
-    show(location.hash);
-}
-
-$(document).ready(function() {
-    if (location.hash != '') {
-        show(location.hash);
-    }
-});
-
-var stations = [{'latitude': 48.84249, 'longitude': 2.34462}]
+var maps = Array();
 
 function station_map_circle(id) {
-    var latitude = window.stations[id]['latitude'];
-    var longitude = window.stations[id]['longitude'];
+    var id = parseInt(id);
+    var latitude = stations[id - 1]['latitude'];
+    var longitude = stations[id - 1]['longitude'];
     var map_id = 'map-circle-'+id;
-    var height = $('#station-'+id).height() - $('.station-info', $('#station-'+id)).height() - 20;
-    var margin = 0;
+    var slide = $('.swiper-slide[data-hash=station-'+id+']');
+    var height = slide.height() - $('.station-info', slide).height() - 120;
 
-    if(height > $('#station-'+id).width() - 40) {
-        var tmp = $('#station-'+id).width();
+    if(height > slide.width() - 40) {
+        var tmp = slide.width() - 100;
         margin = (height - tmp) / 2;
         height = tmp;
     }
     $('#'+map_id).height(height +'px');
     $('#'+map_id).width(height +'px');
-    if(margin != 0) {
-        $('#'+map_id).css('margin-top', margin+'px');
-    }
-    var map = L.map(map_id, { zoomControl: false}).setView([latitude, longitude], 16);
-    L.marker([latitude, longitude]).addTo(map);
-    map.dragging.disable();
-    map.touchZoom.disable();
-    map.doubleClickZoom.disable();
-    map.scrollWheelZoom.disable();
-    map.boxZoom.disable();
-    map.keyboard.disable();
 
-    L.tileLayer(window.tiles_provider,
-        {}).addTo(map);
+    window.maps[id-1] = L.map(map_id, { zoomControl: false}).setView([latitude, longitude], 16);
+    L.marker([latitude, longitude]).addTo(window.maps[id-1]);
+    window.maps[id-1].dragging.disable();
+    window.maps[id-1].touchZoom.disable();
+    window.maps[id-1].doubleClickZoom.disable();
+    window.maps[id-1].scrollWheelZoom.disable();
+    window.maps[id-1].boxZoom.disable();
+    window.maps[id-1].keyboard.disable();
 
-    map.on('click', function(e) {
+    L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {id: 'examples.map-20v6611k'}).addTo(window.maps[id-1]);
+
+    window.maps[id-1].on('click', function(e) {
         e.preventDefault;
         location.hash = 'map-station-'+id;
     });
 }
+
+$(function(){
+	var gallery = $('.swiper-container').swiper({
+        mode:'horizontal',
+        loop: true,
+		slidesPerView:1,
+		watchActiveIndex: true,
+		centeredSlides: true,
+		pagination:'.pagination',
+		paginationClickable: true,
+		resizeReInit: true,
+		keyboardControl: true,
+		grabCursor: true,
+        hashNav: true,
+    });
+
+    for(id = 1; id < 4; id++) {
+        station_map_circle(id);
+    }
+});
