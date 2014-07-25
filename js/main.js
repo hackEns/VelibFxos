@@ -12,6 +12,7 @@ var stations = [
 ]
 
 var maps = Array();
+var coords = {'latitude': 48.8429, 'longitude': 2.34463}
 
 function station_map_circle(id) {
     var id = parseInt(id);
@@ -61,7 +62,43 @@ $(function(){
         hashNav: true,
     });
 
-    for(id = 1; id < 4; id++) {
-        station_map_circle(id);
+    if(navigator.geolocation || coords !== '') {
+        $('.swiper-slide[data-hash=home] .inner').append('<p>Recherche de la position GPS…</p>');
+        navigator.geolocation.getCurrentPosition(positionSuccessFunction, positionErrorFunction, {enableHighAccuracy:true,  maximumAge:60000, timeout:2000});
     }
+    else if(!navigator.geolocation) {
+        $('.swiper-slide[data-hash=home] .inner').append('<p class="error">Votre navigateur ne supporte pas l\'API de géolocalisation.</p>');
+    }
+
+    /*for(id = 1; id < 4; id++) {
+        station_map_circle(id);
+    }*/
 });
+
+function positionSuccessFunction(position) {
+    window.coords = position.coords;
+
+    $('.switch-slide[data-hash=home] .inner').remove('p').append('<div><p>Prendre un vélo ? Poser un vélo ?</p></div>');
+}
+
+function positionErrorFunction(error) {
+    switch(error.code) {
+        case error.TIMEOUT:
+            $('.swiper-slide[data-hash=home] .inner p').addClass('error').html("Erreur : L'application n'a pas pu accéder aux ressources de geolocalisation dans le temps imparti. Elle va recommencer avec une durée plus longue.");
+            //Restart with a greater timeout
+            navigator.geolocation.getCurrentPosition(positionSuccessFunction, positionErrorFunction, {enableHighAccuracy:true,  maximumAge:60000, timeout:5000});
+            break;
+
+        case error.PERMISSION_DENIED:
+            $('.swiper-slide[data-hash=home] .inner p').addClass('error').html("Erreur : L'application n'a pas l'autorisation d'utiliser les ressources de geolocalisation.");
+            break;
+
+        case error.POSITION_UNAVAILABLE:
+            $('.swiper-slide[data-hash=home] .inner p').addClass('error').html("Erreur : La position n'a pas pu être déterminée.");
+            break;
+
+        default:
+            $('.swiper-slide[data-hash=home] .inner p').addClass('error').html("Erreur "+error.code+" : "+error.message);
+            break;
+    }
+}
