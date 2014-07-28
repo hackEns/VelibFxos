@@ -78,7 +78,8 @@ $(function(){
 function positionSuccessFunction(position) {
     window.coords = position.coords;
 
-    $('.switch-slide[data-hash=home] .inner').remove('p').append('<div><p>Prendre un vélo ? Poser un vélo ?</p></div>');
+    $('.swiper-slide[data-hash=home] .inner p').remove();
+    $('.swiper-slide[data-hash=home] .inner').append('<p>Position obtenue&nbsp;: '+position.coords.latitude+', '+position.coords.longitude+'</p><button class="entry bikes">Prendre un vélo&nbsp;?</button><button class="entry parking">Poser un vélo&nbsp;?</button>');
 }
 
 function positionErrorFunction(error) {
