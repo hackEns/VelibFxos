@@ -48,7 +48,7 @@ function station_map_circle(id) {
 }
 
 $(function(){
-	var gallery = $('.swiper-container').swiper({
+	window.gallery = $('.swiper-container').swiper({
         mode:'horizontal',
         loop: true,
 		slidesPerView:1,
@@ -79,7 +79,7 @@ function positionSuccessFunction(position) {
     window.coords = position.coords;
 
     $('.swiper-slide[data-hash=home] .inner p').remove();
-    $('.swiper-slide[data-hash=home] .inner').append('<p>Position obtenue&nbsp;: '+position.coords.latitude+', '+position.coords.longitude+'</p><button class="entry bikes">Prendre un vélo&nbsp;?</button><button class="entry parking">Poser un vélo&nbsp;?</button>');
+    $('.swiper-slide[data-hash=home] .inner').append('<button onclick="buildTakeBike();" class="entry bikes home_button"><img src="img/velo.svg" alt="Prendre un vélo&nbsp;?"/></button><button onclick="buildLeaveBike();" class="entry parking home_button"><img src="img/borne.svg" alt="Poser un vélo&nbsp;?"/></button><p style="margin-top: 15%;">Position obtenue&nbsp;: '+position.coords.latitude+', '+position.coords.longitude+'</p>');
 }
 
 function positionErrorFunction(error) {
@@ -102,4 +102,25 @@ function positionErrorFunction(error) {
             $('.swiper-slide[data-hash=home] .inner p').addClass('error').html("Erreur "+error.code+" : "+error.message);
             break;
     }
+}
+
+function buildTakeBike() {
+    // TODO: Get data
+    var slides = Array();
+    setSlides(slides)
+    return false;
+}
+
+function buildLeaveBike() {
+    // TODO: Get data
+    var slides = Array();
+    setSlides(slides)
+    return false;
+}
+
+function setSlides(slides) {
+    for(var i = 0; i < slides.length; i++) {
+        window.gallery.insertSlideAfter(0, slides[i]);
+    }
+    window.gallery.removeSlide(0);
 }
