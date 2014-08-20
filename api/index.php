@@ -4,7 +4,7 @@ if (empty($_GET['do'])) {
 	exit('No action specified.');
 }
 
-if(!is_file('data/data')) {
+if(!is_file('data')) {
     $data = array();
 }
 else {
@@ -16,6 +16,7 @@ else {
  * Update the list of stations
  */
 function update_stations() {
+    global $data;
     $stations_xml = simplexml_load_file('http://www.velib.paris.fr/service/carto');
 
     $data['stations'] = array();
@@ -34,7 +35,7 @@ function update_stations() {
             'last_check' => 0
         );
     }
-    $data['last_stations_udpate'] = time();
+    $data['last_stations_update'] = time();
 
     file_put_contents('data', base64_encode(gzdeflate(serialize($data))));
 }
@@ -44,6 +45,8 @@ function update_stations() {
  * Refresh the status of a single station
  */
 function refresh_station($id) {
+    global $data;
+
     if(time() - $data['stations'][$id]['last_check'] > 300) {
         $station_xml = simplexml_load_file('http://www.velib.paris.fr/service/stationdetails/paris/'.$id);
 

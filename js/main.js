@@ -1,4 +1,5 @@
 var tiles_provider = 'http://otile1.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpg';
+var api_url = 'http://localhost/VelibFxOS/api/';
 
 if ( typeof String.prototype.startsWith != 'function' ) {
   String.prototype.startsWith = function( str ) {
@@ -48,7 +49,7 @@ function station_map_circle(id) {
 }
 
 $(function(){
-	window.gallery = $('.swiper-container').swiper({
+	window.slides_container = $('.swiper-container').swiper({
         mode:'horizontal',
         loop: true,
 		slidesPerView:1,
@@ -105,22 +106,38 @@ function positionErrorFunction(error) {
 }
 
 function buildTakeBike() {
-    // TODO: Get data
-    var slides = Array();
-    setSlides(slides)
+    $.getJSON(
+            window.api_url,
+            {'do': 'getClosestBikes', 'lat': window.coords.latitude, 'lng': window.coords.longitude},
+            function(data) {
+                var slides = Array();
+                for(var result in data) {
+                    slides.push('<div class="inner"><div class="name">'+data[result]['name']+'</div><div class="update">Dernière mise à jour :<span class="date">'+data[result]['last_check']+'</span></div><div class="entry bikes"><span class="nb">'+data[result]['available']+'</span>vélos disponibles</div><div class="entry parking"><span class="nb">'+data[result]['free']+'</span>places libres</div><div class="map-circle" id="map-circle-1"></div></div></div>');
+                }
+                setSlides(slides)
+            }
+        );
     return false;
 }
 
 function buildLeaveBike() {
-    // TODO: Get data
-    var slides = Array();
-    setSlides(slides)
+    $.getJSON(
+            window.api_url,
+            {'do': 'getClosestParks', 'lat': window.coords.latitude, 'lng': window.coords.longitude},
+            function(data) {
+                var slides = Array();
+                for(var result in data) {
+                    slides.push('<div class="inner"><div class="name">'+data[result]['name']+'</div><div class="update">Dernière mise à jour :<span class="date">'+data[result]['last_check']+'</span></div><div class="entry bikes"><span class="nb">'+data[result]['available']+'</span>vélos disponibles</div><div class="entry parking"><span class="nb">'+data[result]['free']+'</span>places libres</div><div class="map-circle" id="map-circle-1"></div></div></div>');
+                }
+                setSlides(slides)
+            }
+        );
     return false;
 }
 
 function setSlides(slides) {
     for(var i = 0; i < slides.length; i++) {
-        window.gallery.insertSlideAfter(0, slides[i]);
+        window.slides_container.insertSlideAfter(0, slides[i]);
     }
-    window.gallery.removeSlide(0);
+    window.slides_container.removeSlide(0);
 }
