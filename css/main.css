@@ -3,7 +3,7 @@ body,html {
 	height: 100%;
 }
 body {
-	font-family: Helvetica, Arial, sans-serif;
+	font-family: "Open Sans"; /* TODO : Upload the font */
 	font-size: 13px;
 	line-height: 1.5;
 	background: #333;
@@ -23,10 +23,17 @@ body {
 }
 .swiper-slide .inner {
 	height: 100%;
-	padding: 20px 20px 50px;
+	margin: 20px 20px;
+    height: calc(100% - 75px);
+    background-color: white;
+    color: black;
+    padding: 1em;
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
+}
+.swiper-slide .inner a {
+    color: black;
 }
 .pagination {
 	position: absolute;
@@ -125,8 +132,6 @@ body {
 
 .parking {
     background-color: #009bb7;
-    background-image: url('img/borne.svg');
-    background-size: contain;
 }
 
 .parking:hover {

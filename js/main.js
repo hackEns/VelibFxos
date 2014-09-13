@@ -1,6 +1,12 @@
 var tiles_provider = 'http://otile1.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpg';
 var api_url = 'http://localhost/VelibFxOS/api/';
 
+if (!Array.prototype.last){
+    Array.prototype.last = function(){
+        return this[this.length - 1];
+    };
+};
+
 if ( typeof String.prototype.startsWith != 'function' ) {
   String.prototype.startsWith = function( str ) {
     return this.substring( 0, str.length ) === str;
@@ -80,7 +86,7 @@ function positionSuccessFunction(position) {
     window.coords = position.coords;
 
     $('.swiper-slide[data-hash=home] .inner p').remove();
-    $('.swiper-slide[data-hash=home] .inner').append('<button onclick="buildTakeBike();" class="entry bikes home_button"><img src="img/velo.svg" alt="Prendre un vélo&nbsp;?"/></button><button onclick="buildLeaveBike();" class="entry parking home_button"><img src="img/borne.svg" alt="Poser un vélo&nbsp;?"/></button><p style="margin-top: 15%;">Position obtenue&nbsp;: '+position.coords.latitude+', '+position.coords.longitude+'</p>');
+    $('.swiper-slide[data-hash=home] .inner').append('<button onclick="buildTakeBike();" class="entry bikes home_button"><img src="img/velo.svg" alt="Prendre un vélo&nbsp;?"/></button><button onclick="buildLeaveBike();" class="entry parking home_button"><img src="img/borne.svg" alt="Poser un vélo&nbsp;?"/></button><p style="margin-top: 15%;">Position obtenue&nbsp;: '+parseFloat(position.coords.latitude).toFixed(2)+', '+parseFloat(position.coords.longitude).toFixed(2)+'</p>');
 }
 
 function positionErrorFunction(error) {
@@ -112,7 +118,9 @@ function buildTakeBike() {
             function(data) {
                 var slides = Array();
                 for(var result in data) {
-                    slides.push('<div class="inner"><div class="name">'+data[result]['name']+'</div><div class="update">Dernière mise à jour :<span class="date">'+data[result]['last_check']+'</span></div><div class="entry bikes"><span class="nb">'+data[result]['available']+'</span>vélos disponibles</div><div class="entry parking"><span class="nb">'+data[result]['free']+'</span>places libres</div><div class="map-circle" id="map-circle-1"></div></div></div>');
+                    var date = new Date(data[result]['last_check'] * 1000);
+                    date = date.getDate() + '/' + (date.getMonth() < 9 ? '0' : '') + (date.getMonth() + 1) + '/' + date.getFullYear() + ' à ' + date.getHours() + ':' + date.getMinutes();
+                    slides.push('<div class="inner"><div class="name">'+data[result]['name'].split(' - ').last()+'</div><div class="update">Dernière mise à jour :<span class="date">'+date+'</span></div><div class="entry bikes"><span class="nb">'+data[result]['available']+'</span>vélos disponibles</div><div class="entry parking"><span class="nb">'+data[result]['free']+'</span>places libres</div><div class="map-circle" id="map-circle-1"></div></div></div>');
                 }
                 setSlides(slides)
             }
