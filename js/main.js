@@ -98,8 +98,19 @@ function pad(nb) {
  * Converts a timestamp to a nicely formatted date
  */
 function nice_date(timestamp) {
-    var date = new Date(timestamp * 1000);
-    return pad(date.getDate()) + '/' + pad(date.getMonth() + 1) + ' à ' + pad(date.getHours()) + ':' + pad(date.getMinutes());
+    var now = parseInt(Date.now() / 1000);
+    var diff = now - timestamp;
+    if (diff < 60) {
+        return 'il y a '+diff+ ' s';
+    } else if (diff < 300) {
+        var val = Math.round(diff / 60);
+        return 'il y a ' + val + ' min'+(val > 1 ? 's' : '');
+    } else if (diff < 3600) {
+        var val = Math.round(diff / 300) * 5;
+        return 'il y a ' + val + ' min'+(val > 1 ? 's' : '');
+    } else {
+        return pad(date.getDate()) + '/' + pad(date.getMonth() + 1) + ' à ' + pad(date.getHours()) + ':' + pad(date.getMinutes());
+    }
 }
 
 
@@ -140,7 +151,7 @@ function buildView(ev) {
                         var available = data[result]['free'];
                         var bikes_parks_i18n = 'places';
                     }
-                    slides.push('<div class="inner"><div class="name">'+station_name(data[result]['name'])+'</div><div class="update">Dernière mise à jour&nbsp;: <span class="date">'+nice_date(data[result]['last_check'])+'</span></div><div class="entry '+bikes_parks.toLowerCase()+'"><span class="nb">'+data[result]['available']+'</span> '+bikes_parks_i18n+' disponibles</div><div class="map-circle" id="map-circle-'+result+'"></div></div></div>');
+                    slides.push('<div class="inner"><div class="name"><h2>'+station_name(data[result]['name'])+'</h2></div><div class="update">Mis à jour <span class="date">'+nice_date(data[result]['last_check'])+'</span></div><div class="entry '+bikes_parks.toLowerCase()+'"><span class="nb">'+data[result]['available']+'</span> '+bikes_parks_i18n+' disponibles</div><div class="map-circle" id="map-circle-'+result+'"></div></div></div>');
                 }
                 // Set the new slides
                 setSlides(slides);
