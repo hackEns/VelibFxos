@@ -1,4 +1,4 @@
-body,html {
+body, html {
 	position: relative;
 	height: 100%;
 }
@@ -27,10 +27,11 @@ body {
     height: calc(100% - 75px);
     background-color: white;
     color: black;
-    padding: 1em;
+    padding: 15px;
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
+    overflow-y: auto;
 }
 .swiper-slide .inner a {
     color: black;
@@ -120,21 +121,22 @@ body {
 .entry .nb {
     font-weight: bold;
     font-size: 3em;
+    line-height: 1em;
 }
 
 .bikes {
     background-color: #dc1681;
 }
 
-.bikes:hover {
+.swiper-slide[data-hash=home] .bikes:hover {
     background-color: #9c105b;
 }
 
-.parking {
+.parks {
     background-color: #009bb7;
 }
 
-.parking:hover {
+.swiper-slide[data-hash=home] .parks:hover {
     background-color: #006678;
 }
 
@@ -159,16 +161,9 @@ footer {
     border-radius: 50%;
     margin: auto;
     margin-top: 20px;
+    background-color: #DDD;
 }
 
 .leaflet-control-attribution {
     display: none !important;
-}
-
-.home_button {
-    height: 20%;
-    margin-top: 15% !important;
-    padding: 0;
-    width: 50%;
-    border-radius: 10%;
 }
