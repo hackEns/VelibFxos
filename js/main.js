@@ -1,5 +1,6 @@
 var tiles_provider = 'http://otile1.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpg';
-var api_url = 'http://localhost/VelibFxOS/api/';
+var stations_url = 'https://api.jcdecaux.com/vls/v1/stations?contract=paris&apiKey=5eec7c1a3babb6b2abeabb0143c635d2d9aff1c3';
+var realtime_url = 'https://api.jcdecaux.com/vls/v1/stations/{station_number}?contract=paris&apiKey=5eec7c1a3babb6b2abeabb0143c635d2d9aff1c3'
 
 if (typeof(Array.prototype.last) != 'function') {
     Array.prototype.last = function(){
@@ -13,12 +14,14 @@ if (typeof( String.prototype.startsWith) != 'function') {
     }
 };
 
-var stations = {};
+var full_stations_list = {};  // Store the full list of stations
+var stations = [];  // Store only the relevant stations
 
-var maps = Array();
-var coords = {}
-var map = false;
-var slides_container = false;
+var coords = {};  // Store the position of the user
+var map = false;  // Handles minimaps
+var slides_container = false;  // Global object for the Slides API
+
+var mode = 'vélos';  // Current mode - look for bicycles or parks
 
 
 /***************
@@ -109,6 +112,7 @@ function nice_date(timestamp) {
         var val = Math.round(diff / 300) * 5;
         return 'il y a ' + val + ' min'+(val > 1 ? 's' : '');
     } else {
+        var date = new Date(timestamp * 1000);
         return pad(date.getDate()) + '/' + pad(date.getMonth() + 1) + ' à ' + pad(date.getHours()) + ':' + pad(date.getMinutes());
     }
 }
@@ -123,45 +127,117 @@ function station_name(full_name) {
 
 
 /**
+ * Converts an angle from degrees to rads
+ */
+function deg2rad(angle) {
+    return angle * Math.PI / 180;
+}
+
+
+/**
+ * Computes the distance between two points identified by latitude / longitude
+ */
+function lat_lng_to_dist(lat1, lng1, lat2, lng2) {
+		var latitude1 = deg2rad(lat1);
+		var longitude1 = deg2rad(lng1);
+		var latitude2 = deg2rad(lat2);
+		var longitude2 = deg2rad(lng2);
+
+		var a = Math.pow(Math.sin(latitude2 - latitude1)/2, 2) + Math.cos(latitude1) * Math.cos(latitude2)*Math.pow(Math.sin(longitude2 - longitude1)/2, 2);
+		var c = 2*Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+		var R = 6371000;
+		var distance = R*c;
+        return distance;
+}
+
+
+/**
+ * Fetch information about stations, asynchronously
+ */
+function fetch_stations(start, length) {
+    // TODO
+    var ajax_requests = []
+    for (var i = start; i < start + length; i++) {
+        if (i > window.full_stations_list.length) {
+            break;
+        }
+        ajax_requests.push($.getJSON(
+                window.realtime_url.replace('{station_number}', window.full_stations_list[i]['number']),
+                function (data) {
+                    if (data['status'] == "OPEN") {  // Station must be opened
+                        if ((window.mode == "vélos" && data['available_bikes'] > 0) || window.mode == "places" && data['available_bike_stands'] > 0) {  // And there must be available bikes / places
+                            window.stations.push(data);
+                        }
+                    }
+                }));
+    }
+    $.when.apply(this, ajax_requests).done(function () {
+        console.log(window.stations);
+        // If we got enough stations, let's display them
+        if (window.stations.length >= 10 || start + length > window.full_stations_list.length) {
+            display_stations();
+        }
+        // Else, fetch more stations
+        else {
+            fetch_stations(start + length, length);
+        }
+    });
+}
+
+
+/**
+ * Display resulting stations
+ */
+function display_stations() {
+    // TODO
+    var slides = Array();
+    for(var result = 0; result < window.stations.length; result++) {
+        if (window.mode == 'vélos') {
+            var available = window.stations[result]['available'];
+        }
+        else if (window.mode == 'places') {
+            var available = window.stations[result]['free'];
+        }
+        slides.push('<div class="inner"><div class="name"><h2>'+station_name(window.stations[result]['name'])+'</h2></div><div class="update">Mis à jour <span class="date">'+nice_date(window.stations[result]['last_check'])+'</span></div><div class="entry '+window.mode+'"><span class="nb">'+window.stations[result]['available']+'</span> '+window.mode+' disponibles</div><div class="map-circle" id="map-circle-'+result+'"></div></div></div>');
+    }
+    // Set the new slides
+    setSlides(slides);
+    // Initialize the minimaps
+    init_map_circle();
+    // Load the map corresponding to actually loaded slide
+    station_map_circle();
+}
+
+
+/**
  * Build the view, with the various slides
  * @params: bikes_parks is either "Bikes" or "Parks" depending on the button clicked on the homepage.
  */
 function buildView(ev) {
-    var bikes_parks = 'Bikes';
     if($(ev.target).hasClass('bikes')) {
-        bikes_parks = 'Bikes';
+        window.mode = 'vélos';
     }
     else if($(ev.target).hasClass('parks')) {
-        bikes_parks = 'Parks';
+        window.mode = 'places';
     }
 
     $(ev.target).parent('div').html("<p>Loading…</p>");
-    $.getJSON(
-            window.api_url,
-            {'do': 'getClosest'+bikes_parks, 'lat': window.coords.latitude, 'lng': window.coords.longitude},
-            function(data) {
-                var slides = Array();
-                for(var result in data) {
-                    window.stations[result] = data[result];
-                    if (bikes_parks == 'Bikes') {
-                        var available = data[result]['available'];
-                        var bikes_parks_i18n = 'vélos';
-                    }
-                    else if (bikes_parks == 'Parks') {
-                        var available = data[result]['free'];
-                        var bikes_parks_i18n = 'places';
-                    }
-                    slides.push('<div class="inner"><div class="name"><h2>'+station_name(data[result]['name'])+'</h2></div><div class="update">Mis à jour <span class="date">'+nice_date(data[result]['last_check'])+'</span></div><div class="entry '+bikes_parks.toLowerCase()+'"><span class="nb">'+data[result]['available']+'</span> '+bikes_parks_i18n+' disponibles</div><div class="map-circle" id="map-circle-'+result+'"></div></div></div>');
-                }
-                // Set the new slides
-                setSlides(slides);
-                // Initialize the minimaps
-                init_map_circle();
-                // Load the map corresponding to actually loaded slide
-                station_map_circle();
-            }
-        );
-    return false;
+
+    // Wait until window.full_stations_list has been populated
+    while(window.full_stations_list === null) {
+    }
+
+    var distances = [];
+    // Look for the 10 closest stations
+    // Compute all the distances
+    for (var i = 0; i < window.full_stations_list.length; i++) {
+        distances.push({'id': window.full_stations_list[i]['number'], 'distance': lat_lng_to_dist(window.coords.latitude, window.coords.longitude, window.full_stations_list[i]['position']['lat'], window.full_stations_list[i]['position']['lng'])});
+    }
+    // Sort stations by distances
+    distances.sort(function(a, b) { return a.distance - b.distance; });
+
+    // Get station status for the 10 first elements
+    fetch_stations(0, 10);
 }
 
 
@@ -219,7 +295,34 @@ function station_map_circle() {
 }
 
 
+/**
+ * Retrieve the JSON of the stations at JCDecaux OpenData API and stores it in localStorage.
+ */
+function retrieve_stations() {
+    // Reset stations state to null, while loading the ressource
+    window.full_stations_list = null;
+    // Update the stations list
+    $.getJSON(window.stations_url, function (data, status, jqXHR) {
+        localStorage.setItem('last_stations_update', Date.now());
+        localStorage.setItem('stations', jqXHR.responseText);
+        window.full_stations_list = data;
+    });
+}
+
+
 $(function(){
+    // Try to recover the stations list from localStorage
+    try {
+        window.full_stations_list = JSON.parse(localStorage.getItem('stations'));
+    } catch (e) {
+        window.full_stations_list = null;
+    }
+    // Update stations list once per month
+    last_stations_update = localStorage.getItem('last_stations_update');
+    if (last_stations_update === null || last_stations_update < 30*24*3600*1000 || $.isEmptyObject(window.full_stations_list)) {
+        retrieve_stations();
+    }
+
 	window.slides_container = $('.swiper-container').swiper({
         mode: 'horizontal',
         loop: true,
