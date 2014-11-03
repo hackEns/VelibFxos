@@ -102,7 +102,7 @@ function pad(nb) {
  */
 function nice_date(timestamp) {
     var now = parseInt(Date.now() / 1000);
-    var diff = now - timestamp;
+    var diff = now - (timestamp / 1000);
     if (diff < 60) {
         return 'il y a '+diff+ ' s';
     } else if (diff < 300) {
@@ -155,7 +155,6 @@ function lat_lng_to_dist(lat1, lng1, lat2, lng2) {
  * Fetch information about stations, asynchronously
  */
 function fetch_stations(start, length) {
-    // TODO
     var ajax_requests = []
     for (var i = start; i < start + length; i++) {
         if (i > window.full_stations_list.length) {
@@ -172,14 +171,13 @@ function fetch_stations(start, length) {
                 }));
     }
     $.when.apply(this, ajax_requests).done(function () {
-        console.log(window.stations);
         // If we got enough stations, let's display them
         if (window.stations.length >= 10 || start + length > window.full_stations_list.length) {
             display_stations();
         }
         // Else, fetch more stations
         else {
-            fetch_stations(start + length, length);
+            fetch_stations(start + length, 1);
         }
     });
 }
@@ -189,16 +187,17 @@ function fetch_stations(start, length) {
  * Display resulting stations
  */
 function display_stations() {
-    // TODO
     var slides = Array();
     for(var result = 0; result < window.stations.length; result++) {
         if (window.mode == 'vélos') {
-            var available = window.stations[result]['available'];
+            var available = window.stations[result]['available_bikes'];
+            var class_name = "bikes";
         }
         else if (window.mode == 'places') {
-            var available = window.stations[result]['free'];
+            var available = window.stations[result]['available_bike_stands'];
+            var class_name = "parks";
         }
-        slides.push('<div class="inner"><div class="name"><h2>'+station_name(window.stations[result]['name'])+'</h2></div><div class="update">Mis à jour <span class="date">'+nice_date(window.stations[result]['last_check'])+'</span></div><div class="entry '+window.mode+'"><span class="nb">'+window.stations[result]['available']+'</span> '+window.mode+' disponibles</div><div class="map-circle" id="map-circle-'+result+'"></div></div></div>');
+        slides.push('<div class="inner"><div class="name"><h2>'+station_name(window.stations[result]['name'])+'</h2></div><div class="update">Mis à jour <span class="date">'+nice_date(window.stations[result]['last_update'])+'</span></div><div class="entry '+class_name+'"><span class="nb">'+available+'</span> '+window.mode+' disponibles</div><div class="map-circle" id="map-circle-'+window.stations[result]['number']+'"></div></div></div>');
     }
     // Set the new slides
     setSlides(slides);
@@ -273,8 +272,11 @@ function station_map_circle() {
 
     var active_slide = $(window.slides_container.activeSlide());
     var id = parseInt($('.map-circle', active_slide).attr('id').replace('map-circle-', ''));
-    var latitude = window.stations[id]['lat'];
-    var longitude = window.stations[id]['lng'];
+    var station = $.grep(window.stations, function(v, i) {
+        return v['number'] === id;
+    });
+    var latitude = station[0]['position']['lat'];
+    var longitude = station[0]['position']['lng'];
 
     window.map = L.map('map-circle-'+id, { zoomControl: false}).setView([latitude, longitude], 16);
     L.marker([latitude, longitude]).addTo(window.map);
