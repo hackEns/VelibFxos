@@ -160,15 +160,17 @@ function fetch_stations(distances, start, length) {
         if (i > distances.length) {
             break;
         }
-        ajax_requests.push($.getJSON(
-                window.realtime_url.replace('{station_number}', distances[i]['number']),
-                function (data) {
-                    if (data['status'] == "OPEN") {  // Station must be opened
-                        if ((window.mode == "vélos" && data['available_bikes'] > 0) || window.mode == "places" && data['available_bike_stands'] > 0) {  // And there must be available bikes / places
-                            window.stations[i] = data;
+        (function (k, distance) {
+            ajax_requests.push($.getJSON(
+                    window.realtime_url.replace('{station_number}', distances[i]['number']),
+                    function (data) {
+                        if (data['status'] == "OPEN") {  // Station must be opened
+                            if ((window.mode == "vélos" && data['available_bikes'] > 0) || window.mode == "places" && data['available_bike_stands'] > 0) {  // And there must be available bikes / places
+                                window.stations[k] = data;
+                                window.stations[k]['distance'] = distance;
+                            }
                         }
-                    }
-                }));
+                    })); } (i, distances[i]['distance']));
     }
     $.when.apply(this, ajax_requests).done(function () {
         // If we got enough stations, let's display them
@@ -188,7 +190,7 @@ function fetch_stations(distances, start, length) {
  */
 function display_stations() {
     var slides = [];
-    for(var result = 0; result < window.stations.length; result++) {
+    for(var result = window.stations.length - 1; result >= 0; result--) {
         if (typeof(window.stations[result]) === "undefined") {
             continue;
         }
@@ -200,7 +202,7 @@ function display_stations() {
             var available = window.stations[result]['available_bike_stands'];
             var class_name = "parks";
         }
-        slides.push('<div class="inner"><div class="name"><h2>'+station_name(window.stations[result]['name'])+'</h2></div><div class="update">Mis à jour <span class="date">'+nice_date(window.stations[result]['last_update'])+'</span>.</div><div class="entry '+class_name+'"><span class="nb">'+available+'</span> '+window.mode+' disponibles</div><div class="map-circle" data-id="'+window.stations[result]['number']+'"></div></div></div>');
+        slides.push('<div class="inner"><div class="name"><h2>'+station_name(window.stations[result]['name'])+' ('+parseInt(window.stations[result]['distance'])+'m)'+'</h2></div><div class="update">Mis à jour <span class="date">'+nice_date(window.stations[result]['last_update'])+'</span>.</div><div class="entry '+class_name+'"><span class="nb">'+available+'</span> '+window.mode+' disponibles</div><div class="map-circle" data-id="'+window.stations[result]['number']+'"></div></div></div>');
     }
     // Set the new slides
     setSlides(slides);
