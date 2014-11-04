@@ -33,9 +33,10 @@ var mode = 'vélos';  // Current mode - look for bicycles or parks
  */
 function positionSuccessFunction(position) {
     window.coords = position.coords;
+    window.coords = {"latitude": 48.841863, "longitude": 2.345027}; // TODO
 
     $('.swiper-slide[data-hash=home] .inner p').remove();
-    $('.swiper-slide[data-hash=home] .inner').append('<div><button class="entry bikes home_button"><img src="img/velo.svg" alt="Prendre un vélo&nbsp;?"/></button><button class="entry parks home_button"><img src="img/borne.svg" alt="Poser un vélo&nbsp;?"/></button></div><p>Position obtenue&nbsp;: '+parseFloat(position.coords.latitude).toFixed(2)+', '+parseFloat(position.coords.longitude).toFixed(2)+'</p>');
+    $('.swiper-slide[data-hash=home] .inner').append('<div><button class="entry bikes home_button"><img src="img/velo.svg" alt="Prendre un vélo&nbsp;?"/></button><button class="entry parks home_button"><img src="img/borne.svg" alt="Poser un vélo&nbsp;?"/></button></div><p>Position obtenue&nbsp;: '+parseFloat(window.coords.latitude).toFixed(3)+', '+parseFloat(window.coords.longitude).toFixed(3)+'</p>');
     $('.swiper-slide[data-hash=home] .inner .bikes').click(buildView);
     $('.swiper-slide[data-hash=home] .inner .parks').click(buildView);
 }
@@ -154,30 +155,30 @@ function lat_lng_to_dist(lat1, lng1, lat2, lng2) {
 /**
  * Fetch information about stations, asynchronously
  */
-function fetch_stations(start, length) {
-    var ajax_requests = []
+function fetch_stations(distances, start, length) {
+    var ajax_requests = [];
     for (var i = start; i < start + length; i++) {
-        if (i > window.full_stations_list.length) {
+        if (i > distances.length) {
             break;
         }
         ajax_requests.push($.getJSON(
-                window.realtime_url.replace('{station_number}', window.full_stations_list[i]['number']),
+                window.realtime_url.replace('{station_number}', distances[i]['number']),
                 function (data) {
                     if (data['status'] == "OPEN") {  // Station must be opened
                         if ((window.mode == "vélos" && data['available_bikes'] > 0) || window.mode == "places" && data['available_bike_stands'] > 0) {  // And there must be available bikes / places
-                            window.stations.push(data);
+                            window.stations[i] = data;
                         }
                     }
                 }));
     }
     $.when.apply(this, ajax_requests).done(function () {
         // If we got enough stations, let's display them
-        if (window.stations.length >= 10 || start + length > window.full_stations_list.length) {
+        if ($.grep(window.stations, function (v, i) { return typeof(v) !== "undefined"; }).length >= 10 || start + length > window.full_stations_list.length) {
             display_stations();
         }
         // Else, fetch more stations
         else {
-            fetch_stations(start + length, 1);
+            fetch_stations(distances, start + length, 1);
         }
     });
 }
@@ -187,8 +188,11 @@ function fetch_stations(start, length) {
  * Display resulting stations
  */
 function display_stations() {
-    var slides = Array();
+    var slides = [];
     for(var result = 0; result < window.stations.length; result++) {
+        if (typeof(window.stations[result]) === "undefined") {
+            continue;
+        }
         if (window.mode == 'vélos') {
             var available = window.stations[result]['available_bikes'];
             var class_name = "bikes";
@@ -197,7 +201,7 @@ function display_stations() {
             var available = window.stations[result]['available_bike_stands'];
             var class_name = "parks";
         }
-        slides.push('<div class="inner"><div class="name"><h2>'+station_name(window.stations[result]['name'])+'</h2></div><div class="update">Mis à jour <span class="date">'+nice_date(window.stations[result]['last_update'])+'</span>.</div><div class="entry '+class_name+'"><span class="nb">'+available+'</span> '+window.mode+' disponibles</div><div class="map-circle" id="map-circle-'+window.stations[result]['number']+'"></div></div></div>');
+        slides.push('<div class="inner"><div class="name"><h2>'+station_name(window.stations[result]['name'])+'</h2></div><div class="update">Mis à jour <span class="date">'+nice_date(window.stations[result]['last_update'])+'</span>.</div><div class="entry '+class_name+'"><span class="nb">'+available+'</span> '+window.mode+' disponibles</div><div class="map-circle" data-id="'+window.stations[result]['number']+'"></div></div></div>');
     }
     // Set the new slides
     setSlides(slides);
@@ -230,13 +234,13 @@ function buildView(ev) {
     // Look for the 10 closest stations
     // Compute all the distances
     for (var i = 0; i < window.full_stations_list.length; i++) {
-        distances.push({'id': window.full_stations_list[i]['number'], 'distance': lat_lng_to_dist(window.coords.latitude, window.coords.longitude, window.full_stations_list[i]['position']['lat'], window.full_stations_list[i]['position']['lng'])});
+        distances.push({'number': window.full_stations_list[i]['number'], 'distance': lat_lng_to_dist(window.coords.latitude, window.coords.longitude, window.full_stations_list[i]['position']['lat'], window.full_stations_list[i]['position']['lng'])});
     }
     // Sort stations by distances
     distances.sort(function(a, b) { return a.distance - b.distance; });
 
     // Get station status for the 10 first elements
-    fetch_stations(0, 10);
+    fetch_stations(distances, 0, 10);
 }
 
 
@@ -248,15 +252,15 @@ function init_map_circle() {
     // Ignore the first slide (loop) and the last two slides (about + loop)
     for (var i = 1; i < slides.length - 2; i++) {
         var active_slide = $(slides[i]);
-        var id = parseInt($('.map-circle', active_slide).attr('id').replace('map-circle-', ''));
+        var id = parseInt($('.map-circle', active_slide).attr('data-id'));
 
         var height = $('.inner', active_slide).height() - $('.name', active_slide).height() - $('.update', active_slide).height() - $('.entry', active_slide).height() - 45;  // 40 is padding + margins
 
         if(height > active_slide.width() - 80) {  // 80 for margins and padding
             height = active_slide.width() - 80;
         }
-        $('#map-circle-'+id).height(height +'px');
-        $('#map-circle-'+id).width(height +'px');
+        $('.map-circle[data-id='+id+']').height(height +'px');
+        $('.map-circle[data-id='+id+']').width(height +'px');
     }
 }
 
@@ -271,14 +275,27 @@ function station_map_circle() {
     }
 
     var active_slide = $(window.slides_container.activeSlide());
-    var id = parseInt($('.map-circle', active_slide).attr('id').replace('map-circle-', ''));
+    try {
+        var id = parseInt($('.map-circle', active_slide).attr('data-id'));
+        if (isNaN(id)) {
+            throw new TypeError;
+        }
+    }
+    catch(e) {
+        if (e instanceof TypeError) {
+            return;
+        }
+        else {
+            throw e;
+        }
+    }
     var station = $.grep(window.stations, function(v, i) {
-        return v['number'] === id;
+        return typeof(v) !== "undefined" && v['number'] === id;
     });
     var latitude = station[0]['position']['lat'];
     var longitude = station[0]['position']['lng'];
 
-    window.map = L.map('map-circle-'+id, { zoomControl: false}).setView([latitude, longitude], 16);
+    window.map = L.map($('.map-circle', active_slide).get(0), { zoomControl: false}).setView([latitude, longitude], 16);
     L.marker([latitude, longitude]).addTo(window.map);
     window.map.dragging.disable();
     window.map.touchZoom.disable();
