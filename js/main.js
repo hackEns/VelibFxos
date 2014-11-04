@@ -33,7 +33,6 @@ var mode = 'vélos';  // Current mode - look for bicycles or parks
  */
 function positionSuccessFunction(position) {
     window.coords = position.coords;
-    window.coords = {"latitude": 48.841863, "longitude": 2.345027}; // TODO
 
     $('.swiper-slide[data-hash=home] .inner p').remove();
     $('.swiper-slide[data-hash=home] .inner').append('<div><button class="entry bikes home_button"><img src="img/velo.svg" alt="Prendre un vélo&nbsp;?"/></button><button class="entry parks home_button"><img src="img/borne.svg" alt="Poser un vélo&nbsp;?"/></button></div><p>Position obtenue&nbsp;: '+parseFloat(window.coords.latitude).toFixed(3)+', '+parseFloat(window.coords.longitude).toFixed(3)+'</p>');
