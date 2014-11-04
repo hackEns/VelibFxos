@@ -197,7 +197,7 @@ function display_stations() {
             var available = window.stations[result]['available_bike_stands'];
             var class_name = "parks";
         }
-        slides.push('<div class="inner"><div class="name"><h2>'+station_name(window.stations[result]['name'])+'</h2></div><div class="update">Mis à jour <span class="date">'+nice_date(window.stations[result]['last_update'])+'</span></div><div class="entry '+class_name+'"><span class="nb">'+available+'</span> '+window.mode+' disponibles</div><div class="map-circle" id="map-circle-'+window.stations[result]['number']+'"></div></div></div>');
+        slides.push('<div class="inner"><div class="name"><h2>'+station_name(window.stations[result]['name'])+'</h2></div><div class="update">Mis à jour <span class="date">'+nice_date(window.stations[result]['last_update'])+'</span>.</div><div class="entry '+class_name+'"><span class="nb">'+available+'</span> '+window.mode+' disponibles</div><div class="map-circle" id="map-circle-'+window.stations[result]['number']+'"></div></div></div>');
     }
     // Set the new slides
     setSlides(slides);
