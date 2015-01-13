@@ -1,0 +1,21 @@
+{
+  "name": "VelibFxos",
+  "version": "1.0",
+  "type": "web",
+  "description": "Firefox OS app for the Velib bike sharing system in Paris",
+  "launch_path": "/index.html",
+  "permissions": {
+    "geolocation": {
+      "description": "Required for sharing closest Velib stations."
+      }
+  },
+  "developer": {
+    "name": "Phyks",
+    "url": "http://phyks.me"
+  },
+  "icons": {
+    "60": "/img/icons/icon_60.png",
+    "128": "/img/icons/icon_128.png",
+    "256": "/img/icons/icon_256.png"
+  }
+}
