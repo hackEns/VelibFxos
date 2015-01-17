@@ -286,7 +286,15 @@ var Views = (function () {
     var index = function () {
         Geolocation.noWaitPosition();
         Stations.noWaitList();
-        $('.station-info').html('<div class="entry bikes"><span>vélos<br/>disponibles</span><img class="entry--logo" alt="" src="img/velib.svg" /></div><div class="entry stands"><span>places<br/>libres</span><img class="entry--logo" alt="" src="img/borne.svg" /></div><div class="entry starred"><span>Favoris</span><img class="entry--logo" alt="" src="img/favori.svg" /></div><div class="entry search"><span>Rechercher</span><img class="entry--logo" alt="" src="img/loupe.svg" /></div>');
+        $('#app-bar').addClass('hidden');
+        $('#app-logo').removeClass('hidden');
+        console.log("App", "Starred", "display header");
+
+        $('.station-info').html('' +
+            '<div class="entry bikes"><span>vélos<br/>disponibles</span><img class="entry--logo" alt="" src="img/velib.svg" /></div>' +
+            '<div class="entry stands"><span>places<br/>libres</span><img class="entry--logo" alt="" src="img/borne.svg" /></div>' +
+            '<div class="entry starred"><span>Favoris</span><img class="entry--logo" alt="" src="img/favori.svg" /></div>' +
+            '<div class="entry search"><span>Rechercher</span><img class="entry--logo" alt="" src="img/loupe.svg" /></div>');
 
         $('.entry.bikes').click(function () { window.location.hash = "/bikes"; });
         $('.entry.stands').click(function () { window.location.hash = "/stands"; });
@@ -295,13 +303,34 @@ var Views = (function () {
     };
 
     var bikes = function () {
+        console.log("App", "Bikes", "display page");
+        $('#app-bar').removeClass('hidden');
+        $('#app-logo').addClass('hidden');
+
+        <!-- making the view header bar -->
+        console.log("App", "Bikes", "display header");
+        $('#app-bar').removeClass().addClass('bikes');
+        $('.left-part').html('<');
+        $('.bar-title').html('Vélos disponibles');
+        $('.right-part').html('<img class="entry--logo" alt="" src="img/velib.svg" />');
+
         if (Geolocation.waitPosition(bikes) && Stations.waitList(bikes)) {
             console.log(Stations.getClosestStations(Geolocation.getPosition(), 10, function () { return item.available_bikes > 0 }));
-            $('.station-info').html('');
         }
     };
 
     var stands = function () {
+        console.log("App", "Stands", "display page");
+        $('#app-bar').removeClass('hidden');
+        $('#app-logo').addClass('hidden');
+
+        <!-- header bar -->
+        console.log("App", "Stands", "display header");
+        $('#app-bar').removeClass().addClass('stands');
+        $('.left-part').html('<');
+        $('.bar-title').html('Places libres');
+        $('.right-part').html('<img class="entry--logo" alt="" src="img/borne.svg" />');
+
         if (Geolocation.waitPosition(stands) && Stations.waitList(stands)) {
             console.log(Stations.getClosestStations(Geolocation.getPosition(), 10, function () { return item.available_bike_stands > 0 }));
             $('.station-info').html('');
@@ -309,6 +338,17 @@ var Views = (function () {
     };
 
     var starred = function () {
+        console.log("App", "Starred", "display header");
+        $('#app-bar').removeClass('hidden');
+        $('#app-logo').addClass('hidden');
+
+        <!-- header bar -->
+        console.log("App", "Starred", "display header");
+        $('#app-bar').removeClass().addClass('starred');
+        $('.left-part').html('<');
+        $('.bar-title').html('Favoris');
+        $('.right-part').html('<img class="entry--logo" alt="" src="img/favori.svg" />');
+
         Geolocation.noWaitPosition();
         if (Stations.waitList(starred)) {
             console.log(Stations.getClosestStations(Geolocation.getPosition(), 10, function () { return item.starred > 0 }));
@@ -317,6 +357,17 @@ var Views = (function () {
     };
 
     var search = function () {
+        console.log("App", "Search", "display page");
+        $('#app-bar').removeClass('hidden');
+        $('#app-logo').addClass('hidden');
+
+        <!-- header bar -->
+        console.log("App", "Search", "display header");
+        $('#app-bar').addClass('search');
+        $('.left-part').html('<');
+        $('.bar-title').html('Rechercher');
+        $('.right-part').html('<img class="entry--logo" alt="" src="img/loupe.svg" />');
+
         Geolocation.noWaitPosition();
         if (Stations.waitList(search)) {
             $('.station-info').html('');
