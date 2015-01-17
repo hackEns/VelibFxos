@@ -215,7 +215,7 @@ var Stations = (function() {
             limit = -1;
         }
         else {
-            limit = parsInt(limit);
+            limit = parseInt(limit);
         }
 
         if (limit === NaN) {
