@@ -288,7 +288,7 @@ var Views = (function () {
         Stations.noWaitList();
         $('#app-bar').addClass('hidden');
         $('#app-logo').removeClass('hidden');
-        console.log("App", "Starred", "display header");
+        console.log("App", "Index", "display page");
 
         $('.station-info').html('' +
             '<div class="entry bikes"><span>vélos<br/>disponibles</span><img class="entry--logo" alt="" src="img/velib.svg" /></div>' +
