@@ -166,7 +166,6 @@ main {
 }
 
 #app-bar {
-  padding: 0.5em;
   color: #fff;
   font-family: 'Open Sans';
   font-size: 25px;
@@ -182,6 +181,11 @@ main {
 
 #app-bar .left-part {
   float: left;
+  cursor: pointer;
+}
+
+#app-bar .left-part:hover {
+  background-color: #000;
 }
 
 #app-bar .right-part {
@@ -195,7 +199,8 @@ main {
 .left-part,
 .middle-part,
 .right-part {
-  display: inline;
+  display: inline-block;
+  padding: 0.5em;
 }
 
 .hidden {

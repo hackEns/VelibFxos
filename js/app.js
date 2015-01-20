@@ -310,7 +310,7 @@ var Views = (function () {
         <!-- making the view header bar -->
         console.log("App", "Bikes", "display header");
         $('#app-bar').removeClass().addClass('bikes');
-        $('.left-part').html('<');
+        $('.left-part').html('<').click(function () { window.location.hash = "/index"; });
         $('.bar-title').html('Vélos disponibles');
         $('.right-part').html('<img class="entry--logo" alt="" src="img/velib.svg" />');
 
@@ -327,7 +327,7 @@ var Views = (function () {
         <!-- header bar -->
         console.log("App", "Stands", "display header");
         $('#app-bar').removeClass().addClass('stands');
-        $('.left-part').html('<');
+        $('.left-part').html('<').click(function () { window.location.hash = "/index"; });
         $('.bar-title').html('Places libres');
         $('.right-part').html('<img class="entry--logo" alt="" src="img/borne.svg" />');
 
@@ -345,7 +345,7 @@ var Views = (function () {
         <!-- header bar -->
         console.log("App", "Starred", "display header");
         $('#app-bar').removeClass().addClass('starred');
-        $('.left-part').html('<');
+        $('.left-part').html('<').click(function () { window.location.hash = "/index"; });
         $('.bar-title').html('Favoris');
         $('.right-part').html('<img class="entry--logo" alt="" src="img/favori.svg" />');
 
@@ -364,7 +364,7 @@ var Views = (function () {
         <!-- header bar -->
         console.log("App", "Search", "display header");
         $('#app-bar').addClass('search');
-        $('.left-part').html('<');
+        $('.left-part').html('<').click(function () { window.location.hash = "/index"; });
         $('.bar-title').html('Rechercher');
         $('.right-part').html('<img class="entry--logo" alt="" src="img/loupe.svg" />');
 
