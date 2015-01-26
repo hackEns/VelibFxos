@@ -120,11 +120,11 @@ main {
     background-color: #000;
 }
 
-.station-info .stared {
+.station-info .starred {
     background-color: #a54d93;
 }
 
-.station-info .stared:hover {
+.station-info .starred:hover {
     background-color: #000;
 }
 
