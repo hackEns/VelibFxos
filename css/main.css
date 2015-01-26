@@ -168,9 +168,13 @@ main {
 #app-bar {
   color: #fff;
   font-family: 'Open Sans';
-  font-size: 25px;
+  font-size: 23px;
   font-style: italic;
   font-weight: 300;
+}
+
+#app-bar div {
+    display: inline-block;
 }
 
 #app-bar .left-part,
@@ -190,6 +194,7 @@ main {
 
 #app-bar .right-part {
   float: right;
+  margin-right: 5px;
 }
 
 #app-bar .right-part img {
@@ -197,10 +202,8 @@ main {
 }
 
 .left-part,
-.middle-part,
-.right-part {
-  display: inline-block;
-  padding: 0.5em;
+.middle-part {
+  padding: 0.25em;
 }
 
 .hidden {
