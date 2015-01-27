@@ -300,10 +300,24 @@ var Views = (function () {
         return {
             update: update
         };
+    })();
+    
+    var bodyContent = (function() {
+        // update the body content from the views
+        var update = function (viewStruct) {
+            $('main').removeClass().addClass(viewStruct.view+"Content");
+        };
 
+        return {
+            update: update
+        };
     })();
 
     var index = function () {
+        viewStruct.view = "index";
+        
+        bodyContent.update(viewStruct);
+        
         Geolocation.noWaitPosition();
         Stations.noWaitList();
         $('#app-bar').addClass('hidden');
@@ -329,6 +343,7 @@ var Views = (function () {
 
         console.log("App", viewStruct.view, "display page");
         header.update(viewStruct);
+        bodyContent.update(viewStruct);
 
         if (Geolocation.waitPosition(bikes) && Stations.waitList(bikes)) {
             console.log(Stations.getClosestStations(Geolocation.getPosition(), 10, function () { return item.available_bikes > 0 }));
@@ -342,6 +357,7 @@ var Views = (function () {
 
         console.log("App", viewStruct.view, "display page");
         header.update(viewStruct);
+        bodyContent.update(viewStruct);
 
         if (Geolocation.waitPosition(stands) && Stations.waitList(stands)) {
             console.log(Stations.getClosestStations(Geolocation.getPosition(), 10, function () { return item.available_bike_stands > 0 }));
@@ -356,6 +372,7 @@ var Views = (function () {
 
         console.log("App", viewStruct.view, "display page");
         header.update(viewStruct);
+        bodyContent.update(viewStruct);
 
         Geolocation.noWaitPosition();
         if (Stations.waitList(starred)) {
@@ -371,6 +388,7 @@ var Views = (function () {
 
         console.log("App", viewStruct.view, "display page");
         header.update(viewStruct);
+        bodyContent.update(viewStruct);
 
         Geolocation.noWaitPosition();
         if (Stations.waitList(search)) {

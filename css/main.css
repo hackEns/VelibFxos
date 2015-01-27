@@ -128,12 +128,12 @@ main {
     background-color: #000;
 }
 
-.station-info .stared,
-#app-bar.stared {
+.station-info .starred,
+#app-bar.starred {
     background-color: #a54d93;
 }
 
-.station-info .stared:hover {
+.station-info .starred:hover {
     background-color: #000;
 }
 
@@ -208,4 +208,34 @@ main {
 
 .hidden {
   opacity: 0;
+}
+
+main.bikesContent,
+main.standsContent,
+main.starredContent,
+main.searchContent
+{
+  margin : 10px;
+}
+
+main.bikesContent
+{
+  border: 2px solid #DC1681;
+}
+
+main.standsContent {
+  border: 2px solid #009BB7;
+}
+
+main.starredContent {
+  border: 2px solid #A54D93;
+}
+
+main.searchContent {
+  border: 2px solid #F7AD00;
+}
+
+main.indexContent {
+  border: 0px white;
+  margin : 0px;
 }
