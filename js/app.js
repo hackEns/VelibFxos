@@ -206,7 +206,7 @@ var Stations = (function() {
     };
 
     // Returns `limit` closest stations with up to date infos and a matching criterion
-    var getClosestStations = function (limit, filter) {
+    var getClosestStations = function (coords, limit, filter) {
         if (typeof(limit) == 'undefined') {
             limit = -1;
         }
@@ -225,7 +225,25 @@ var Stations = (function() {
             filter = function (item) { return true; };
         }
 
-        // TODO
+        var stations = orderByDistance(coords);
+        var out = [];
+
+        if (limit == -1) {
+            out = stations.filter(filter);
+        }
+        else {
+            for (var i = 0; i < stations.length; i++) {
+                if (out.length > limit) {
+                    break;
+                }
+                if (filter(stations[i])) {
+                    out.push(stations[i]);
+                }
+            }
+        }
+
+        return out;
+
     };
 
     // Star / Unstar a station
@@ -331,7 +349,7 @@ var Views = (function () {
         header.update(viewStruct);
 
         if (Geolocation.waitPosition(bikes) && Stations.waitList(bikes)) {
-            console.log(Stations.getClosestStations(Geolocation.getPosition(), 10, function () { return item.available_bikes > 0; }));
+            console.log(Stations.getClosestStations(Geolocation.getPosition(), 10, function (item) { return item.available_bikes > 0; }));
         }
     };
 
@@ -344,7 +362,7 @@ var Views = (function () {
         header.update(viewStruct);
 
         if (Geolocation.waitPosition(stands) && Stations.waitList(stands)) {
-            console.log(Stations.getClosestStations(Geolocation.getPosition(), 10, function () { return item.available_bike_stands > 0; }));
+            console.log(Stations.getClosestStations(Geolocation.getPosition(), 10, function (item) { return item.available_bike_stands > 0; }));
             $('.station-info').html('');
         }
     };
@@ -359,7 +377,7 @@ var Views = (function () {
 
         Geolocation.noWaitPosition();
         if (Stations.waitList(starred)) {
-            console.log(Stations.getClosestStations(Geolocation.getPosition(), 10, function () { return item.starred > 0; }));
+            console.log(Stations.getClosestStations(Geolocation.getPosition(), 10, function (item) { return item.starred > 0; }));
             $('.station-info').html('');
         }
     };
