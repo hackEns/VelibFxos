@@ -128,12 +128,13 @@ main {
     background-color: #000;
 }
 
-.station-info .stared,
-#app-bar.stared {
+
+.station-info .starred,
+#app-bar.starred {
     background-color: #a54d93;
 }
 
-.station-info .stared:hover {
+.station-info .starred:hover {
     background-color: #000;
 }
 
