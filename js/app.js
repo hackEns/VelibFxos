@@ -11,7 +11,7 @@ var Config = (function () {
         stations_url: stations_base_url + api_key,
         realtime_url: realtime_url + api_key,
         max_starred_stations: 10
-    }
+    };
 })();
 
 // Bind a last method on Array
@@ -19,14 +19,14 @@ if (typeof(Array.prototype.last) != 'function') {
     Array.prototype.last = function(){
         return this[this.length - 1];
     };
-};
+}
 
 // Bind a startswith method on String
 if (typeof(String.prototype.startsWith) != 'function') {
     String.prototype.startsWith = function(str) {
       return this.substring(0, str.length) === str;
-    }
-};
+  };
+}
 
 /***************
  * Geolocation *
@@ -91,7 +91,7 @@ var Geolocation = (function () {
     // Returns the current position
     var getPosition = function () {
         return coords;
-    }
+    };
 
     return {
         init: init,
@@ -215,7 +215,7 @@ var Stations = (function() {
             limit = -1;
         }
         else {
-            limit = parseInt(limit);
+            limit = parseInt(limit, 10);
         }
 
         if (limit === NaN) {
@@ -287,7 +287,7 @@ var Views = (function () {
     var header = (function() {
         // update the header from the views
         var update = function (viewStruct) {
-            $('#app-bar').removeClass().addClass('bikes');
+            $('#app-bar').removeClass().addClass(viewStruct.view);
             $('#app-logo').addClass('hidden');
 
             console.log("App", viewStruct.view, "display header");
@@ -331,7 +331,7 @@ var Views = (function () {
         header.update(viewStruct);
 
         if (Geolocation.waitPosition(bikes) && Stations.waitList(bikes)) {
-            console.log(Stations.getClosestStations(Geolocation.getPosition(), 10, function () { return item.available_bikes > 0 }));
+            console.log(Stations.getClosestStations(Geolocation.getPosition(), 10, function () { return item.available_bikes > 0; }));
         }
     };
 
@@ -344,7 +344,7 @@ var Views = (function () {
         header.update(viewStruct);
 
         if (Geolocation.waitPosition(stands) && Stations.waitList(stands)) {
-            console.log(Stations.getClosestStations(Geolocation.getPosition(), 10, function () { return item.available_bike_stands > 0 }));
+            console.log(Stations.getClosestStations(Geolocation.getPosition(), 10, function () { return item.available_bike_stands > 0; }));
             $('.station-info').html('');
         }
     };
@@ -359,7 +359,7 @@ var Views = (function () {
 
         Geolocation.noWaitPosition();
         if (Stations.waitList(starred)) {
-            console.log(Stations.getClosestStations(Geolocation.getPosition(), 10, function () { return item.starred > 0 }));
+            console.log(Stations.getClosestStations(Geolocation.getPosition(), 10, function () { return item.starred > 0; }));
             $('.station-info').html('');
         }
     };
@@ -377,14 +377,14 @@ var Views = (function () {
             $('.station-info').html('');
         }
     };
-    
+
     return {
         index: index,
         bikes: bikes,
         stands: stands,
         starred: starred,
         search: search
-    }
+    };
 
 })();
 
