@@ -349,7 +349,14 @@ var Views = (function () {
         header.update(viewStruct);
 
         if (Geolocation.waitPosition(bikes) && Stations.waitList(bikes)) {
-            console.log(Stations.getClosestStations(Geolocation.getPosition(), 10, function (item) { return item.available_bikes > 0; }));
+            var stations = Stations.getClosestStations(Geolocation.getPosition(), 10, function (item) { return item.available_bikes > 0; });
+            console.log(stations);
+            var html = "<ul>";
+            for (var i = 0; i < stations.length; i++) {
+                html += "<li>" + stations[i].name + "</li>";
+            }
+            html += "</ul>";
+            $('.station-info').html(html);
         }
     };
 
