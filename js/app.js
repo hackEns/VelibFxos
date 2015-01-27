@@ -287,7 +287,7 @@ var Views = (function () {
     var header = (function() {
         // update the header from the views
         var update = function (viewStruct) {
-            $('#app-bar').removeClass().addClass('bikes');
+            $('#app-bar').removeClass().addClass(viewStruct.view);
             $('#app-logo').addClass('hidden');
 
             console.log("App", viewStruct.view, "display header");
@@ -377,7 +377,7 @@ var Views = (function () {
             $('.station-info').html('');
         }
     };
-    
+
     return {
         index: index,
         bikes: bikes,
