@@ -215,7 +215,7 @@ var Stations = (function() {
             limit = -1;
         }
         else {
-            limit = parsInt(limit);
+            limit = parseInt(limit);
         }
 
         if (limit === NaN) {
@@ -277,16 +277,44 @@ var Stations = (function() {
     };
 })();
 
-
 /********
  * Views
  ********/
 
 var Views = (function () {
+    var viewStruct = {};
+
+    var header = (function() {
+        // update the header from the views
+        var update = function (viewStruct) {
+            $('#app-bar').removeClass().addClass('bikes');
+            $('#app-logo').addClass('hidden');
+
+            console.log("App", viewStruct.view, "display header");
+            $('#app-bar').addClass(viewStruct.view);
+            $('.left-part').html('<').click(function () { window.location.hash = "/index"; });
+            $('.bar-title').html(viewStruct.title);
+            $('.right-part').html('<img class="entry--logo" alt="" src="img/' + viewStruct.img + '.svg" />');
+        };
+
+        return {
+            update: update
+        };
+
+    })();
+
     var index = function () {
         Geolocation.noWaitPosition();
         Stations.noWaitList();
-        $('.station-info').html('<div class="entry bikes"><span>vélos<br/>disponibles</span><img class="entry--logo" alt="" src="img/velib.svg" /></div><div class="entry stands"><span>places<br/>libres</span><img class="entry--logo" alt="" src="img/borne.svg" /></div><div class="entry starred"><span>Favoris</span><img class="entry--logo" alt="" src="img/favori.svg" /></div><div class="entry search"><span>Rechercher</span><img class="entry--logo" alt="" src="img/loupe.svg" /></div>');
+        $('#app-bar').addClass('hidden');
+        $('#app-logo').removeClass('hidden');
+        console.log("App", "Index", "display page");
+
+        $('.station-info').html('' +
+            '<div class="entry bikes"><span>vélos<br/>disponibles</span><img class="entry--logo" alt="" src="img/velib.svg" /></div>' +
+            '<div class="entry stands"><span>places<br/>libres</span><img class="entry--logo" alt="" src="img/borne.svg" /></div>' +
+            '<div class="entry starred"><span>Favoris</span><img class="entry--logo" alt="" src="img/favori.svg" /></div>' +
+            '<div class="entry search"><span>Rechercher</span><img class="entry--logo" alt="" src="img/loupe.svg" /></div>');
 
         $('.entry.bikes').click(function () { window.location.hash = "/bikes"; });
         $('.entry.stands').click(function () { window.location.hash = "/stands"; });
@@ -295,13 +323,26 @@ var Views = (function () {
     };
 
     var bikes = function () {
+        viewStruct.view = "bikes";
+        viewStruct.title = "Vélos disponibles";
+        viewStruct.img = "velib";
+
+        console.log("App", viewStruct.view, "display page");
+        header.update(viewStruct);
+
         if (Geolocation.waitPosition(bikes) && Stations.waitList(bikes)) {
             console.log(Stations.getClosestStations(Geolocation.getPosition(), 10, function () { return item.available_bikes > 0 }));
-            $('.station-info').html('');
         }
     };
 
     var stands = function () {
+        viewStruct.view = "stands";
+        viewStruct.title = "Places libres";
+        viewStruct.img = "borne";
+
+        console.log("App", viewStruct.view, "display page");
+        header.update(viewStruct);
+
         if (Geolocation.waitPosition(stands) && Stations.waitList(stands)) {
             console.log(Stations.getClosestStations(Geolocation.getPosition(), 10, function () { return item.available_bike_stands > 0 }));
             $('.station-info').html('');
@@ -309,6 +350,13 @@ var Views = (function () {
     };
 
     var starred = function () {
+        viewStruct.view = "starred";
+        viewStruct.title = "Favoris";
+        viewStruct.img = "favori";
+
+        console.log("App", viewStruct.view, "display page");
+        header.update(viewStruct);
+
         Geolocation.noWaitPosition();
         if (Stations.waitList(starred)) {
             console.log(Stations.getClosestStations(Geolocation.getPosition(), 10, function () { return item.starred > 0 }));
@@ -317,12 +365,19 @@ var Views = (function () {
     };
 
     var search = function () {
+        viewStruct.view = "search";
+        viewStruct.title = "Rechercher";
+        viewStruct.img = "loupe";
+
+        console.log("App", viewStruct.view, "display page");
+        header.update(viewStruct);
+
         Geolocation.noWaitPosition();
         if (Stations.waitList(search)) {
             $('.station-info').html('');
         }
     };
-
+    
     return {
         index: index,
         bikes: bikes,
@@ -330,8 +385,8 @@ var Views = (function () {
         starred: starred,
         search: search
     }
-})();
 
+})();
 
 /**********
  * Routing

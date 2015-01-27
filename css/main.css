@@ -2,25 +2,31 @@
   font-family: 'Open Sans';
   font-style: normal;
   font-weight: 300;
-  src: local('Open Sans Light'), local('OpenSans-Light'), url(fonts/OpenSans-Light.woff) format('woff');
+  src: local('Open Sans Light'), local('OpenSans-Light'), url('../fonts/OpenSans-Light.woff') format('woff');
 }
 @font-face {
   font-family: 'Open Sans';
   font-style: normal;
   font-weight: 400;
-  src: local('Open Sans'), local('OpenSans'), url(fonts/OpenSans.woff) format('woff');
+  src: local('Open Sans'), local('OpenSans'), url('../fonts/OpenSans.woff') format('woff');
 }
 @font-face {
   font-family: 'Open Sans';
   font-style: normal;
   font-weight: 700;
-  src: local('Open Sans Bold'), local('OpenSans-Bold'), url(fonts/OpenSans-Bold.woff) format('woff');
+  src: local('Open Sans Bold'), local('OpenSans-Bold'), url('../fonts/OpenSans-Bold.woff') format('woff');
 }
 @font-face {
   font-family: 'Open Sans';
   font-style: italic;
   font-weight: 400;
-  src: local('Open Sans Italic'), local('OpenSans-Italic'), url(fonts/OpenSans-Italic.woff) format('woff');
+  src: local('Open Sans Italic'), local('OpenSans-Italic'), url('../fonts/OpenSans-Italic.woff') format('woff');
+}
+@font-face {
+  font-family: 'Open Sans';
+  font-style: italic;
+  font-weight: 300;
+  src: local('Open Sans Italic'), local('OpenSans-Italic'), url('../fonts/OpenSans-LightItalic.woff') format('woff');
 }
 
 .center {
@@ -104,7 +110,8 @@ main {
 }
 
 
-.station-info .bikes {
+.station-info .bikes,
+#app-bar.bikes {
     background-color: #dc1681;
 }
 
@@ -112,7 +119,8 @@ main {
     background-color: #000;
 }
 
-.station-info .stands {
+.station-info .stands,
+#app-bar.stands {
     background-color: #009bb7;
 }
 
@@ -120,7 +128,9 @@ main {
     background-color: #000;
 }
 
-.station-info .starred {
+
+.station-info .starred,
+#app-bar.starred {
     background-color: #a54d93;
 }
 
@@ -128,7 +138,8 @@ main {
     background-color: #000;
 }
 
-.station-info .search {
+.station-info .search,
+#app-bar.search {
     background-color: #f7ad00;
 }
 
@@ -153,4 +164,49 @@ main {
     font-weight: normal;
     color: #222;
     margin: 0;
+}
+
+#app-bar {
+  color: #fff;
+  font-family: 'Open Sans';
+  font-size: 23px;
+  font-style: italic;
+  font-weight: 300;
+}
+
+#app-bar div {
+    display: inline-block;
+}
+
+#app-bar .left-part,
+#app-bar .right-part {
+  text-align: center;
+  width: 50px;
+}
+
+#app-bar .left-part {
+  float: left;
+  cursor: pointer;
+}
+
+#app-bar .left-part:hover {
+  background-color: #000;
+}
+
+#app-bar .right-part {
+  float: right;
+  margin-right: 5px;
+}
+
+#app-bar .right-part img {
+  height: 40px;
+}
+
+.left-part,
+.middle-part {
+  padding: 0.25em;
+}
+
+.hidden {
+  opacity: 0;
 }
