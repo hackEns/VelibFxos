@@ -14,6 +14,17 @@ var Config = (function () {
     };
 })();
 
+var mySwiper = new Swiper('.swiper-container', {
+    // general settings
+    hashNav: false,
+    keyboardControl: true,
+    calculateHeight: true,
+    // pagination settings
+    pagination: '.pagination',
+    paginationClickable: true,
+    createPagination: true
+});
+
 // Bind a last method on Array
 if (typeof(Array.prototype.last) != 'function') {
     Array.prototype.last = function(){
@@ -321,11 +332,29 @@ var Views = (function () {
 
     })();
 
+    var body = (function() {
+        // update the body from the views
+        var update = function (viewStruct) {
+            console.log("App", viewStruct.view, "display body");
+            $('main').addClass(viewStruct.view);
+        };
+
+        return {
+            update: update
+        };
+
+    })();
+
+
     var index = function () {
         Geolocation.noWaitPosition();
         Stations.noWaitList();
+        // cleaning header
         $('#app-bar').addClass('hidden');
         $('#app-logo').removeClass('hidden');
+        // clean by removing stations swiper
+        $('.swiper-wrapper, .pagination').empty().attr('style', '');
+
         console.log("App", "Index", "display page");
 
         $('.station-info').html('' +
@@ -347,16 +376,21 @@ var Views = (function () {
 
         console.log("App", viewStruct.view, "display page");
         header.update(viewStruct);
+        body.update(viewStruct);
 
         if (Geolocation.waitPosition(bikes) && Stations.waitList(bikes)) {
-            var stations = Stations.getClosestStations(Geolocation.getPosition(), 10, function (item) { return item.available_bikes > 0; });
+            var stations = Stations.getClosestStations(Geolocation.getPosition(), 10, function (item) {
+                return item.available_bikes > 0;
+            });
             console.log(stations);
-            var html = "<ul>";
+
+            // Stations slides creation
+            var newSlide = '';
             for (var i = 0; i < stations.length; i++) {
-                html += "<li>" + stations[i].name + "</li>";
+                console.log(stations[i].name);
+                newSlide = window.mySwiper.createSlide('<div>Station ' + stations[i].name + '<br>Vélos disponibles ' + stations[i].available_bikes + '</div>');
+                newSlide.append();
             }
-            html += "</ul>";
-            $('.station-info').html(html);
         }
     };
 
