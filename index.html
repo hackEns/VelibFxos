@@ -1,45 +1,50 @@
-<!-- TODO : Stations v+-->
 <!doctype html>
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
 	<title>Vélib'</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+  	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
 	<link rel="stylesheet" href="css/idangerous.swiper.css">
 	<link rel="stylesheet" href="css/normalize.css">
 	<link rel="stylesheet" href="css/leaflet.css">
 	<link rel="stylesheet" href="css/main.css">
 </head>
 <body>
-	<div class="swiper-container">
-		<div class="pagination"></div>
-		<div class="swiper-wrapper" style="width:2424px;">
-			<div class="swiper-slide" data-hash="home">
-				<div class="inner">
-                    <h1>Vélib'</h1>
-                </div>
-			</div>
-			<div class="swiper-slide" data-hash="infos">
-				<div class="inner">
-                    <h2>À-propos</h2>
 
-                    <p>Les cartes sont gérées à l'aide de la bibliothèque <a href="http://leafletjs.com/">Leaflet</a>, en utilisant les tuiles des contributeurs ©<a href="http://osm.org/copyright">OpenStreetMap</a>.</p>
-                    <p>Les données Vélib' sont issues de <a href="https://developer.jcdecaux.com/#/opendata/license">l'API OpenData de JCDecaux</a> et sont sous licence <a href="https://developer.jcdecaux.com/files/Open-Licence-fr.pdf">Licence Ouverte</a>.</p>
-                    <p>Cette application web a été écrite par <a href="http://phyks.me">Phyks</a>, avec l'aide d'<a href="http://exppad.com">Élie Michel</a> pour le design de l'application.</p>
-
-                    <p>Pour plus d'informations, rendez-vous sur <a href="https://github.com/Phyks/VelibFxos">le dépôt de l'app</a>.</p>
-                    <p>N'hésitez pas à m'envoyer vos suggestions à <a href="mailto:webmaster@phyks.me">webmaster@phyks.me</a>.</p>
-
-                    <p>Code disponible sur <a href="https://github.com/Phyks/VelibFxos">Github</a>, ancienne version <a href="http://velib.phyks.me/old/">toujours accessible</a>.</p>
-
-                </div>
-			</div>
+	<header>
+		<div id="app-bar">
+			<div class="left-part"></div>
+			<div class="middle-part"><span class="bar-title"></span></div>
+			<div class="right-part"></div>
 		</div>
-	</div>
+	</header>
+
+	<main>
+		<!-- app logo -->
+	    <p id="app-logo"><a href="#"><img alt="Velib'" src="img/logo.svg" class="velib-logo" /></a></p>
+
+		<!-- swiper element -->
+		<div class="swiper-container">
+			<div class="swiper-wrapper"></div>
+			<div class="pagination"></div>
+		</div>
+
+	    <div class="station-info">
+	    	<p class="center">Chargement en cours…</p>
+	    </div>
+
+	    <div class="info">
+	    	<h5 class="info--title">Position</h5>
+	    	<p class="info--content">Recherche de position…</p>
+	    </div>
+
+	</main>
+
 	<script src="js/jquery.min.js"></script>
 	<script src="js/idangerous.swiper.min.js"></script>
-    <script src="js/idangerous.swiper.hashnav.min.js"></script>
+	<script src="js/idangerous.swiper.hashnav.min.js"></script>
 	<script src="js/leaflet.min.js"></script>
-	<script src="js/main.js"></script>
+	<script src="js/app.js"></script>
+
 </body>
 </html>

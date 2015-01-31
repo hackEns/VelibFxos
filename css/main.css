@@ -1,90 +1,60 @@
-body, html {
-	position: relative;
-	height: 100%;
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 300;
+  src: local('Open Sans Light'), local('OpenSans-Light'), url('../fonts/OpenSans-Light.woff') format('woff');
 }
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Open Sans'), local('OpenSans'), url('../fonts/OpenSans.woff') format('woff');
+}
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Open Sans Bold'), local('OpenSans-Bold'), url('../fonts/OpenSans-Bold.woff') format('woff');
+}
+@font-face {
+  font-family: 'Open Sans';
+  font-style: italic;
+  font-weight: 400;
+  src: local('Open Sans Italic'), local('OpenSans-Italic'), url('../fonts/OpenSans-Italic.woff') format('woff');
+}
+@font-face {
+  font-family: 'Open Sans';
+  font-style: italic;
+  font-weight: 300;
+  src: local('Open Sans Italic'), local('OpenSans-Italic'), url('../fonts/OpenSans-LightItalic.woff') format('woff');
+}
+
+.center {
+    text-align: center;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+}
+
 body {
-	font-family: "Open Sans"; /* TODO : Upload the font */
-	font-size: 13px;
-	line-height: 1.5;
-	background: #333;
-	color: #fff;
-}
-.swiper-container {
-	width: 100%;
-	height: 100%;
-}
-.swiper-wrapper {
-	height: 100%;
-}
-.swiper-slide {
-	text-align: center;
-	height: 100%;
-	/*width: 25%;*/
-}
-.swiper-slide .inner {
-	height: 100%;
-	margin: 20px 20px;
-    height: calc(100% - 75px);
-    background-color: white;
-    color: black;
-    padding: 15px;
-	-webkit-box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	box-sizing: border-box;
+    /*font-size: 2em;*/
+    font-family: 'Open Sans';
     overflow-y: auto;
-}
-.swiper-slide .inner a {
-    color: black;
-}
-.pagination {
-	position: absolute;
-	text-align: center;
-	left: 0;
-	bottom: 0;
-	width: 100%;
-	line-height: 40px;
-	height: 40px;
-	z-index: 20;
-}
-.swiper-pagination-switch {
-	vertical-align: middle;
-	display: inline-block;
-	width: 14px;
-	height: 14px;
-	background: #000;
-	cursor: pointer;
-	-webkit-transition: 300ms;
-	-moz-transition: 300ms;
-	-ms-transition: 300ms;
-	-o-transition: 300ms;
-	transition: 300ms;
-	margin: 0 1px;
-}
-.swiper-pagination-switch:first-child {
-	border-radius: 3px 0 0 3px;
-}
-.swiper-pagination-switch:last-child {
-	border-radius: 0 3px 3px 0;
-}
-.swiper-visible-switch {
-	background: #888;
-}
-.swiper-active-switch {
-	background: #fff;
-}
-
-
-.station-info {
     background-color: white;
+}
+
+main {
+    background-color: white;
+    padding: 10px;
+    border-bottom: 3px solid #979797;
+    min-height: 100%;
     box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    padding: 20px;
 }
 
 .station-info .name {
     text-transform: uppercase;
-    text-align: left;
-    color: #545454;
 }
 
 .station-info .update {
@@ -100,74 +70,143 @@ body {
     color: #545454;
 }
 
-.entry {
-    padding: 10px;
-    border-radius: 5px;
-    margin: auto;
-    width: 75%;
+.velib-logo {
+    margin: 1em auto;
+    display: block;
+}
+
+.station-info .entry {
+    display: flex;
+    flex-flow: row wrap;
+    align-content: center;
+    align-items: center;
+
+    padding: 1rem 1rem;
+    border-radius: 3px;
     margin-top: 5px;
     color: white;
     text-transform: uppercase;
-    font-size: 1.5em;
-    font-weight: 200;
-    border: none;
-    display: block;
+    font-size: 1em;
+    font-weight: 400;
+    height: 2em;
+    cursor: pointer;
 }
 
-.entry + .entry {
-    margin-top: 1em;
-}
-
-.entry .nb {
-    font-weight: bold;
-    font-size: 3em;
+.station-info .entry span {
     line-height: 1em;
 }
 
-.bikes {
+.station-info .entry span.nb {
+    font-weight: bold;
+    font-size: 3em;
+    width: 1em;
+    text-align: right;
+    padding: 0 0.5rem;
+}
+
+.station-info .entry--logo {
+    margin-left: auto;
+    height: 3em;
+}
+
+
+.station-info .bikes,
+#app-bar.bikes {
     background-color: #dc1681;
 }
 
-.swiper-slide[data-hash=home] .bikes:hover {
-    background-color: #9c105b;
+.station-info .bikes:hover {
+    background-color: #000;
 }
 
-.parks {
+.station-info .stands,
+#app-bar.stands {
     background-color: #009bb7;
 }
 
-.swiper-slide[data-hash=home] .parks:hover {
-    background-color: #006678;
+.station-info .stands:hover {
+    background-color: #000;
 }
 
-#home {
-    display: block;
+
+.station-info .starred,
+#app-bar.starred {
+    background-color: #a54d93;
 }
 
-a {
-    color: white;
+.station-info .starred:hover {
+    background-color: #000;
 }
 
-footer {
-    text-align: right;
-    margin-right: 20px;
+.station-info .search,
+#app-bar.search {
+    background-color: #f7ad00;
 }
 
-.centre {
+.station-info .search:hover {
+    background-color: #000;
+}
+
+.info {
+    width: 50%;
     text-align: center;
+    margin: 1em auto 1em auto;
 }
 
-.map-circle {
-    border-radius: 50%;
-    margin: auto;
-    margin-top: 20px;
-    background-color: #DDD;
-}
-
-.leaflet-control-attribution {
-    display: none !important;
-}
-
-.inner h2 {
+.info--title {
+    text-transform: uppercase;
+    font-weight: normal;
+    color: #979797;
     margin: 0;
+}
+
+.info--content {
+    font-weight: normal;
+    color: #222;
+    margin: 0;
+}
+
+#app-bar {
+  color: #fff;
+  font-family: 'Open Sans';
+  font-size: 23px;
+  font-style: italic;
+  font-weight: 300;
+}
+
+#app-bar div {
+    display: inline-block;
+}
+
+#app-bar .left-part,
+#app-bar .right-part {
+  text-align: center;
+  width: 50px;
+}
+
+#app-bar .left-part {
+  float: left;
+  cursor: pointer;
+}
+
+#app-bar .left-part:hover {
+  background-color: #000;
+}
+
+#app-bar .right-part {
+  float: right;
+  margin-right: 5px;
+}
+
+#app-bar .right-part img {
+  height: 40px;
+}
+
+.left-part,
+.middle-part {
+  padding: 0.25em;
+}
+
+.hidden {
+  display: none;
 }
