@@ -32,6 +32,59 @@ html, body {
     height: 100%;
 }
 
+footer
+{
+	width: 100%;
+	height: 39px;
+	overflow: hidden;
+	
+}
+
+footer *
+{
+	border: 0;
+	height: 35px;
+}
+
+footer input
+{
+	color: grey;
+	padding-left: 2%;
+	width: 90%;
+}
+
+
+
+footer.bikes
+{
+	border-bottom: 4px solid #dc1681;
+}
+
+footer.stands
+{
+	border-bottom: 4px solid #009bb7;
+}
+
+footer.starred
+{
+	border-bottom: 4px solid #a54d93;
+}
+
+footer.search
+{
+	border-bottom: 4px solid #f7ad00;
+}
+
+footer img
+{
+	float: right;
+}
+
+footer input
+{
+	float: left;
+}
+
 body {
     /*font-size: 2em;*/
     font-family: 'Open Sans';
@@ -120,11 +173,11 @@ main {
     background-color: #000;
 }
 
-.station-info .stared {
+.station-info .starred {
     background-color: #a54d93;
 }
 
-.station-info .stared:hover {
+.station-info .starred:hover {
     background-color: #000;
 }
 

@@ -283,15 +283,147 @@ var Stations = (function() {
  ********/
 
 var Views = (function () {
+	
+	var footer = (function () {
+	
+		var param = null;
+	
+		var init = function() {
+		
+			param 							= {};
+			
+			param.bikes 					= {};
+			param.stands					= {};
+			param.starred					= {};
+			param.search					= {};
+			param.stationInfo				= {};
+			
+			param.bikes.value 				= "Informations";
+			param.bikes.alt					= "imagePlus";
+			param.bikes.src					= "loupe.svg";
+			param.bikes.classIMG 			= "IconRightBike";
+			param.bikes.classInput			= "InputRightBike";
+			param.bikes.classFooter			= "bikes";
+			param.bikes.readOnly			= true;
+			
+			param.stands.value 				= "Informations";
+			param.stands.alt				= "imagePlus";
+			param.stands.src				= "loupe.svg";
+			param.stands.classIMG 			= "IconRightStands";
+			param.stands.classInput			= "InputRightStands";
+			param.stands.classFooter		= "stands";
+			param.stands.readOnly			= true;
+			
+			param.starred.value 			= "Ajouter";
+			param.starred.alt				= "imagePlus";
+			param.starred.src				= "loupe.svg";
+			param.starred.classIMG 			= "IconRightStarred";
+			param.starred.classInput		= "InputRightStarred";
+			param.starred.classFooter		= "starred";
+			param.starred.readOnly			= true;
+			
+			param.search.value 				= "Rechercher";
+			param.search.alt				= "imageLoupe";
+			param.search.src				= "loupe.svg";
+			param.search.classIMG 			= "IconRightSearch";
+			param.search.classInput			= "InputRightSearch";
+			param.search.classFooter		= "search";
+			
+			param.stationInfo.value 		= "Ajouter aux favoris";
+			param.stationInfo.alt			= "imagePlus";
+			param.stationInfo.src			= "loupe.svg";
+			param.stationInfo.classIMG 		= "IconRightStationInfo";
+			param.stationInfo.classInput	= "InputRightStationInfo";
+			param.stationInfo.classFooter	= "stationInfo";
+			param.stationInfo.readOnly		= true;
+			
+			insertElements(param.bikes);
+			
+		};
+		
+		var getParam = function() {
+			
+			if (param == null)
+				init();
+		
+			return param;
+		};
+		
+		var insertElements = function(data) {
+		
+			if (data == null || data == undefined) return;
+		
+			$("footer").html(	"<input class='" + data.classIMG + "' type='text' value='" + data.value + "' " + 
+								(data.readonly != undefined ? "readonly" : "") + "/>" +
+								"<a href='#'><img class='"+ data.classInput + "' alt='"+ data.alt + "' src='img/"+ data.src + "'/></a>"
+							);
+		
+		};
+	
+		var update = function(data) {
+		
+			if(data == null || data == undefined)	return;
+			
+			$("footer input").each(function() {
+				
+				$(this).val(data.value);
+				$(this).prop("readonly", data.readOnly != undefined ? true : false);
+				
+				$(this).click(function() {
+				
+					if($(this).prop("readonly") == false && $(this).val() == param.search.value)
+						$(this).val("");
+					
+				});
+				
+				$(this).removeClass().addClass(data.classInput);
+	
+			});
+			
+			$("footer img").each(function() {
+			
+				$(this).prop("alt", data.alt);
+				$(this).prop("src", "img/" + data.src);
+			
+				$(this).removeClass().addClass(data.classIMG);
+
+			});
+			
+			$("footer").removeClass().addClass(data.classFooter);
+	
+		};
+		
+		var disableFooterDisplay = function() {
+			$("footer").hide();
+		};
+		
+		var enableFooterDisplay = function() {
+			$("footer").show();
+		};
+		
+		return {
+			update: update,
+			init: init,
+			getParam: getParam,
+			insertElements: insertElements,
+			enableFooterDisplay: enableFooterDisplay, 
+			disableFooterDisplay: disableFooterDisplay
+		};
+	
+	})();
+	
     var index = function () {
         Geolocation.noWaitPosition();
         Stations.noWaitList();
         $('.station-info').html('<div class="entry bikes"><span>vélos<br/>disponibles</span><img class="entry--logo" alt="" src="img/velib.svg" /></div><div class="entry stands"><span>places<br/>libres</span><img class="entry--logo" alt="" src="img/borne.svg" /></div><div class="entry starred"><span>Favoris</span><img class="entry--logo" alt="" src="img/favori.svg" /></div><div class="entry search"><span>Rechercher</span><img class="entry--logo" alt="" src="img/loupe.svg" /></div>');
 
-        $('.entry.bikes').click(function () { window.location.hash = "/bikes"; });
-        $('.entry.stands').click(function () { window.location.hash = "/stands"; });
-        $('.entry.starred').click(function () { window.location.hash = "/starred"; });
-        $('.entry.search').click(function () { window.location.hash = "/search"; });
+		footer.init();
+		
+		
+        $('.entry.bikes').click(function () { window.location.hash = "/bikes"; footer.update(footer.getParam().bikes); });
+        $('.entry.stands').click(function () { window.location.hash = "/stands"; footer.update(footer.getParam().stands); });
+        $('.entry.starred').click(function () { window.location.hash = "/starred"; footer.update(footer.getParam().starred); });
+        $('.entry.search').click(function () { window.location.hash = "/search"; footer.update(footer.getParam().search); });
     };
 
     var bikes = function () {
@@ -328,7 +460,8 @@ var Views = (function () {
         bikes: bikes,
         stands: stands,
         starred: starred,
-        search: search
+        search: search,
+		footer: footer
     }
 })();
 
@@ -340,19 +473,28 @@ var Routing = (function () {
     var route = function () {
         var hash = window.location.hash.substr(1);
         if (hash.startsWith("/bikes")) {
+			Views.footer.update(Views.footer.getParam().bikes);
+			Views.footer.enableFooterDisplay();
             Views.bikes();
         }
         else if (hash.startsWith("/stands")) {
+			Views.footer.update(Views.footer.getParam().stands);
+			Views.footer.enableFooterDisplay();
             Views.stands();
         }
         else if (hash.startsWith("/starred")) {
+			Views.footer.update(Views.footer.getParam().starred);
+			Views.footer.enableFooterDisplay();
             Views.starred();
         }
         else if (hash.startsWith("/search")) {
+			Views.footer.update(Views.footer.getParam().search);
+			Views.footer.enableFooterDisplay();
             Views.search();
         }
         else {
             // Index view
+			 Views.footer.disableFooterDisplay();
             Views.index();
         }
     };
