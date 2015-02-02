@@ -11,7 +11,7 @@ var Config = (function () {
         stations_url: stations_base_url + api_key,
         realtime_url: realtime_url + api_key,
         max_starred_stations: 10
-    }
+    };
 })();
 
 // Bind a last method on Array
@@ -19,14 +19,14 @@ if (typeof(Array.prototype.last) != 'function') {
     Array.prototype.last = function(){
         return this[this.length - 1];
     };
-};
+}
 
 // Bind a startswith method on String
 if (typeof(String.prototype.startsWith) != 'function') {
     String.prototype.startsWith = function(str) {
       return this.substring(0, str.length) === str;
-    }
-};
+  };
+}
 
 /***************
  * Geolocation *
@@ -91,7 +91,7 @@ var Geolocation = (function () {
     // Returns the current position
     var getPosition = function () {
         return coords;
-    }
+    };
 
     return {
         init: init,
@@ -206,7 +206,7 @@ var Stations = (function() {
     };
 
     // Returns `limit` closest stations with up to date infos and a matching criterion
-    var getClosestStations = function (limit, filter) {
+    var getClosestStations = function (coords, limit, filter) {
         if (typeof(limit) == 'undefined') {
             limit = -1;
         }
@@ -215,7 +215,7 @@ var Stations = (function() {
             limit = -1;
         }
         else {
-            limit = parsInt(limit);
+            limit = parseInt(limit, 10);
         }
 
         if (limit === NaN) {
@@ -225,7 +225,25 @@ var Stations = (function() {
             filter = function (item) { return true; };
         }
 
-        // TODO
+        var stations = orderByDistance(coords);
+        var out = [];
+
+        if (limit == -1) {
+            out = stations.filter(filter);
+        }
+        else {
+            for (var i = 0; i < stations.length; i++) {
+                if (out.length > limit) {
+                    break;
+                }
+                if (filter(stations[i])) {
+                    out.push(stations[i]);
+                }
+            }
+        }
+
+        return out;
+
     };
 
     // Star / Unstar a station
@@ -277,27 +295,26 @@ var Stations = (function() {
     };
 })();
 
-
 /********
  * Views
  ********/
 
 var Views = (function () {
-	
+
 	var footer = (function () {
-	
+
 		var param = null;
-	
+
 		var init = function() {
-		
+
 			param 							= {};
-			
+
 			param.bikes 					= {};
 			param.stands					= {};
 			param.starred					= {};
 			param.search					= {};
 			param.stationInfo				= {};
-			
+
 			param.bikes.value 				= "Informations";
 			param.bikes.alt					= "imagePlus";
 			param.bikes.src					= "loupe.svg";
@@ -305,7 +322,7 @@ var Views = (function () {
 			param.bikes.classInput			= "InputRightBike";
 			param.bikes.classFooter			= "bikes";
 			param.bikes.readOnly			= true;
-			
+
 			param.stands.value 				= "Informations";
 			param.stands.alt				= "imagePlus";
 			param.stands.src				= "loupe.svg";
@@ -313,7 +330,7 @@ var Views = (function () {
 			param.stands.classInput			= "InputRightStands";
 			param.stands.classFooter		= "stands";
 			param.stands.readOnly			= true;
-			
+
 			param.starred.value 			= "Ajouter";
 			param.starred.alt				= "imagePlus";
 			param.starred.src				= "loupe.svg";
@@ -321,14 +338,14 @@ var Views = (function () {
 			param.starred.classInput		= "InputRightStarred";
 			param.starred.classFooter		= "starred";
 			param.starred.readOnly			= true;
-			
+
 			param.search.value 				= "Rechercher";
 			param.search.alt				= "imageLoupe";
 			param.search.src				= "loupe.svg";
 			param.search.classIMG 			= "IconRightSearch";
 			param.search.classInput			= "InputRightSearch";
 			param.search.classFooter		= "search";
-			
+
 			param.stationInfo.value 		= "Ajouter aux favoris";
 			param.stationInfo.alt			= "imagePlus";
 			param.stationInfo.src			= "loupe.svg";
@@ -336,90 +353,119 @@ var Views = (function () {
 			param.stationInfo.classInput	= "InputRightStationInfo";
 			param.stationInfo.classFooter	= "stationInfo";
 			param.stationInfo.readOnly		= true;
-			
+
 			insertElements(param.bikes);
-			
+
 		};
-		
+
 		var getParam = function() {
-			
+
 			if (param == null)
 				init();
-		
+
 			return param;
 		};
-		
+
 		var insertElements = function(data) {
-		
+
 			if (data == null || data == undefined) return;
-		
-			$("footer").html(	"<input class='" + data.classIMG + "' type='text' value='" + data.value + "' " + 
+
+			$("footer").html(	"<input class='" + data.classIMG + "' type='text' value='" + data.value + "' " +
 								(data.readonly != undefined ? "readonly" : "") + "/>" +
 								"<a href='#'><img class='"+ data.classInput + "' alt='"+ data.alt + "' src='img/"+ data.src + "'/></a>"
 							);
-		
+
 		};
-	
+
 		var update = function(data) {
-		
+
 			if(data == null || data == undefined)	return;
-			
+
 			$("footer input").each(function() {
-				
+
 				$(this).val(data.value);
 				$(this).prop("readonly", data.readOnly != undefined ? true : false);
-				
+
 				$(this).click(function() {
-				
+
 					if($(this).prop("readonly") == false && $(this).val() == param.search.value)
 						$(this).val("");
-					
+
 				});
-				
+
 				$(this).removeClass().addClass(data.classInput);
-	
+
 			});
-			
+
 			$("footer img").each(function() {
-			
+
 				$(this).prop("alt", data.alt);
 				$(this).prop("src", "img/" + data.src);
-			
+
 				$(this).removeClass().addClass(data.classIMG);
 
 			});
-			
+
 			$("footer").removeClass().addClass(data.classFooter);
-	
+
 		};
-		
+
 		var disableFooterDisplay = function() {
 			$("footer").hide();
 		};
-		
+
 		var enableFooterDisplay = function() {
 			$("footer").show();
 		};
-		
+
 		return {
 			update: update,
 			init: init,
 			getParam: getParam,
 			insertElements: insertElements,
-			enableFooterDisplay: enableFooterDisplay, 
+			enableFooterDisplay: enableFooterDisplay,
 			disableFooterDisplay: disableFooterDisplay
 		};
-	
+
 	})();
-	
+
+    var viewStruct = {};
+
+    var header = (function() {
+        // update the header from the views
+        var update = function (viewStruct) {
+            $('#app-bar').removeClass().addClass(viewStruct.view);
+            $('#app-logo').addClass('hidden');
+
+            console.log("App", viewStruct.view, "display header");
+            $('#app-bar').addClass(viewStruct.view);
+            $('.left-part').html('<').click(function () { window.location.hash = "/index"; });
+            $('.bar-title').html(viewStruct.title);
+            $('.right-part').html('<img class="entry--logo" alt="" src="img/' + viewStruct.img + '.svg" />');
+        };
+
+        return {
+            update: update
+        };
+
+    })();
+
     var index = function () {
         Geolocation.noWaitPosition();
         Stations.noWaitList();
-        $('.station-info').html('<div class="entry bikes"><span>vélos<br/>disponibles</span><img class="entry--logo" alt="" src="img/velib.svg" /></div><div class="entry stands"><span>places<br/>libres</span><img class="entry--logo" alt="" src="img/borne.svg" /></div><div class="entry starred"><span>Favoris</span><img class="entry--logo" alt="" src="img/favori.svg" /></div><div class="entry search"><span>Rechercher</span><img class="entry--logo" alt="" src="img/loupe.svg" /></div>');
+        $('#app-bar').addClass('hidden');
+        $('#app-logo').removeClass('hidden');
+        console.log("App", "Index", "display page");
+
+        $('.station-info').html('' +
+            '<div class="entry bikes"><span>vélos<br/>disponibles</span><img class="entry--logo" alt="" src="img/velib.svg" /></div>' +
+            '<div class="entry stands"><span>places<br/>libres</span><img class="entry--logo" alt="" src="img/borne.svg" /></div>' +
+            '<div class="entry starred"><span>Favoris</span><img class="entry--logo" alt="" src="img/favori.svg" /></div>' +
+            '<div class="entry search"><span>Rechercher</span><img class="entry--logo" alt="" src="img/loupe.svg" /></div>');
 
 		footer.init();
-		
-		
+
+
         $('.entry.bikes').click(function () { window.location.hash = "/bikes"; footer.update(footer.getParam().bikes); });
         $('.entry.stands').click(function () { window.location.hash = "/stands"; footer.update(footer.getParam().stands); });
         $('.entry.starred').click(function () { window.location.hash = "/starred"; footer.update(footer.getParam().starred); });
@@ -427,28 +473,62 @@ var Views = (function () {
     };
 
     var bikes = function () {
+        viewStruct.view = "bikes";
+        viewStruct.title = "Vélos disponibles";
+        viewStruct.img = "velib";
+
+        console.log("App", viewStruct.view, "display page");
+        header.update(viewStruct);
+
         if (Geolocation.waitPosition(bikes) && Stations.waitList(bikes)) {
-            console.log(Stations.getClosestStations(Geolocation.getPosition(), 10, function () { return item.available_bikes > 0 }));
-            $('.station-info').html('');
+            var stations = Stations.getClosestStations(Geolocation.getPosition(), 10, function (item) { return item.available_bikes > 0; });
+            console.log(stations);
+            var html = "<ul>";
+            for (var i = 0; i < stations.length; i++) {
+                html += "<li>" + stations[i].name + "</li>";
+            }
+            html += "</ul>";
+            $('.station-info').html(html);
         }
     };
 
     var stands = function () {
+        viewStruct.view = "stands";
+        viewStruct.title = "Places libres";
+        viewStruct.img = "borne";
+
+        console.log("App", viewStruct.view, "display page");
+        header.update(viewStruct);
+
         if (Geolocation.waitPosition(stands) && Stations.waitList(stands)) {
-            console.log(Stations.getClosestStations(Geolocation.getPosition(), 10, function () { return item.available_bike_stands > 0 }));
+            console.log(Stations.getClosestStations(Geolocation.getPosition(), 10, function (item) { return item.available_bike_stands > 0; }));
             $('.station-info').html('');
         }
     };
 
     var starred = function () {
+        viewStruct.view = "starred";
+        viewStruct.title = "Favoris";
+        viewStruct.img = "favori";
+
+        console.log("App", viewStruct.view, "display page");
+        header.update(viewStruct);
+
         Geolocation.noWaitPosition();
         if (Stations.waitList(starred)) {
-            console.log(Stations.getClosestStations(Geolocation.getPosition(), 10, function () { return item.starred > 0 }));
+            console.log(Stations.getClosestStations(Geolocation.getPosition(), 10, function (item) { return item.starred > 0; }));
             $('.station-info').html('');
         }
     };
 
     var search = function () {
+        viewStruct.view = "search";
+        viewStruct.title = "Rechercher";
+        viewStruct.img = "loupe";
+
+        console.log("App", viewStruct.view, "display page");
+        header.update(viewStruct);
+
         Geolocation.noWaitPosition();
         if (Stations.waitList(search)) {
             $('.station-info').html('');
@@ -461,10 +541,10 @@ var Views = (function () {
         stands: stands,
         starred: starred,
         search: search,
-		footer: footer
-    }
-})();
+        footer: footer
+    };
 
+})();
 
 /**********
  * Routing
