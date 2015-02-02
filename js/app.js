@@ -303,125 +303,50 @@ var Views = (function () {
 
 	var footer = (function () {
 
-		var param = null;
+    var init = function() {
+      this.insertElements();
+      this.enableFooterDisplay();
+    };
 
-		var init = function() {
+		var insertElements = function() {
 
-			param 							= {};
-
-			param.bikes 					= {};
-			param.stands					= {};
-			param.starred					= {};
-			param.search					= {};
-			param.stationInfo				= {};
-
-			param.bikes.value 				= "Informations";
-			param.bikes.alt					= "imagePlus";
-			param.bikes.src					= "loupe.svg";
-			param.bikes.classIMG 			= "IconRightBike";
-			param.bikes.classInput			= "InputRightBike";
-			param.bikes.classFooter			= "bikes";
-			param.bikes.readOnly			= true;
-
-			param.stands.value 				= "Informations";
-			param.stands.alt				= "imagePlus";
-			param.stands.src				= "loupe.svg";
-			param.stands.classIMG 			= "IconRightStands";
-			param.stands.classInput			= "InputRightStands";
-			param.stands.classFooter		= "stands";
-			param.stands.readOnly			= true;
-
-			param.starred.value 			= "Ajouter";
-			param.starred.alt				= "imagePlus";
-			param.starred.src				= "loupe.svg";
-			param.starred.classIMG 			= "IconRightStarred";
-			param.starred.classInput		= "InputRightStarred";
-			param.starred.classFooter		= "starred";
-			param.starred.readOnly			= true;
-
-			param.search.value 				= "Rechercher";
-			param.search.alt				= "imageLoupe";
-			param.search.src				= "loupe.svg";
-			param.search.classIMG 			= "IconRightSearch";
-			param.search.classInput			= "InputRightSearch";
-			param.search.classFooter		= "search";
-
-			param.stationInfo.value 		= "Ajouter aux favoris";
-			param.stationInfo.alt			= "imagePlus";
-			param.stationInfo.src			= "loupe.svg";
-			param.stationInfo.classIMG 		= "IconRightStationInfo";
-			param.stationInfo.classInput	= "InputRightStationInfo";
-			param.stationInfo.classFooter	= "stationInfo";
-			param.stationInfo.readOnly		= true;
-
-			insertElements(param.bikes);
+			$("footer").html(	"<input class='bikes' type='text' value='Informations' readonly/><a href='#'><img class='bike' alt='imagePlus' src='img/loupe.svg'/></a>"
+      + "<input class='stands' type='text' value='Informations' readonly/><a href='#'><img class='stands' alt='imagePlus' src='img/loupe.svg'/></a>"
+      + "<input class='starred' type='text' value='Ajouter' readonly/><a href='#'><img class='starred' alt='imagePlus' src='img/loupe.svg'/></a>"
+      + "<input class='search' type='text' placeholder='Rechercher'/><a href='#'><img class='search' alt='imageLoupe' src='img/loupe.svg'/></a>"
+      + "<input class='stationInfo' type='text' value='Ajouter aux favoris' readonly/><a href='#'><img class='stationInfo' alt='imagePlus' src='img/loupe.svg'/></a>");
 
 		};
 
-		var getParam = function() {
-
-			if (param == null)
-				init();
-
-			return param;
-		};
-
-		var insertElements = function(data) {
-
-			if (data == null || data == undefined) return;
-
-			$("footer").html(	"<input class='" + data.classIMG + "' type='text' value='" + data.value + "' " +
-								(data.readonly != undefined ? "readonly" : "") + "/>" +
-								"<a href='#'><img class='"+ data.classInput + "' alt='"+ data.alt + "' src='img/"+ data.src + "'/></a>"
-							);
-
-		};
-
-		var update = function(data) {
-
-			if(data == null || data == undefined)	return;
-
-			$("footer input").each(function() {
-
-				$(this).val(data.value);
-				$(this).prop("readonly", data.readOnly != undefined ? true : false);
-
-				$(this).click(function() {
-
-					if($(this).prop("readonly") == false && $(this).val() == param.search.value)
-						$(this).val("");
-
-				});
-
-				$(this).removeClass().addClass(data.classInput);
+		var update = function(className) {
+      console.log("className=" + className);
+			$("footer *").each(function() {
+			  $(this).addClass("hidden");
+        console.log($(this) + " masqué");
 
 			});
 
-			$("footer img").each(function() {
+      $("footer ." + className).each(function() {
+        $(this).removeClass("hidden");
+        console.log($(this) + " non masqué");
+      });
 
-				$(this).prop("alt", data.alt);
-				$(this).prop("src", "img/" + data.src);
-
-				$(this).removeClass().addClass(data.classIMG);
-
-			});
-
-			$("footer").removeClass().addClass(data.classFooter);
+      $("footer").removeClass().addClass(className);
 
 		};
 
 		var disableFooterDisplay = function() {
-			$("footer").hide();
+      console.log("hidden");
+      $("footer").removeClass("hidden");
 		};
 
 		var enableFooterDisplay = function() {
-			$("footer").show();
+      $("footer").addClass("hidden");
 		};
 
 		return {
 			update: update,
 			init: init,
-			getParam: getParam,
 			insertElements: insertElements,
 			enableFooterDisplay: enableFooterDisplay,
 			disableFooterDisplay: disableFooterDisplay
@@ -463,13 +388,12 @@ var Views = (function () {
             '<div class="entry starred"><span>Favoris</span><img class="entry--logo" alt="" src="img/favori.svg" /></div>' +
             '<div class="entry search"><span>Rechercher</span><img class="entry--logo" alt="" src="img/loupe.svg" /></div>');
 
-		footer.init();
+		    footer.init();
 
-
-        $('.entry.bikes').click(function () { window.location.hash = "/bikes"; footer.update(footer.getParam().bikes); });
-        $('.entry.stands').click(function () { window.location.hash = "/stands"; footer.update(footer.getParam().stands); });
-        $('.entry.starred').click(function () { window.location.hash = "/starred"; footer.update(footer.getParam().starred); });
-        $('.entry.search').click(function () { window.location.hash = "/search"; footer.update(footer.getParam().search); });
+        $('.entry.bikes').click(function () { window.location.hash = "/bikes"; footer.update("bikes"); });
+        $('.entry.stands').click(function () { window.location.hash = "/stands"; footer.update("stands"); });
+        $('.entry.starred').click(function () { window.location.hash = "/starred"; footer.update("starred"); });
+        $('.entry.search').click(function () { window.location.hash = "/search"; footer.update("search"); });
     };
 
     var bikes = function () {
@@ -552,29 +476,31 @@ var Views = (function () {
 var Routing = (function () {
     var route = function () {
         var hash = window.location.hash.substr(1);
+        Views.footer.init();
         if (hash.startsWith("/bikes")) {
-			Views.footer.update(Views.footer.getParam().bikes);
-			Views.footer.enableFooterDisplay();
-            Views.bikes();
+          Views.footer.enableFooterDisplay();
+			    Views.footer.update("bikes");
+          Views.bikes();
         }
         else if (hash.startsWith("/stands")) {
-			Views.footer.update(Views.footer.getParam().stands);
-			Views.footer.enableFooterDisplay();
-            Views.stands();
+          Views.footer.enableFooterDisplay();
+			    Views.footer.update("stands");
+          Views.stands();
         }
         else if (hash.startsWith("/starred")) {
-			Views.footer.update(Views.footer.getParam().starred);
-			Views.footer.enableFooterDisplay();
-            Views.starred();
+          Views.footer.enableFooterDisplay();
+			    Views.footer.update("starred");
+          Views.starred();
         }
         else if (hash.startsWith("/search")) {
-			Views.footer.update(Views.footer.getParam().search);
-			Views.footer.enableFooterDisplay();
-            Views.search();
+          Views.footer.enableFooterDisplay();
+			    Views.footer.update("search");
+          Views.search();
         }
         else {
             // Index view
-			 Views.footer.disableFooterDisplay();
+            Views.footer.disableFooterDisplay();
+            console.log("desactivé !")
             Views.index();
         }
     };
