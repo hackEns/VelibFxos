@@ -20,6 +20,7 @@ var mySwiper = new Swiper('.swiper-container', {
     keyboardControl: true,
     calculateHeight: true,
     // pagination settings
+    loop: true,
     pagination: '.pagination',
     paginationClickable: true,
     createPagination: true
@@ -312,41 +313,82 @@ var Stations = (function() {
 
 var Views = (function () {
     var viewStruct = {};
+    var header = {};
+    var body = {};
+    var footer = {};
 
-    var header = (function() {
-        // update the header from the views
-        var update = function (viewStruct) {
+    header = (function() {
+        var headerBar = $('#app-bar');
+
+        var init = function (viewStruct) {
+            // header initialisation
+            console.log('App', viewStruct.view, 'header init');
+            headerBar.append('<div class="left-part"></div>')
+                .append('<div class="middle-part"><span class="bar-title"></span></div>')
+                .append('<div class="right-part"></div>');
+            $('.left-part').html('<').click(function () { window.location.hash = "/index"; });
+        };
+
+        header.update = function (viewStruct) {
+            // header content update
+            if($.trim(headerBar.text()) === '') { init(viewStruct); }
+
             $('#app-bar').removeClass().addClass(viewStruct.view);
             $('#app-logo').addClass('hidden');
-
-            console.log("App", viewStruct.view, "display header");
             $('#app-bar').addClass(viewStruct.view);
-            $('.left-part').html('<').click(function () { window.location.hash = "/index"; });
+
             $('.bar-title').html(viewStruct.title);
             $('.right-part').html('<img class="entry--logo" alt="" src="img/' + viewStruct.img + '.svg" />');
+            console.log('App', viewStruct.view, 'header updated');
         };
 
-        return {
-            update: update
-        };
+        return header;
 
     })();
 
-    var body = (function() {
+    body = (function() {
         // update the body from the views
-        var update = function (viewStruct) {
-            console.log("App", viewStruct.view, "display body");
+        body.update = function (viewStruct) {
+            console.log('App', viewStruct.view, 'body update');
             $('main').addClass(viewStruct.view);
+            if(viewStruct.view == "starred") {
+                initStarredTable();
+            }
         };
 
-        return {
-            update: update
+        // init Starred table
+        var initStarredTable = function () {
+            var imgStand = '<img class="entry--logo" alt="" src="img/borne-blue.svg" />';
+            var imgBike = '<img class="entry--logo" alt="" src="img/velib-pink.svg" />';
+
+            console.log('App', 'Starred table', 'display starred table');
+            $('main.starred > section').prepend('<table class="starred"><thead></thead><tbody></tbody></table>');
+            $('main.starred thead').append('<tr><td>Station</td>'
+                + '<td class="center">' + imgBike + '</td>'
+                + '<td class="center">' + imgStand + '</td></tr>');
+
+            // boucle de test
+            for(var i=0; i < 5; i++) {
+                $('tbody').append('<tr>'
+                    + '<td class="stations"><span class="uppercase">Station ' + i + '</span><br><span class="dist">' + i + '0m</span></td>'
+                    + '<td class="bikes">' + i + '</td>'
+                    + '<td class="stands">' + i + '</td>'
+                    + '</tr>');
+            }
         };
+
+        body.clean = function () {
+            // cleaning the content
+            $('main > section').empty();
+        };
+
+        return body;
 
     })();
-
 
     var index = function () {
+        viewStruct.view = "index";
+
         Geolocation.noWaitPosition();
         Stations.noWaitList();
         // cleaning header
@@ -355,7 +397,8 @@ var Views = (function () {
         // clean by removing stations swiper
         $('.swiper-wrapper, .pagination').empty().attr('style', '');
 
-        console.log("App", "Index", "display page");
+        body.clean();
+        console.log('App', "Index", "display page");
 
         $('.station-info').html('' +
             '<div class="entry bikes"><span>vélos<br/>disponibles</span><img class="entry--logo" alt="" src="img/velib.svg" /></div>' +
@@ -374,8 +417,8 @@ var Views = (function () {
         viewStruct.title = "Vélos disponibles";
         viewStruct.img = "velib";
 
-        console.log("App", viewStruct.view, "display page");
         header.update(viewStruct);
+        body.clean();
         body.update(viewStruct);
 
         if (Geolocation.waitPosition(bikes) && Stations.waitList(bikes)) {
@@ -399,8 +442,9 @@ var Views = (function () {
         viewStruct.title = "Places libres";
         viewStruct.img = "borne";
 
-        console.log("App", viewStruct.view, "display page");
+        console.log('App', viewStruct.view, "display page");
         header.update(viewStruct);
+        body.clean();
 
         if (Geolocation.waitPosition(stands) && Stations.waitList(stands)) {
             console.log(Stations.getClosestStations(Geolocation.getPosition(), 10, function (item) { return item.available_bike_stands > 0; }));
@@ -413,8 +457,10 @@ var Views = (function () {
         viewStruct.title = "Favoris";
         viewStruct.img = "favori";
 
-        console.log("App", viewStruct.view, "display page");
+        console.log('App', viewStruct.view, "display page");
         header.update(viewStruct);
+        body.clean();
+        body.update(viewStruct);
 
         Geolocation.noWaitPosition();
         if (Stations.waitList(starred)) {
@@ -428,8 +474,9 @@ var Views = (function () {
         viewStruct.title = "Rechercher";
         viewStruct.img = "loupe";
 
-        console.log("App", viewStruct.view, "display page");
+        console.log('App', viewStruct.view, "display page");
         header.update(viewStruct);
+        body.clean();
 
         Geolocation.noWaitPosition();
         if (Stations.waitList(search)) {

@@ -47,10 +47,13 @@ body {
 
 main {
     background-color: white;
-    padding: 10px;
     border-bottom: 3px solid #979797;
     min-height: 100%;
     box-sizing: border-box;
+}
+
+.station-info {
+    padding: 10px;
 }
 
 .station-info .name {
@@ -86,9 +89,9 @@ main {
     margin-top: 5px;
     color: white;
     text-transform: uppercase;
-    font-size: 1em;
+    font-size: 1.55em;
     font-weight: 400;
-    height: 2em;
+    height: 3em;
     cursor: pointer;
 }
 
@@ -108,7 +111,6 @@ main {
     margin-left: auto;
     height: 3em;
 }
-
 
 .station-info .bikes,
 #app-bar.bikes {
@@ -169,7 +171,7 @@ main {
 #app-bar {
   color: #fff;
   font-family: 'Open Sans';
-  font-size: 23px;
+  font-size: 32px;
   font-style: italic;
   font-weight: 300;
 }
@@ -199,7 +201,8 @@ main {
 }
 
 #app-bar .right-part img {
-  height: 40px;
+  height: 45px;
+  vertical-align: middle;
 }
 
 .left-part,
@@ -207,6 +210,74 @@ main {
   padding: 0.25em;
 }
 
+table.starred {
+    width: 100%;
+}
+
+table.starred tbody td {
+    padding: 10px;
+}
+
+table.starred td.stations {
+    line-height: 18px;
+    width: 60%;
+}
+
+table.starred td.stations .dist {
+    font-size: 0.8em;
+    color: #B1B1B1;
+}
+
+table.starred td.bikes,
+table.starred td.stands {
+    text-align: align;
+    width: 20%;
+}
+
+table.starred thead {
+    border-bottom: 2px solid #979797;
+}
+
+table.starred thead tr td {
+    font-size: 1.85em;
+    font-family: 'Open Sans';
+    font-style: italic;
+    font-weight: 300;
+    padding-top: 5px;
+}
+
+table.starred thead tr td:first-child {
+    padding-left: 20px;
+}
+
+table.starred thead tr td img {
+    height: 45px;
+    vertical-align: middle;
+    position: relative;
+}
+
+table.starred td.stations {
+    color: #404040;
+    font-size: 1.4em;
+}
+
+table.starred td.bikes {
+    color: #dc1681;
+    font-size: 2.5em;
+    text-align: center;
+}
+
+table.starred td.stands {
+    color: #009bb7;
+    font-size: 2.5em;
+    text-align: center;
+}
+
+/* general style */
 .hidden {
   display: none;
+}
+
+.uppercase {
+    text-transform: uppercase;
 }
