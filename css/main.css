@@ -142,39 +142,10 @@ main {
     color: #222;
     margin: 0;
 }
-#app-bar {
-    color: #fff;
-    font-family: 'Open Sans';
-    font-size: 32px;
-    font-style: italic;
-    font-weight: 300;
-}
-#app-bar div {
-    display: inline-block;
-}
-#app-bar .left-part,
-#app-bar .right-part {
-    text-align: center;
-    width: 50px;
-}
-#app-bar .left-part {
-    float: left;
-    cursor: pointer;
-}
-#app-bar .left-part:hover {
-    background-color: #000;
-}
-#app-bar .right-part {
-    float: right;
-    margin-right: 5px;
-}
-#app-bar .right-part img {
-    height: 45px;
-    vertical-align: middle;
-}
-.left-part,
-.middle-part {
-    padding: 0.25em;
+#app-bar img {
+    height: 100%;
+    width: 4rem;
+    padding: 0 1rem;
 }
 table.starred {
     width: 100%;
@@ -205,12 +176,12 @@ table.starred thead tr td {
     font-weight: 300;
     padding-top: 5px;
 }
-table.starred thead tr td: first-child {
+table.starred thead tr td:first-child {
     padding-left: 20px;
 }
 table.starred thead tr td img {
     height: 45px;
-    vertical-align: middle;
+    vertical-align:middle;
     position: relative;
 }
 table.starred td.stations {
