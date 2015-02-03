@@ -102,28 +102,28 @@ main {
 #app-bar.bikes {
     background-color: #dc1681;
 }
-.station-info .bikes: hover {
+.station-info .bikes:hover {
     background-color: #000;
 }
 .station-info .stands,
 #app-bar.stands {
     background-color: #009bb7;
 }
-.station-info .stands: hover {
+.station-info .stands:hover {
     background-color: #000;
 }
 .station-info .starred,
 #app-bar.starred {
     background-color: #a54d93;
 }
-.station-info .starred: hover {
+.station-info .starred:hover {
     background-color: #000;
 }
 .station-info .search,
 #app-bar.search {
     background-color: #f7ad00;
 }
-.station-info .search: hover {
+.station-info .search:hover {
     background-color: #000;
 }
 .info {
@@ -161,7 +161,7 @@ main {
     float: left;
     cursor: pointer;
 }
-#app-bar .left-part: hover {
+#app-bar .left-part:hover {
     background-color: #000;
 }
 #app-bar .right-part {
