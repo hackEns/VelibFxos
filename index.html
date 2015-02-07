@@ -1,45 +1,60 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-	<meta charset="UTF-8">
-	<title>Vélib'</title>
-  	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
-	<link rel="stylesheet" href="css/idangerous.swiper.css">
-	<link rel="stylesheet" href="css/normalize.css">
-	<link rel="stylesheet" href="css/leaflet.css">
-	<link rel="stylesheet" href="css/main.css">
+    <meta charset="UTF-8">
+    <title>Vélib'</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="css/idangerous.swiper.css">
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/leaflet.css">
+    <link rel="stylesheet" href="css/headers.css">
+    <link rel="stylesheet" href="css/main.css">
 </head>
+
 <body>
 
-	<header>
-		<div id="app-bar">
-			<div class="left-part"></div>
-			<div class="middle-part"><span class="bar-title"></span></div>
-			<div class="right-part"></div>
-		</div>
-	</header>
+    <section role="region">
+        <header id="app-bar">
+            <a href="#"><span class="icon icon-back">back</span></a>
+            <menu type="toolbar">
+                <img class="entry--logo" alt="" src="img/velib.svg" />
+            </menu>
+            <h1>Velib</h1>
+        </header>
+        <header id="app-logo">
+            <a href="#"><img alt="Velib'" src="img/logo.svg" class="velib-logo" /></a>
+        </header>
+    </section>
 
-	<main>
-		<!-- app logo -->
-	    <p id="app-logo"><a href="#"><img alt="Velib'" src="img/logo.svg" class="velib-logo" /></a></p>
+    <main>
 
-	    <div class="station-info">
-	    	<p class="center">Chargement en cours…</p>
-	    </div>
+        <!-- Action takes place here -->
+        <section></section>
 
-	    <div class="info">
-	    	<h5 class="info--title">Position</h5>
-	    	<p class="info--content">Recherche de position…</p>
-	    </div>
-	</main>
+        <!-- swiper element -->
+        <div class="swiper-container">
+            <div class="swiper-wrapper"></div>
+            <div class="pagination"></div>
+        </div>
 
-	<footer></footer>
+        <div class="station-info">
+            <p class="center">Chargement en cours…</p>
+        </div>
 
-	<script src="js/jquery.min.js"></script>
-	<script src="js/idangerous.swiper.min.js"></script>
-	<script src="js/idangerous.swiper.hashnav.min.js"></script>
-	<script src="js/leaflet.min.js"></script>
-	<script src="js/app.js"></script>
+        <div class="info">
+            <h5 class="info--title">Position</h5>
+            <p class="info--content">Recherche de position…</p>
+        </div>
 
+    </main>
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/idangerous.swiper.min.js"></script>
+    <script src="js/idangerous.swiper.hashnav.min.js"></script>
+    <script src="js/leaflet.min.js"></script>
+    <script src="js/app.js"></script>
+    <footer></footer>
 </body>
+
 </html>

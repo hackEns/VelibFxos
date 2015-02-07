@@ -1,62 +1,59 @@
 @font-face {
-  font-family: 'Open Sans';
-  font-style: normal;
-  font-weight: 300;
-  src: local('Open Sans Light'), local('OpenSans-Light'), url('../fonts/OpenSans-Light.woff') format('woff');
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: 300;
+    src: local('Open Sans Light'), local('OpenSans-Light'), url('../fonts/OpenSans-Light.woff') format('woff');
 }
 @font-face {
-  font-family: 'Open Sans';
-  font-style: normal;
-  font-weight: 400;
-  src: local('Open Sans'), local('OpenSans'), url('../fonts/OpenSans.woff') format('woff');
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Open Sans'), local('OpenSans'), url('../fonts/OpenSans.woff') format('woff');
 }
 @font-face {
-  font-family: 'Open Sans';
-  font-style: normal;
-  font-weight: 700;
-  src: local('Open Sans Bold'), local('OpenSans-Bold'), url('../fonts/OpenSans-Bold.woff') format('woff');
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: 700;
+    src: local('Open Sans Bold'), local('OpenSans-Bold'), url('../fonts/OpenSans-Bold.woff') format('woff');
 }
 @font-face {
-  font-family: 'Open Sans';
-  font-style: italic;
-  font-weight: 400;
-  src: local('Open Sans Italic'), local('OpenSans-Italic'), url('../fonts/OpenSans-Italic.woff') format('woff');
+    font-family: 'Open Sans';
+    font-style: italic;
+    font-weight: 400;
+    src: local('Open Sans Italic'), local('OpenSans-Italic'), url('../fonts/OpenSans-Italic.woff') format('woff');
 }
 @font-face {
-  font-family: 'Open Sans';
-  font-style: italic;
-  font-weight: 300;
-  src: local('Open Sans Italic'), local('OpenSans-Italic'), url('../fonts/OpenSans-LightItalic.woff') format('woff');
+    font-family: 'Open Sans';
+    font-style: italic;
+    font-weight: 300;
+    src: local('Open Sans Italic'), local('OpenSans-Italic'), url('../fonts/OpenSans-LightItalic.woff') format('woff');
 }
-
 .center {
     text-align: center;
 }
-
-html, body {
+html,
+body {
     width: 100%;
     height: 10%;
 }
-
 body {
     /*font-size: 2em;*/
     font-family: 'Open Sans';
     overflow-y: auto;
     background-color: white;
 }
-
 main {
     background-color: white;
-    padding: 10px;
     border-bottom: 3px solid #979797;
     min-height: 100%;
     box-sizing: border-box;
 }
-
+.station-info {
+    padding: 10px;
+}
 .station-info .name {
     text-transform: uppercase;
 }
-
 .station-info .update {
     float: right;
     text-transform: uppercase;
@@ -64,38 +61,32 @@ main {
     color: #979797;
     margin-top: -16px;
 }
-
 .station-info .update .date {
     font-size: 1.2em;
     color: #545454;
 }
-
 .velib-logo {
     margin: 1em auto;
     display: block;
 }
-
 .station-info .entry {
     display: flex;
     flex-flow: row wrap;
     align-content: center;
     align-items: center;
-
     padding: 1rem 1rem;
     border-radius: 3px;
     margin-top: 5px;
     color: white;
     text-transform: uppercase;
-    font-size: 1em;
+    font-size: 1.55em;
     font-weight: 400;
-    height: 2em;
+    height: 3em;
     cursor: pointer;
 }
-
 .station-info .entry span {
     line-height: 1em;
 }
-
 .station-info .entry span.nb {
     font-weight: bold;
     font-size: 3em;
@@ -103,107 +94,111 @@ main {
     text-align: right;
     padding: 0 0.5rem;
 }
-
 .station-info .entry--logo {
     margin-left: auto;
     height: 3em;
 }
-
 .station-info .bikes,
 #app-bar.bikes {
     background-color: #dc1681;
 }
-
 .station-info .bikes:hover {
     background-color: #000;
 }
-
 .station-info .stands,
 #app-bar.stands {
     background-color: #009bb7;
 }
-
 .station-info .stands:hover {
     background-color: #000;
 }
-
 .station-info .starred,
 #app-bar.starred {
     background-color: #a54d93;
 }
-
 .station-info .starred:hover {
     background-color: #000;
 }
-
 .station-info .search,
 #app-bar.search {
     background-color: #f7ad00;
 }
-
 .station-info .search:hover {
     background-color: #000;
 }
-
 .info {
     width: 50%;
     text-align: center;
     margin: 1em auto 1em auto;
 }
-
 .info--title {
     text-transform: uppercase;
     font-weight: normal;
     color: #979797;
     margin: 0;
 }
-
 .info--content {
     font-weight: normal;
     color: #222;
     margin: 0;
 }
-
-#app-bar {
-  color: #fff;
-  font-family: 'Open Sans';
-  font-size: 23px;
-  font-style: italic;
-  font-weight: 300;
+#app-bar img {
+    height: 100%;
+    width: 4rem;
+    padding: 0 1rem;
 }
-
-#app-bar div {
-    display: inline-block;
+table.starred {
+    width: 100%;
 }
-
-#app-bar .left-part,
-#app-bar .right-part {
-  text-align: center;
-  width: 50px;
+table.starred tbody td {
+    padding: 10px;
 }
-
-#app-bar .left-part {
-  float: left;
-  cursor: pointer;
+table.starred td.stations {
+    line-height: 18px;
+    width: 60%;
 }
-
-#app-bar .left-part:hover {
-  background-color: #000;
+table.starred td.stations .dist {
+    font-size: 0.8em;
+    color: #B1B1B1;
 }
-
-#app-bar .right-part {
-  float: right;
-  margin-right: 5px;
+table.starred td.bikes,
+table.starred td.stands {
+    text-align: align;
+    width: 20%;
 }
-
-#app-bar .right-part img {
-  height: 40px;
+table.starred thead {
+    border-bottom: 2px solid #979797;
 }
-
-.left-part,
-.middle-part {
-  padding: 0.25em;
+table.starred thead tr td {
+    font-size: 1.85em;
+    font-family: 'Open Sans';
+    font-style: italic;
+    font-weight: 300;
+    padding-top: 5px;
 }
+table.starred thead tr td:first-child {
+    padding-left: 20px;
+}
+table.starred thead tr td img {
+    height: 45px;
+    vertical-align:middle;
+    position: relative;
+}
+table.starred td.stations {
+    color: #404040;
+    font-size: 1.4em;
+}
+table.starred td.bikes {
+    color: #dc1681;
+    font-size: 2.5em;
+    text-align: center;
+}
+table.starred td.stands {
+    color: #009bb7;
+    font-size: 2.5em;
+    text-align: center;
+}
+/* general style */
 
 footer {
   height: 40px;
@@ -238,5 +233,8 @@ footer.search {
 }
 
 .hidden {
-  display: none;
+    display: none;
+}
+.uppercase {
+    text-transform: uppercase;
 }
