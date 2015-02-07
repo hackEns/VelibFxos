@@ -558,7 +558,6 @@ var Routing = (function() {
         } else if (hash.startsWith("/search")) {
             Views.search();
         } else {
->>>>>>> 0463c2a2e6ede385b217c994efe277ec46bc7ad6
             // Index view
             Views.footer.disableFooterDisplay();
             Views.index();
