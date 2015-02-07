@@ -301,59 +301,6 @@ var Stations = (function() {
 
 var Views = (function () {
 
-	var footer = (function () {
-
-    var init = function() {
-      this.insertElements();
-      this.enableFooterDisplay();
-    };
-
-		var insertElements = function() {
-
-			$("footer").html(	"<input class='bikes' type='text' value='Informations' readonly/><a href='#'><img class='bike' alt='imagePlus' src='img/loupe.svg'/></a>"
-      + "<input class='stands' type='text' value='Informations' readonly/><a href='#'><img class='stands' alt='imagePlus' src='img/loupe.svg'/></a>"
-      + "<input class='starred' type='text' value='Ajouter' readonly/><a href='#'><img class='starred' alt='imagePlus' src='img/loupe.svg'/></a>"
-      + "<input class='search' type='text' placeholder='Rechercher'/><a href='#'><img class='search' alt='imageLoupe' src='img/loupe.svg'/></a>"
-      + "<input class='stationInfo' type='text' value='Ajouter aux favoris' readonly/><a href='#'><img class='stationInfo' alt='imagePlus' src='img/loupe.svg'/></a>");
-
-		};
-
-		var update = function(className) {
-      console.log("className=" + className);
-			$("footer *").each(function() {
-			  $(this).addClass("hidden");
-        console.log($(this) + " masqué");
-
-			});
-
-      $("footer ." + className).each(function() {
-        $(this).removeClass("hidden");
-        console.log($(this) + " non masqué");
-      });
-
-      $("footer").removeClass().addClass(className);
-
-		};
-
-		var disableFooterDisplay = function() {
-      console.log("hidden");
-      $("footer").removeClass("hidden");
-		};
-
-		var enableFooterDisplay = function() {
-      $("footer").addClass("hidden");
-		};
-
-		return {
-			update: update,
-			init: init,
-			insertElements: insertElements,
-			enableFooterDisplay: enableFooterDisplay,
-			disableFooterDisplay: disableFooterDisplay
-		};
-
-	})();
-
     var viewStruct = {};
 
     var header = (function() {
@@ -375,6 +322,30 @@ var Views = (function () {
 
     })();
 
+    var footer = (function () {
+
+      var update = function(data) {
+        $("footer").html("<input class='" + data.view + "' type='text' "+ (data.value != "" ? "value='" + data.value + "'" : "") + data.prop + "/><a href='#'><img class='" + data.view + "' alt='"+ data.alt + "' src='img/"+ data.src + "'/></a>");
+
+        $("footer").removeClass().addClass(data.view);
+      };
+
+      var disableFooterDisplay = function() {
+        $("footer").addClass("hidden");
+      };
+
+      var enableFooterDisplay = function() {
+        $("footer").removeClass("hidden");
+      };
+
+      return {
+        update: update,
+        enableFooterDisplay: enableFooterDisplay,
+        disableFooterDisplay: disableFooterDisplay
+      };
+
+    })();
+
     var index = function () {
         Geolocation.noWaitPosition();
         Stations.noWaitList();
@@ -388,18 +359,23 @@ var Views = (function () {
             '<div class="entry starred"><span>Favoris</span><img class="entry--logo" alt="" src="img/favori.svg" /></div>' +
             '<div class="entry search"><span>Rechercher</span><img class="entry--logo" alt="" src="img/loupe.svg" /></div>');
 
-		    footer.init();
-
-        $('.entry.bikes').click(function () { window.location.hash = "/bikes"; footer.update("bikes"); });
-        $('.entry.stands').click(function () { window.location.hash = "/stands"; footer.update("stands"); });
-        $('.entry.starred').click(function () { window.location.hash = "/starred"; footer.update("starred"); });
-        $('.entry.search').click(function () { window.location.hash = "/search"; footer.update("search"); });
+        $('.entry.bikes').click(function () { window.location.hash = "/bikes"; });
+        $('.entry.stands').click(function () { window.location.hash = "/stands"; });
+        $('.entry.starred').click(function () { window.location.hash = "/starred"; });
+        $('.entry.search').click(function () { window.location.hash = "/search"; });
     };
 
     var bikes = function () {
+
         viewStruct.view = "bikes";
         viewStruct.title = "Vélos disponibles";
         viewStruct.img = "velib";
+        viewStruct.src = "loupe.svg";
+        viewStruct.alt = "loupe";
+        viewStruct.value = "Informations";
+        viewStruct.prop = "readonly";
+
+        Views.footer.update(viewStruct);
 
         console.log("App", viewStruct.view, "display page");
         header.update(viewStruct);
@@ -420,6 +396,12 @@ var Views = (function () {
         viewStruct.view = "stands";
         viewStruct.title = "Places libres";
         viewStruct.img = "borne";
+        viewStruct.src = "loupe.svg";
+        viewStruct.alt = "loupe";
+        viewStruct.value = "Informations";
+        viewStruct.prop = "readonly";
+
+        Views.footer.update(viewStruct);
 
         console.log("App", viewStruct.view, "display page");
         header.update(viewStruct);
@@ -434,6 +416,12 @@ var Views = (function () {
         viewStruct.view = "starred";
         viewStruct.title = "Favoris";
         viewStruct.img = "favori";
+        viewStruct.src = "loupe.svg";
+        viewStruct.alt = "loupe";
+        viewStruct.value = "Ajouter";
+        viewStruct.prop = "readonly";
+
+        Views.footer.update(viewStruct);
 
         console.log("App", viewStruct.view, "display page");
         header.update(viewStruct);
@@ -449,6 +437,12 @@ var Views = (function () {
         viewStruct.view = "search";
         viewStruct.title = "Rechercher";
         viewStruct.img = "loupe";
+        viewStruct.src = "loupeRechercher.svg";
+        viewStruct.alt = "loupe";
+        viewStruct.value = "";
+        viewStruct.prop = "placeHolder='Rechercher'";
+
+        Views.footer.update(viewStruct);
 
         console.log("App", viewStruct.view, "display page");
         header.update(viewStruct);
@@ -475,32 +469,24 @@ var Views = (function () {
  **********/
 var Routing = (function () {
     var route = function () {
+        Views.footer.enableFooterDisplay();
         var hash = window.location.hash.substr(1);
-        Views.footer.init();
+
         if (hash.startsWith("/bikes")) {
-          Views.footer.enableFooterDisplay();
-			    Views.footer.update("bikes");
           Views.bikes();
         }
         else if (hash.startsWith("/stands")) {
-          Views.footer.enableFooterDisplay();
-			    Views.footer.update("stands");
           Views.stands();
         }
         else if (hash.startsWith("/starred")) {
-          Views.footer.enableFooterDisplay();
-			    Views.footer.update("starred");
           Views.starred();
         }
         else if (hash.startsWith("/search")) {
-          Views.footer.enableFooterDisplay();
-			    Views.footer.update("search");
           Views.search();
         }
         else {
             // Index view
             Views.footer.disableFooterDisplay();
-            console.log("desactivé !")
             Views.index();
         }
     };
