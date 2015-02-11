@@ -254,7 +254,7 @@ footer.starred {
     border-bottom: 5px solid #a54d93;
 }
 footer.search {
-    border-bottom: 5px solid #f7ad00;
+    border-bottom: 5px solid#f7ad00;
 }
 footer.station {
     border-bottom: 5px solid #006FB3;

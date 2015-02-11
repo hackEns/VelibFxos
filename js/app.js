@@ -345,10 +345,9 @@ var Views = (function() {
             $('main').addClass(viewStruct.view);
             if (viewStruct.view == "starred") {
                 initStarredTable();
+            } else if (viewStruct.view == "station") {
+                initStationTable();
             }
-			else if(viewStruct.view == "station") {
-				initStationTable();
-			};
         };
 
         // init Starred table
@@ -363,25 +362,26 @@ var Views = (function() {
             // boucle de test
             for (var i = 0; i < 5; i++) {
                 $('tbody').append('<tr>' + '<td class="stations"><span class="uppercase">Station ' + i + '</span><br><span class="dist">' + i + '0m</span></td>' + '<td class="bikes">' + i + '</td>' + '<td class="stands">' + i + '</td>' + '</tr>');
-            
-			}
-			
-			$("tbody tr").click(function() {
-				window.location.hash = "/station";
-			});
-        };
-		
-		var initStationTable = function() {
-			var imgVPlus = '<img class="entry--logo" alt="" src="img/plusStation.svg" />';
 
-			$('main.station > section').prepend('<table class="station"><tbody></tbody></table>');			
-			$('main.station tbody').append('<tr><td><span class="uppercase">Vélos disponibles</span></td><td><span class="uppercase">Places Libres</span></td></tr>');
-			$('main.station tbody').append('<tr><td>'+ '2' + '</td><td>' + '5' + '</td></tr>');
-			$('main.station tbody').append('<tr><td><span class="uppercase">Station V+</span></td><td><span class="uppercase">Distance</span></td></tr>');
-			$('main.station tbody').append('<tr><td>'+ imgVPlus + '</td><td>' + '2 km' + '</td></tr>');
-			$('main.station tbody').append('<tr><td><span class="uppercase">Position</span></td><td><span class="uppercase">Mise à jour</span></td></tr>');
-			$('main.station tbody').append('<tr><td>'+ 'XX.XX' + '</td><td>Il y a ' + ' 2 min' + '</td></tr>');
-		};
+            }
+
+            $("tbody tr").click(function() {
+                window.location.hash = "/station";
+            });
+        };
+
+        var initStationTable = function() {
+            var imgVPlus = '<img class="entry--logo" alt="" src="img/plusStation.svg" />';
+
+            // Test code
+            $('main.station > section').prepend('<table class="station"><tbody></tbody></table>');
+            $('main.station tbody').append('<tr><td><p class="uppercase title">Vélos disponibles</p></td><td><p class="uppercase title">Places Libres</p></td></tr>');
+            $('main.station tbody').append('<tr><td><p class="bikes">' + '2' + '</span></td><td><p class="stands">' + '5' + '</p></td></tr>');
+            $('main.station tbody').append('<tr><td><p class="uppercase title">Station V+</p></td><td><p class="uppercase title">Distance</p></td></tr>');
+            $('main.station tbody').append('<tr><td>' + imgVPlus + '</td><td>' + '2 km' + '</td></tr>');
+            $('main.station tbody').append('<tr><td><p class="uppercase title">Position</p></td><td><p class="uppercase title">Mise à jour</p></td></tr>');
+            $('main.station tbody').append('<tr><td>' + 'XX.XX' + '</td><td>Il y a ' + ' 2 min' + '</td></tr>');
+        };
 
         body.clean = function() {
             // cleaning the content
@@ -392,27 +392,27 @@ var Views = (function() {
 
     })();
 
-    var footer = (function () {
+    footer = (function() {
 
-      var update = function(data) {
-        $("footer").html("<input class='" + data.view + "' type='text' "+ (data.value != "" ? "value='" + data.value + "'" : "") + data.prop + "/><a href='#'><img class='" + data.view + "' alt='"+ data.alt + "' src='img/"+ data.src + "'/></a>");
+        var update = function(data) {
+            $("footer").html("<input class='" + data.view + "' type='text' " + (data.value !== "" ? "value='" + data.value + "'" : "") + data.prop + "/><a href='#'><img class='" + data.view + "' alt='" + data.alt + "' src='img/" + data.src + "'/></a>");
 
-        $("footer").removeClass().addClass(data.view);
-      };
+            $("footer").removeClass().addClass(data.view);
+        };
 
-      var disableFooterDisplay = function() {
-        $("footer").addClass("hidden");
-      };
+        var disableFooterDisplay = function() {
+            $("footer").addClass("hidden");
+        };
 
-      var enableFooterDisplay = function() {
-        $("footer").removeClass("hidden");
-      };
+        var enableFooterDisplay = function() {
+            $("footer").removeClass("hidden");
+        };
 
-      return {
-        update: update,
-        enableFooterDisplay: enableFooterDisplay,
-        disableFooterDisplay: disableFooterDisplay
-      };
+        return {
+            update: update,
+            enableFooterDisplay: enableFooterDisplay,
+            disableFooterDisplay: disableFooterDisplay
+        };
 
     })();
 
@@ -528,9 +528,9 @@ var Views = (function() {
             $('.station-info').html('');
         }
     };
-	
-	var station = function() {
-		viewStruct.view = "station";
+
+    var station = function() {
+        viewStruct.view = "station";
         viewStruct.title = "AVENUE DE L'ELYSEE";
         viewStruct.img = "favori";
         viewStruct.src = "plusStation.svg";
@@ -539,17 +539,17 @@ var Views = (function() {
         viewStruct.prop = "readonly";
 
         Views.footer.update(viewStruct);
-	
-		console.log('App', viewStruct.view, "display page");
+
+        console.log('App', viewStruct.view, "display page");
         header.update(viewStruct);
         body.clean();
-		body.update(viewStruct);
-		
-		Geolocation.noWaitPosition();
+        body.update(viewStruct);
+
+        Geolocation.noWaitPosition();
         if (Stations.waitList(search)) {
             $('.station-info').html('');
         }
-	};
+    };
 
     var search = function() {
         viewStruct.view = "search";
@@ -577,7 +577,7 @@ var Views = (function() {
         bikes: bikes,
         stands: stands,
         starred: starred,
-		station: station,
+        station: station,
         search: search,
         footer: footer
     };
@@ -589,7 +589,7 @@ var Views = (function() {
  **********/
 var Routing = (function() {
     var route = function() {
-	Views.footer.enableFooterDisplay();
+        Views.footer.enableFooterDisplay();
         var hash = window.location.hash.substr(1);
 
         if (hash.startsWith("/bikes")) {
@@ -600,7 +600,7 @@ var Routing = (function() {
             Views.starred();
         } else if (hash.startsWith("/search")) {
             Views.search();
-		} else if (hash.startsWith("/station")) {
+        } else if (hash.startsWith("/station")) {
             Views.station();
         } else {
             // Index view
