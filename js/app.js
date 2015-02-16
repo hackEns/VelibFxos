@@ -419,14 +419,15 @@ var Views = (function() {
                 return item.available_bikes > 0;
             });
             console.log(stations);
-
+            
             // Stations slides creation
             var newSlide = '';
+            console.log(stations.length);
             for (var i = 0; i < stations.length; i++) {
                 console.log(stations[i].name);
-                newSlide = window.mySwiper.createSlide('<div>Station ' + stations[i].name + '<br>Vélos disponibles ' + stations[i].available_bikes + '</div>');
-                newSlide.append();
+                mySwiper.appendSlide('<div>Station ' + stations[i].name + '<br>Vélos disponibles ' + stations[i].available_bikes + '</div>');
             }
+            mySwiper.swipeTo( 0,1000,false ); //Go to the first slide, without this code the active slide is always the last
         }
     };
 
