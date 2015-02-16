@@ -371,7 +371,7 @@ var Views = (function() {
         };
 
         var initStationTable = function() {
-            var imgVPlus = '<img class="entry--logo" alt="" src="img/plusStation.svg" />';
+            var imgVPlus = '<img class="entry--logo" alt="" src="img/plus-dark-blue.svg" />';
 
             // Test code
             $('main.station > section').prepend('<table class="station"><tbody></tbody></table>');
@@ -454,7 +454,7 @@ var Views = (function() {
         viewStruct.view = "bikes";
         viewStruct.title = "Vélos disponibles";
         viewStruct.img = "velib";
-        viewStruct.src = "plusVelos.svg";
+        viewStruct.src = "plus-pink.svg";
         viewStruct.alt = "plus";
         viewStruct.value = "Informations";
         viewStruct.prop = "readonly";
@@ -485,7 +485,7 @@ var Views = (function() {
         viewStruct.view = "stands";
         viewStruct.title = "Places libres";
         viewStruct.img = "borne";
-        viewStruct.src = "plusPlaces.svg";
+        viewStruct.src = "plus-blue.svg";
         viewStruct.alt = "plus";
         viewStruct.value = "Informations";
         viewStruct.prop = "readonly";
@@ -508,7 +508,7 @@ var Views = (function() {
         viewStruct.view = "starred";
         viewStruct.title = "Favoris";
         viewStruct.img = "favori";
-        viewStruct.src = "plusFavoris.svg";
+        viewStruct.src = "plus-violet.svg";
         viewStruct.alt = "plus";
         viewStruct.value = "Ajouter";
         viewStruct.prop = "readonly";
@@ -533,7 +533,7 @@ var Views = (function() {
         viewStruct.view = "station";
         viewStruct.title = "AVENUE DE L'ELYSEE";
         viewStruct.img = "favori";
-        viewStruct.src = "plusStation.svg";
+        viewStruct.src = "plus-dark-blue.svg";
         viewStruct.alt = "plus";
         viewStruct.value = "Ajouter aux favoris";
         viewStruct.prop = "readonly";
@@ -555,7 +555,7 @@ var Views = (function() {
         viewStruct.view = "search";
         viewStruct.title = "Rechercher";
         viewStruct.img = "loupe";
-        viewStruct.src = "loupeRechercher.svg";
+        viewStruct.src = "search-yellow.svg";
         viewStruct.alt = "loupe";
         viewStruct.value = "";
         viewStruct.prop = "placeHolder='Rechercher'";

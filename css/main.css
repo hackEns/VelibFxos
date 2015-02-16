@@ -34,7 +34,7 @@
 html,
 body {
     width: 100%;
-    height: 10%;
+    height: 100%;
 }
 body {
     /*font-size: 2em;*/
@@ -112,7 +112,7 @@ main {
 .station-info .stands:hover {
     background-color: #000;
 }
-.station-info .starred, 
+.station-info .starred,
 #app-bar.starred {
     background-color: #a54d93;
 }
@@ -243,6 +243,11 @@ footer input {
     color: grey;
     padding-left: 10px;
     width: 100%;
+}
+footer img {
+    width: 50px;
+    height: 25px;
+    margin-top: 7px;
 }
 footer.bikes {
     border-bottom: 5px solid #dc1681;
