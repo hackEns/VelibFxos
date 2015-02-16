@@ -34,7 +34,7 @@
 html,
 body {
     width: 100%;
-    height: 100%;
+    height: 10%;
 }
 body {
     /*font-size: 2em;*/
@@ -120,7 +120,7 @@ main {
     background-color: #000;
 }
 #app-bar.station {
-    background-color: #006FB3;
+	background-color: #006FB3;
 }
 .station-info .search,
 #app-bar.search {
@@ -202,67 +202,35 @@ table.starred td.stands {
     font-size: 2.5em;
     text-align: center;
 }
-table.starred tr:hover {
-    cursor: pointer;
-}
-table.station tr td p {
-    margin: 0;
-}
-table.station tr td p.title {
-    padding-top: 40px;
-}
-table.station td {
-    text-align: center;
-}
-table.station p.title {
-    color: grey;
-}
-table.station p.bikes,
-table.station p.stands {
-    font-weight: bold;
-    font-size: 25px;
-}
-table.station p.bikes {
-    color: #dc1681;
-}
-table.station p.stands {
-    color: #006FB3;
-}
-
 /* general style */
 
 footer {
-    height: 40px;
-    display: flex;
+  height: 40px;
+  display: flex;
 }
 footer * {
-    height: 35px;
+  height: 35px;
 }
 footer input {
-    border: 0;
-    color: grey;
-    padding-left: 10px;
-    width: 100%;
-}
-footer img {
-    width: 50px;
-    height: 25px;
-    margin-top: 7px;
+  border: 0;
+  color: grey;
+  padding-left: 10px;
+  width: 100%;
 }
 footer.bikes {
-    border-bottom: 5px solid #dc1681;
+  border-bottom: 5px solid #dc1681;
 }
 footer.stands {
-    border-bottom: 5px solid #009bb7;
+  border-bottom: 5px solid #009bb7;
 }
 footer.starred {
-    border-bottom: 5px solid #a54d93;
+  border-bottom: 5px solid #a54d93;
 }
 footer.search {
-    border-bottom: 5px solid #f7ad00;
+  border-bottom: 5px solid #f7ad00;
 }
 footer.station {
-    border-bottom: 5px solid #006FB3;
+  border-bottom: 5px solid #006FB3;
 }
 .hidden {
     display: none;

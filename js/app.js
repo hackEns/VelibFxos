@@ -345,6 +345,8 @@ var Views = (function() {
             $('main').addClass(viewStruct.view);
             if (viewStruct.view == "starred") {
                 initStarredTable();
+            } else if (viewStruct.view == "station") {
+                initStationTable();
             }
         };
 
@@ -360,7 +362,25 @@ var Views = (function() {
             // boucle de test
             for (var i = 0; i < 5; i++) {
                 $('tbody').append('<tr>' + '<td class="stations"><span class="uppercase">Station ' + i + '</span><br><span class="dist">' + i + '0m</span></td>' + '<td class="bikes">' + i + '</td>' + '<td class="stands">' + i + '</td>' + '</tr>');
+
             }
+
+            $("tbody tr").click(function() {
+                window.location.hash = "/station";
+            });
+        };
+
+        var initStationTable = function() {
+            var imgVPlus = '<img class="entry--logo" alt="" src="img/plus-dark-blue.svg" />';
+
+            // Test code
+            $('main.station > section').prepend('<table class="station"><tbody></tbody></table>');
+            $('main.station tbody').append('<tr><td><p class="uppercase title">Vélos disponibles</p></td><td><p class="uppercase title">Places Libres</p></td></tr>');
+            $('main.station tbody').append('<tr><td><p class="bikes">' + '2' + '</span></td><td><p class="stands">' + '5' + '</p></td></tr>');
+            $('main.station tbody').append('<tr><td><p class="uppercase title">Station V+</p></td><td><p class="uppercase title">Distance</p></td></tr>');
+            $('main.station tbody').append('<tr><td>' + imgVPlus + '</td><td>' + '2 km' + '</td></tr>');
+            $('main.station tbody').append('<tr><td><p class="uppercase title">Position</p></td><td><p class="uppercase title">Mise à jour</p></td></tr>');
+            $('main.station tbody').append('<tr><td>' + 'XX.XX' + '</td><td>Il y a ' + ' 2 min' + '</td></tr>');
         };
 
         body.clean = function() {
@@ -369,6 +389,30 @@ var Views = (function() {
         };
 
         return body;
+
+    })();
+
+    footer = (function() {
+
+        var update = function(data) {
+            $("footer").html("<input class='" + data.view + "' type='text' " + (data.value !== "" ? "value='" + data.value + "'" : "") + data.prop + "/><a href='#'><img class='" + data.view + "' alt='" + data.alt + "' src='img/" + data.src + "'/></a>");
+
+            $("footer").removeClass().addClass(data.view);
+        };
+
+        var disableFooterDisplay = function() {
+            $("footer").addClass("hidden");
+        };
+
+        var enableFooterDisplay = function() {
+            $("footer").removeClass("hidden");
+        };
+
+        return {
+            update: update,
+            enableFooterDisplay: enableFooterDisplay,
+            disableFooterDisplay: disableFooterDisplay
+        };
 
     })();
 
@@ -410,6 +454,12 @@ var Views = (function() {
         viewStruct.view = "bikes";
         viewStruct.title = "Vélos disponibles";
         viewStruct.img = "velib";
+        viewStruct.src = "plus-pink.svg";
+        viewStruct.alt = "plus";
+        viewStruct.value = "Informations";
+        viewStruct.prop = "readonly";
+
+        Views.footer.update(viewStruct);
 
         header.update(viewStruct);
         body.clean();
@@ -435,6 +485,12 @@ var Views = (function() {
         viewStruct.view = "stands";
         viewStruct.title = "Places libres";
         viewStruct.img = "borne";
+        viewStruct.src = "plus-blue.svg";
+        viewStruct.alt = "plus";
+        viewStruct.value = "Informations";
+        viewStruct.prop = "readonly";
+
+        Views.footer.update(viewStruct);
 
         console.log('App', viewStruct.view, "display page");
         header.update(viewStruct);
@@ -452,6 +508,12 @@ var Views = (function() {
         viewStruct.view = "starred";
         viewStruct.title = "Favoris";
         viewStruct.img = "favori";
+        viewStruct.src = "plus-violet.svg";
+        viewStruct.alt = "plus";
+        viewStruct.value = "Ajouter";
+        viewStruct.prop = "readonly";
+
+        Views.footer.update(viewStruct);
 
         console.log('App', viewStruct.view, "display page");
         header.update(viewStruct);
@@ -467,10 +529,38 @@ var Views = (function() {
         }
     };
 
+    var station = function() {
+        viewStruct.view = "station";
+        viewStruct.title = "AVENUE DE L'ELYSEE";
+        viewStruct.img = "favori";
+        viewStruct.src = "plus-dark-blue.svg";
+        viewStruct.alt = "plus";
+        viewStruct.value = "Ajouter aux favoris";
+        viewStruct.prop = "readonly";
+
+        Views.footer.update(viewStruct);
+
+        console.log('App', viewStruct.view, "display page");
+        header.update(viewStruct);
+        body.clean();
+        body.update(viewStruct);
+
+        Geolocation.noWaitPosition();
+        if (Stations.waitList(search)) {
+            $('.station-info').html('');
+        }
+    };
+
     var search = function() {
         viewStruct.view = "search";
         viewStruct.title = "Rechercher";
         viewStruct.img = "loupe";
+        viewStruct.src = "search-yellow.svg";
+        viewStruct.alt = "loupe";
+        viewStruct.value = "";
+        viewStruct.prop = "placeHolder='Rechercher'";
+
+        Views.footer.update(viewStruct);
 
         console.log('App', viewStruct.view, "display page");
         header.update(viewStruct);
@@ -487,7 +577,9 @@ var Views = (function() {
         bikes: bikes,
         stands: stands,
         starred: starred,
-        search: search
+        station: station,
+        search: search,
+        footer: footer
     };
 
 })();
@@ -497,7 +589,9 @@ var Views = (function() {
  **********/
 var Routing = (function() {
     var route = function() {
+        Views.footer.enableFooterDisplay();
         var hash = window.location.hash.substr(1);
+
         if (hash.startsWith("/bikes")) {
             Views.bikes();
         } else if (hash.startsWith("/stands")) {
@@ -506,8 +600,11 @@ var Routing = (function() {
             Views.starred();
         } else if (hash.startsWith("/search")) {
             Views.search();
+        } else if (hash.startsWith("/station")) {
+            Views.station();
         } else {
             // Index view
+            Views.footer.disableFooterDisplay();
             Views.index();
         }
     };
