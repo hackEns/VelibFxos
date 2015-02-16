@@ -323,31 +323,14 @@ var Views = (function() {
     var footer = {};
 
     header = (function() {
-        var headerBar = $('#app-bar');
-
-        var init = function(viewStruct) {
-            // header initialisation
-            console.log('App', viewStruct.view, 'header init');
-            headerBar.append('<div class="left-part"></div>')
-                .append('<div class="middle-part"><span class="bar-title"></span></div>')
-                .append('<div class="right-part"></div>');
-            $('.left-part').html('<').click(function() {
-                window.location.hash = "/index";
-            });
-        };
 
         header.update = function(viewStruct) {
-            // header content update
-            if ($.trim(headerBar.text()) === '') {
-                init(viewStruct);
-            }
-
             $('#app-bar').removeClass().addClass(viewStruct.view);
             $('#app-logo').addClass('hidden');
             $('#app-bar').addClass(viewStruct.view);
 
-            $('.bar-title').html(viewStruct.title);
-            $('.right-part').html('<img class="entry--logo" alt="" src="img/' + viewStruct.img + '.svg" />');
+            $('#app-bar h1').html(viewStruct.title);
+            $('#app-bar menu img').attr('src', 'img/' + viewStruct.img + '.svg');
             console.log('App', viewStruct.view, 'header updated');
         };
 
