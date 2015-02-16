@@ -23,7 +23,9 @@
             <h1>Velib</h1>
         </header>
         <header id="app-logo">
-            <a href="#"><img alt="Velib'" src="img/logo.svg" class="velib-logo" /></a>
+            <a href="#">
+                <img alt="Velib'" src="img/logo.svg" class="velib-logo" />
+            </a>
         </header>
     </section>
 
@@ -47,6 +49,102 @@
             <p class="info--content">Recherche de position…</p>
         </div>
 
+        <!-- index template -->
+        <template id="home">
+            <div class="station-info">
+                <div class="entry bikes"><span>vélos<br/>disponibles</span>
+                    <img class="entry--logo" alt="" src="img/velib.svg" />
+                </div>
+                <div class="entry stands"><span>places<br/>libres</span>
+                    <img class="entry--logo" alt="" src="img/borne.svg" />
+                </div>
+                <div class="entry starred"><span>Favoris</span>
+                    <img class="entry--logo" alt="" src="img/favori.svg" />
+                </div>
+                <div class="entry search"><span>Rechercher</span>
+                    <img class="entry--logo" alt="" src="img/loupe.svg" />
+                </div>
+            </div>
+        </template>
+
+        <!-- available template -->
+        <template id="available">
+            <section>
+                <div class="uppercase">
+                    <p>ADRESSE</p>
+                    <p>0.0km</p>
+                </div>
+                <div class="available-element uppercase">
+                    5 <span>ELEMENT DISPONIBLE</span>
+                </div>
+                <div>
+                    <!-- img starrified -->
+                </div>
+                <div id="map"></div>
+            </section>
+        </template>
+
+        <!-- starred template -->
+        <template id="starred">
+            <table class="starred">
+                <thead>
+                    <tr>
+                        <td>Station</td>
+                        <td class="center">
+                            <img class="entry--logo" alt="" src="img/velib-pink.svg">
+                        </td>
+                        <td class="center">
+                            <img class="entry--logo" alt="" src="img/borne-blue.svg">
+                        </td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="stations">
+                            <span class="uppercase">Station name</span>
+                            <br><span class="dist">00m</span>
+                        </td>
+                        <td class="bikes">0</td>
+                        <td class="stands">0</td>
+                    </tr>
+                </tbody>
+            </table>
+        </template>
+
+        <!-- search template -->
+        <template id="search">
+            <div id="map"></div>
+        </template>
+
+        <!-- detail template -->
+        <template id="stationDetail">
+            <table class="station">
+                <tbody>
+                    <tr>
+                        <td><p class="uppercase title">Vélos disponibles</p></td>
+                        <td><p class="uppercase title">Places Libres</p></td></tr>
+                    <tr>
+                        <td><p class="bikes">0</span></td><td><p class="stands">0</p></td>
+                    </tr>
+                    <tr>
+                        <td><p class="uppercase title">Station V+</p></td>
+                        <td><p class="uppercase title">Distance</p></td>
+                    </tr>
+                    <tr>
+                        <td><img class="entry--logo" alt="" src="img/plus-dark-blue.svg" /></td>
+                        <td>0 km</td>
+                    </tr>
+                    <tr>
+                        <td><p class="uppercase title">Position</p></td>
+                        <td><p class="uppercase title">Mise à jour</p></td>
+                    </tr>
+                    <tr>
+                        <td>00.00</td>
+                        <td>Il y a 0 min</td>
+                    </tr>
+                </tbody>
+            </table>
+        </template>
     </main>
 
     <footer></footer>
