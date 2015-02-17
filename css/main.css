@@ -208,6 +208,9 @@ table.starred tr:hover {
 table.station tr td p {
     margin: 0;
 }
+table.station img.vplus {
+    margin-top: 5px;
+}
 table.station tr td p.title {
     padding-top: 40px;
 }

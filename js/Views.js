@@ -59,7 +59,7 @@ var Views = (function() {
         };
 
         var initStationTable = function() {
-            var imgVPlus = '<img class="entry--logo" alt="" src="img/plus-dark-blue.svg" />';
+            var imgVPlus = '<img class="entry--logo vplus" alt="" src="img/v-plus.svg" />';
 
             // Test code
             $('main.station > section').prepend('<table class="station"><tbody></tbody></table>');
