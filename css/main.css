@@ -45,8 +45,10 @@ body {
 main {
     background-color: white;
     border-bottom: 3px solid #979797;
-    min-height: 100%;
     box-sizing: border-box;
+}
+#map {
+    height: 400px;
 }
 .station-info {
     padding: 10px;

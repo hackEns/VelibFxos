@@ -28,18 +28,17 @@ var Views = (function() {
     })();
 
     body = (function() {
+        // mainSection is where the action takes place
         var mainSection = document.querySelector('main > section');
 
         // update the body from the views
         body.update = function(viewStruct) {
-            var template = '';
             var clone = '';
 
             console.log('Views', viewStruct.view, 'body.update');
             $('main').addClass(viewStruct.view);
 
             if ('content' in document.createElement('template')) {
-                console.log('Views', 'body', 'template is supported');
 
                 switch(viewStruct.view) {
                     case "index":
@@ -67,8 +66,9 @@ var Views = (function() {
 
             } else {
                 console.log('Views', 'body', 'template is NOT supported');
-
-                // should be tested on IE
+                //
+                // should be tested with a creepy browser
+                //
                 switch (viewStruct.view) {
                     case "index":
                         template = $('#index').html();
@@ -84,7 +84,6 @@ var Views = (function() {
                         mainSection.append(template);
                 }
             }
-
         };
 
         // init the table with starred stations
@@ -196,8 +195,8 @@ var Views = (function() {
             var newSlide = '';
             for (var i = 0; i < stations.length; i++) {
                 console.log(stations[i].name);
-                newSlide = window.mySwiper.createSlide('<div>Station ' + stations[i].name + '<br>Vélos disponibles ' + stations[i].available_bikes + '</div>');
-                newSlide.append();
+                //newSlide = window.mySwiper.createSlide('<div>Station ' + stations[i].name + '<br>Vélos disponibles ' + stations[i].available_bikes + '</div>');
+                //newSlide.append();
             }
         }
     };
@@ -290,11 +289,15 @@ var Views = (function() {
         console.log('Views', viewStruct.view, "display page");
         header.update(viewStruct);
         body.clean();
+        $('.station-info, .info').addClass('hidden');
+
         body.update(viewStruct);
 
-        Geolocation.noWaitPosition();
-        if (Stations.waitList(search)) {
-            $('.station-info').html('');
+        if( Geolocation.waitPosition(search) ) {
+            console.log('Views', 'search', 'Geolocation ok');
+            Map.init(Geolocation.getPosition());
+        } else {
+            console.log('Views', 'search', 'Looking for geolocation');
         }
     };
 
