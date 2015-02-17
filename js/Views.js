@@ -9,6 +9,7 @@ var Views = (function() {
     var header = {};
     var body =   {};
     var footer = {};
+    var template = '';
 
     header = (function() {
 
@@ -19,7 +20,7 @@ var Views = (function() {
 
             $('#app-bar h1').html(viewStruct.title);
             $('#app-bar menu img').attr('src', 'img/' + viewStruct.img + '.svg');
-            console.log('App', viewStruct.view, 'header updated');
+            console.log('Views', viewStruct.view, 'header updated');
         };
 
         return header;
@@ -27,53 +28,91 @@ var Views = (function() {
     })();
 
     body = (function() {
+        var mainSection = document.querySelector('main > section');
+
         // update the body from the views
         body.update = function(viewStruct) {
-            console.log('App', viewStruct.view, 'body update');
+            var template = '';
+            var clone = '';
+
+            console.log('Views', viewStruct.view, 'body.update');
             $('main').addClass(viewStruct.view);
-            if (viewStruct.view == "starred") {
-                initStarredTable();
-            } else if (viewStruct.view == "station") {
-                initStationTable();
+
+            if ('content' in document.createElement('template')) {
+                console.log('Views', 'body', 'template is supported');
+
+                switch(viewStruct.view) {
+                    case "index":
+                        template = document.getElementById('index');
+                        var clone = document.importNode(template.content, true);
+                        mainSection.appendChild(clone);
+                        break;
+                    case "starred":
+                        template = document.getElementById('starred');
+                        clone = document.importNode(template.content, true);
+                        mainSection.appendChild(clone);
+                        initStarredContent();
+                        break;
+                    case "station":
+                        template = document.getElementById('stationDetail');
+                        var clone = document.importNode(template.content, true);
+                        mainSection.appendChild(clone);
+                        break;
+                    case "search":
+                        template = document.getElementById('search');
+                        var clone = document.importNode(template.content, true);
+                        mainSection.appendChild(clone);
+                        break;
+                }
+
+            } else {
+                console.log('Views', 'body', 'template is NOT supported');
+
+                // should be tested on IE
+                switch (viewStruct.view) {
+                    case "index":
+                        template = $('#index').html();
+                        mainSection.append(template);
+                    case "starred":
+                        template = $('#starred').html();
+                        mainSection.append(template);
+                    case "station":
+                        template = $('#stationDetail').html();
+                        mainSection.append(template);
+                    case "search":
+                        template = $('#search').html();
+                        mainSection.append(template);
+                }
             }
+
         };
 
-        // init Starred table
-        var initStarredTable = function() {
-            var imgStand = '<img class="entry--logo" alt="" src="img/borne-blue.svg" />';
-            var imgBike = '<img class="entry--logo" alt="" src="img/velib-pink.svg" />';
+        // init the table with starred stations
+        var initStarredContent = function() {
+            var row = '';
+            template = document.getElementById('starred');
+            row = template.content.querySelector('tbody tr');
 
-            console.log('App', 'Starred table', 'display starred table');
-            $('main.starred > section').prepend('<table class="starred"><thead></thead><tbody></tbody></table>');
-            $('main.starred thead').append('<tr><td>Station</td>' + '<td class="center">' + imgBike + '</td>' + '<td class="center">' + imgStand + '</td></tr>');
+            // delete first template row
+            var tbody = document.querySelector('tbody');
+            while (tbody.firstChild) {
+                tbody.removeChild(tbody.firstChild);
+            }
 
             // boucle de test
-            for (var i = 0; i < 5; i++) {
-                $('tbody').append('<tr>' + '<td class="stations"><span class="uppercase">Station ' + i + '</span><br><span class="dist">' + i + '0m</span></td>' + '<td class="bikes">' + i + '</td>' + '<td class="stands">' + i + '</td>' + '</tr>');
-
+            for (var i = 1; i <= 5; i++) {
+                row.querySelector('td.stations > span').textContent = "My station " + i;
+                row.querySelector('td.stations > span.dist').textContent = i;
+                row.querySelector('td.bikes').textContent = Math.floor((Math.random() * 10) + i);
+                row.querySelector('td.stands').textContent = Math.floor((Math.random() * 10) + i);
+                document.querySelector('table.starred tbody').appendChild(document.importNode(row, true));
             }
-
-            $("tbody tr").click(function() {
-                window.location.hash = "/station";
-            });
-        };
-
-        var initStationTable = function() {
-            var imgVPlus = '<img class="entry--logo" alt="" src="img/plus-dark-blue.svg" />';
-
-            // Test code
-            $('main.station > section').prepend('<table class="station"><tbody></tbody></table>');
-            $('main.station tbody').append('<tr><td><p class="uppercase title">Vélos disponibles</p></td><td><p class="uppercase title">Places Libres</p></td></tr>');
-            $('main.station tbody').append('<tr><td><p class="bikes">' + '2' + '</span></td><td><p class="stands">' + '5' + '</p></td></tr>');
-            $('main.station tbody').append('<tr><td><p class="uppercase title">Station V+</p></td><td><p class="uppercase title">Distance</p></td></tr>');
-            $('main.station tbody').append('<tr><td>' + imgVPlus + '</td><td>' + '2 km' + '</td></tr>');
-            $('main.station tbody').append('<tr><td><p class="uppercase title">Position</p></td><td><p class="uppercase title">Mise à jour</p></td></tr>');
-            $('main.station tbody').append('<tr><td>' + 'XX.XX' + '</td><td>Il y a ' + ' 2 min' + '</td></tr>');
         };
 
         body.clean = function() {
             // cleaning the content
-            $('main > section').empty();
+            console.log('Views', 'body', 'empty');
+            $(mainSection).empty();
         };
 
         return body;
@@ -84,7 +123,6 @@ var Views = (function() {
 
         var update = function(data) {
             $("footer").html("<input class='" + data.view + "' type='text' " + (data.value !== "" ? "value='" + data.value + "'" : "") + data.prop + "/><a href='#'><img class='" + data.view + "' alt='" + data.alt + "' src='img/" + data.src + "'/></a>");
-
             $("footer").removeClass().addClass(data.view);
         };
 
@@ -116,13 +154,8 @@ var Views = (function() {
         $('.swiper-wrapper, .pagination').empty().attr('style', '');
 
         body.clean();
-        console.log('App', "Index", "display page");
-
-        $('.station-info').html('' +
-            '<div class="entry bikes"><span>vélos<br/>disponibles</span><img class="entry--logo" alt="" src="img/velib.svg" /></div>' +
-            '<div class="entry stands"><span>places<br/>libres</span><img class="entry--logo" alt="" src="img/borne.svg" /></div>' +
-            '<div class="entry starred"><span>Favoris</span><img class="entry--logo" alt="" src="img/favori.svg" /></div>' +
-            '<div class="entry search"><span>Rechercher</span><img class="entry--logo" alt="" src="img/loupe.svg" /></div>');
+        console.log('Views', "Index", "display page");
+        body.update(viewStruct);
 
         $('.entry.bikes').click(function() {
             window.location.hash = "/bikes";
@@ -180,7 +213,7 @@ var Views = (function() {
 
         Views.footer.update(viewStruct);
 
-        console.log('App', viewStruct.view, "display page");
+        console.log('Views', viewStruct.view, "display page");
         header.update(viewStruct);
         body.clean();
 
@@ -203,10 +236,14 @@ var Views = (function() {
 
         Views.footer.update(viewStruct);
 
-        console.log('App', viewStruct.view, "display page");
+        console.log('Views', viewStruct.view, "display page");
         header.update(viewStruct);
         body.clean();
         body.update(viewStruct);
+
+        $("tbody tr td").click(function() {
+            window.location.hash = "/station";
+        });
 
         Geolocation.noWaitPosition();
         if (Stations.waitList(starred)) {
@@ -228,7 +265,7 @@ var Views = (function() {
 
         Views.footer.update(viewStruct);
 
-        console.log('App', viewStruct.view, "display page");
+        console.log('Views', viewStruct.view, "display page");
         header.update(viewStruct);
         body.clean();
         body.update(viewStruct);
@@ -250,9 +287,10 @@ var Views = (function() {
 
         Views.footer.update(viewStruct);
 
-        console.log('App', viewStruct.view, "display page");
+        console.log('Views', viewStruct.view, "display page");
         header.update(viewStruct);
         body.clean();
+        body.update(viewStruct);
 
         Geolocation.noWaitPosition();
         if (Stations.waitList(search)) {
