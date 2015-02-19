@@ -11,6 +11,18 @@ var Views = (function() {
     var footer = {};
     var template = '';
 
+	window.mySwiper = new Swiper('.swiper-container', {       
+		// general settings
+		hashNav: false,
+		keyboardControl: true,
+		calculateHeight: true,
+		// pagination settings
+		loop: true,
+		pagination: '.pagination',
+		paginationClickable: true,
+		createPagination: true
+	});
+	
     header = (function() {
 
         header.update = function(viewStruct) {
@@ -195,8 +207,8 @@ var Views = (function() {
             var newSlide = '';
             for (var i = 0; i < stations.length; i++) {
                 console.log(stations[i].name);
-                //newSlide = window.mySwiper.createSlide('<div>Station ' + stations[i].name + '<br>Vélos disponibles ' + stations[i].available_bikes + '</div>');
-                //newSlide.append();
+                newSlide = window.mySwiper.createSlide('<div>Station ' + stations[i].name + '<br>Vélos disponibles ' + stations[i].available_bikes + '</div>');
+                newSlide.append();
             }
         }
     };
