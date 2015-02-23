@@ -124,7 +124,8 @@
                         <td><p class="uppercase title">Vélos disponibles</p></td>
                         <td><p class="uppercase title">Places Libres</p></td></tr>
                     <tr>
-                        <td><p class="bikes">0</span></td><td><p class="stands">0</p></td>
+                        <td><p class="bikes">0</p></td>
+                        <td><p class="stands">0</p></td>
                     </tr>
                     <tr>
                         <td><p class="uppercase title">Station V+</p></td>
@@ -132,15 +133,15 @@
                     </tr>
                     <tr>
                         <td><img class="entry--logo vplus" alt="" src="img/v-plus.svg" /></td>
-                        <td>0 km</td>
+                        <td><p class="distance">0 km</p></td>
                     </tr>
                     <tr>
                         <td><p class="uppercase title">Position</p></td>
                         <td><p class="uppercase title">Mise à jour</p></td>
                     </tr>
                     <tr>
-                        <td>00.00</td>
-                        <td>Il y a 0 min</td>
+                        <td><p class="position">00.00</p></td>
+                        <td><p>Il y a <span class="last_update"></span></p></td>
                     </tr>
                 </tbody>
             </table>
@@ -158,6 +159,7 @@
 	<script src="js/Config.js"></script>
 	<script src="js/Geolocation.js"></script>
     <script src="js/Map.js"></script>
+    <script src="js/Control.OSMGeocoder.js"></script>
 	<script src="js/Stations.js"></script>
 	<script src="js/Views.js"></script>
 	<script src="js/Router.js"></script>

@@ -238,16 +238,31 @@ table.station p.stands {
 
 footer {
     height: 40px;
-    display: flex;
-}
-footer * {
-    height: 35px;
+    width: 100%;
+    display: inline-block;
 }
 footer input {
-    border: 0;
-    color: grey;
+    color: #808080;
+    height: 30px;
+    font-size: 25px;
+    font-family: "Open Sans";
+
     padding-left: 10px;
-    width: 100%;
+    border: 0px none;
+    height: auto;
+    vertical-align: middle;
+    width: 99%;
+}
+footer input#submit {
+    position: absolute;
+    width: 30px;
+    right: 0px;
+    vertical-align: middle;
+    margin: 5px;
+}
+footer a {
+    position: absolute;
+    right: 0px;
 }
 footer img {
     width: 50px;

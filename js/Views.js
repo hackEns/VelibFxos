@@ -11,18 +11,18 @@ var Views = (function() {
     var footer = {};
     var template = '';
 
-	window.mySwiper = new Swiper('.swiper-container', {       
+	window.mySwiper = new Swiper('.swiper-container', {
 		// general settings
 		hashNav: false,
 		keyboardControl: true,
 		calculateHeight: true,
 		// pagination settings
-		loop: true,
+		// loop: true,
 		pagination: '.pagination',
 		paginationClickable: true,
 		createPagination: true
 	});
-	
+
     header = (function() {
 
         header.update = function(viewStruct) {
@@ -34,6 +34,16 @@ var Views = (function() {
             $('#app-bar menu img').attr('src', 'img/' + viewStruct.img + '.svg');
             console.log('Views', viewStruct.view, 'header updated');
         };
+
+        $('#app-bar a').click(function(e) {
+            e.preventDefault();
+            goBack();
+        });
+
+        var goBack = (function() {
+            console.log('Views', viewStruct.view, 'go back');
+            window.history.back()
+        });
 
         return header;
 
@@ -47,11 +57,11 @@ var Views = (function() {
         body.update = function(viewStruct) {
             var clone = '';
 
+            body.clean();
             console.log('Views', viewStruct.view, 'body.update');
             $('main').addClass(viewStruct.view);
 
             if ('content' in document.createElement('template')) {
-
                 switch(viewStruct.view) {
                     case "index":
                         template = document.getElementById('index');
@@ -66,8 +76,23 @@ var Views = (function() {
                         break;
                     case "station":
                         template = document.getElementById('stationDetail');
+                        var stationFormatted = Stations.getFormattedStation(viewStruct.station);
+
+                        var avail_bike = template.content.querySelector('.bikes');
+                        var avail_stands = template.content.querySelector('.stands');
+                        var distance = template.content.querySelector('.distance');
+                        var position = template.content.querySelector('.position');
+                        var last_update = template.content.querySelector('.last_update');
+
+                        avail_bike.textContent = stationFormatted.available_bikes;
+                        avail_stands.textContent = stationFormatted.available_bike_stands;
+                        //distance.textContent = viewStruct.station.distance;
+                        position.textContent = stationFormatted.position;
+                        last_update.textContent = stationFormatted.last_update;
+
                         var clone = document.importNode(template.content, true);
                         mainSection.appendChild(clone);
+
                         break;
                     case "search":
                         template = document.getElementById('search');
@@ -78,9 +103,6 @@ var Views = (function() {
 
             } else {
                 console.log('Views', 'body', 'template is NOT supported');
-                //
-                // should be tested with a creepy browser
-                //
                 switch (viewStruct.view) {
                     case "index":
                         template = $('#index').html();
@@ -133,8 +155,14 @@ var Views = (function() {
     footer = (function() {
 
         var update = function(data) {
-            $("footer").html("<input class='" + data.view + "' type='text' " + (data.value !== "" ? "value='" + data.value + "'" : "") + data.prop + "/><a href='#'><img class='" + data.view + "' alt='" + data.alt + "' src='img/" + data.src + "'/></a>");
-            $("footer").removeClass().addClass(data.view);
+
+            $("footer").removeClass().addClass(data.view).html('');
+
+            if(data.view == 'search') {
+                //
+            } else {
+                $("footer").html("<input class='" + data.view + "' type='text' " + (data.value !== "" ? "value='" + data.value + "'" : "") + data.prop + "/><a href='#'><img class='" + data.view + "' alt='" + data.alt + "' src='img/" + data.src + "'/></a>");
+            }
         };
 
         var disableFooterDisplay = function() {
@@ -194,7 +222,6 @@ var Views = (function() {
         Views.footer.update(viewStruct);
 
         header.update(viewStruct);
-        body.clean();
         body.update(viewStruct);
 
         if (Geolocation.waitPosition(bikes) && Stations.waitList(bikes)) {
@@ -226,7 +253,6 @@ var Views = (function() {
 
         console.log('Views', viewStruct.view, "display page");
         header.update(viewStruct);
-        body.clean();
 
         if (Geolocation.waitPosition(stands) && Stations.waitList(stands)) {
             console.log(Stations.getClosestStations(Geolocation.getPosition(), 10, function(item) {
@@ -249,7 +275,6 @@ var Views = (function() {
 
         console.log('Views', viewStruct.view, "display page");
         header.update(viewStruct);
-        body.clean();
         body.update(viewStruct);
 
         $("tbody tr td").click(function() {
@@ -266,25 +291,23 @@ var Views = (function() {
     };
 
     var station = function() {
+        var pathArray = window.location.hash.split('/');
+        var station_id = pathArray[pathArray.length-1];
+
+        viewStruct.station = Stations.getStationDetails(station_id)[0];
+
         viewStruct.view = "station";
-        viewStruct.title = "AVENUE DE L'ELYSEE";
+        viewStruct.title = viewStruct.station.address;
         viewStruct.img = "favori";
         viewStruct.src = "plus-dark-blue.svg";
         viewStruct.alt = "plus";
         viewStruct.value = "Ajouter aux favoris";
         viewStruct.prop = "readonly";
 
-        Views.footer.update(viewStruct);
-
         console.log('Views', viewStruct.view, "display page");
         header.update(viewStruct);
-        body.clean();
         body.update(viewStruct);
-
-        Geolocation.noWaitPosition();
-        if (Stations.waitList(search)) {
-            $('.station-info').html('');
-        }
+        footer.update(viewStruct);
     };
 
     var search = function() {
@@ -296,21 +319,20 @@ var Views = (function() {
         viewStruct.value = "";
         viewStruct.prop = "placeHolder='Rechercher'";
 
-        Views.footer.update(viewStruct);
-
         console.log('Views', viewStruct.view, "display page");
         header.update(viewStruct);
-        body.clean();
-        $('.station-info, .info').addClass('hidden');
-
         body.update(viewStruct);
+        footer.update(viewStruct);
 
         if( Geolocation.waitPosition(search) ) {
-            console.log('Views', 'search', 'Geolocation ok');
+            console.log('Views', viewStruct.view, 'Geolocation ok');
             Map.init(Geolocation.getPosition());
         } else {
-            console.log('Views', 'search', 'Looking for geolocation');
+            console.log('Views', viewStruct.view, 'Looking for geolocation');
         }
+
+        $('.station-info, .info').addClass('hidden');
+
     };
 
     return {
