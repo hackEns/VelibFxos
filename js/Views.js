@@ -11,6 +11,18 @@ var Views = (function() {
     var footer = {};
     var template = '';
 
+	window.mySwiper = new Swiper('.swiper-container', {       
+		// general settings
+		hashNav: false,
+		keyboardControl: true,
+		calculateHeight: true,
+		// pagination settings
+		loop: true,
+		pagination: '.pagination',
+		paginationClickable: true,
+		createPagination: true
+	});
+	
     header = (function() {
 
         header.update = function(viewStruct) {
@@ -28,18 +40,17 @@ var Views = (function() {
     })();
 
     body = (function() {
+        // mainSection is where the action takes place
         var mainSection = document.querySelector('main > section');
 
         // update the body from the views
         body.update = function(viewStruct) {
-            var template = '';
             var clone = '';
 
             console.log('Views', viewStruct.view, 'body.update');
             $('main').addClass(viewStruct.view);
 
             if ('content' in document.createElement('template')) {
-                console.log('Views', 'body', 'template is supported');
 
                 switch(viewStruct.view) {
                     case "index":
@@ -67,8 +78,9 @@ var Views = (function() {
 
             } else {
                 console.log('Views', 'body', 'template is NOT supported');
-
-                // should be tested on IE
+                //
+                // should be tested with a creepy browser
+                //
                 switch (viewStruct.view) {
                     case "index":
                         template = $('#index').html();
@@ -84,7 +96,6 @@ var Views = (function() {
                         mainSection.append(template);
                 }
             }
-
         };
 
         // init the table with starred stations
@@ -290,11 +301,15 @@ var Views = (function() {
         console.log('Views', viewStruct.view, "display page");
         header.update(viewStruct);
         body.clean();
+        $('.station-info, .info').addClass('hidden');
+
         body.update(viewStruct);
 
-        Geolocation.noWaitPosition();
-        if (Stations.waitList(search)) {
-            $('.station-info').html('');
+        if( Geolocation.waitPosition(search) ) {
+            console.log('Views', 'search', 'Geolocation ok');
+            Map.init(Geolocation.getPosition());
+        } else {
+            console.log('Views', 'search', 'Looking for geolocation');
         }
     };
 
