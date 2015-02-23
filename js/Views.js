@@ -99,13 +99,22 @@ var Views = (function() {
                 tbody.removeChild(tbody.firstChild);
             }
 
-            // boucle de test
-            for (var i = 1; i <= 5; i++) {
-                row.querySelector('td.stations > span').textContent = "My station " + i;
-                row.querySelector('td.stations > span.dist').textContent = i;
-                row.querySelector('td.bikes').textContent = Math.floor((Math.random() * 10) + i);
-                row.querySelector('td.stands').textContent = Math.floor((Math.random() * 10) + i);
-                document.querySelector('table.starred tbody').appendChild(document.importNode(row, true));
+            if(Geolocation.waitPosition(initStarredContent))
+            {
+                var currentPosition = Geolocation.getPosition();
+                var starredStations = Stations.getStarredStations(currentPosition);
+
+                // boucle de test
+                for (var stationID in starredStations) {
+
+                    var station = Stations.getStationDetails(stationID);
+
+                    row.querySelector('td.stations > span').textContent = station.address;
+                    row.querySelector('td.stations > span.dist').textContent = "";//Stations.distance(currentPosition, station);
+                    row.querySelector('td.bikes').textContent = station.available_bikes;
+                    row.querySelector('td.stands').textContent = station.available_bike_stands;
+                    document.querySelector('table.starred tbody').appendChild(document.importNode(row, true));
+              }
             }
         };
 

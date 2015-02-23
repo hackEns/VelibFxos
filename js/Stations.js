@@ -6,6 +6,7 @@
 
 var Stations = (function() {
     var full_stations_list = null;
+    var starred_stations = new Array();
     var ordered_stations_list = null;
     var starred_stations_list = null;
     var timer = null;
@@ -102,6 +103,17 @@ var Stations = (function() {
         // TODO
     };
 
+    // Returns details from a specific station
+    var getStationDetails = function(id) {
+        var elements = getFullList();
+        var element = $.grep(elements, function(v) {
+          return v.number == id;
+        });
+
+        console.log('Stations', 'getStationDetails', elements);
+        return element;
+    };
+
     // Returns `limit` closest stations with up to date infos and a matching criterion
     var getClosestStations = function(coords, limit, filter) {
         if (typeof(limit) == 'undefined') {
@@ -165,7 +177,7 @@ var Stations = (function() {
                 return item.id == station_id;
             }));
         }
-        full_starred_stations_list = computeDistance(full_starred_stations, coords);
+        full_starred_stations_list = computeDistances(full_starred_stations_list, coords);
         // TODO : Update
         return full_starred_stations_list;
     };
@@ -187,6 +199,7 @@ var Stations = (function() {
         getClosestStations: getClosestStations,
         toggleStarStation: toggleStarStation,
         getStarredStations: getStarredStations,
+        getStationDetails: getStationDetails,
         getFullList: getFullList
     };
 })();
