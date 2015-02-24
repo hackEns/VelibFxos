@@ -17,7 +17,7 @@ var Views = (function() {
 		keyboardControl: true,
 		calculateHeight: true,
 		// pagination settings
-		// loop: true,
+		loop: true,
 		pagination: '.pagination',
 		paginationClickable: true,
 		createPagination: true
@@ -75,24 +75,13 @@ var Views = (function() {
                         initStarredContent();
                         break;
                     case "station":
-                        template = document.getElementById('stationDetail');
                         var stationFormatted = Stations.getFormattedStation(viewStruct.station);
 
-                        var avail_bike = template.content.querySelector('.bikes');
-                        var avail_stands = template.content.querySelector('.stands');
-                        var distance = template.content.querySelector('.distance');
-                        var position = template.content.querySelector('.position');
-                        var last_update = template.content.querySelector('.last_update');
-
-                        avail_bike.textContent = stationFormatted.available_bikes;
-                        avail_stands.textContent = stationFormatted.available_bike_stands;
-                        distance.textContent = stationFormatted.distance;
-                        position.textContent = stationFormatted.position;
-                        last_update.textContent = stationFormatted.last_update;
+                        template = document.getElementById('stationDetail');
+                        template = completeStationDetails(template, stationFormatted);
 
                         var clone = document.importNode(template.content, true);
                         mainSection.appendChild(clone);
-
                         break;
                     case "search":
                         template = document.getElementById('search');
@@ -100,7 +89,6 @@ var Views = (function() {
                         mainSection.appendChild(clone);
                         break;
                 }
-
             } else {
                 console.log('Views', 'body', 'template is NOT supported');
                 switch (viewStruct.view) {
@@ -118,6 +106,23 @@ var Views = (function() {
                         mainSection.append(template);
                 }
             }
+        };
+
+        // Insert in Station template, details from a specific station
+        var completeStationDetails = function(template, station) {
+            var avail_bike = template.content.querySelector('.bikes');
+            var avail_stands = template.content.querySelector('.stands');
+            var distance = template.content.querySelector('.distance');
+            var position = template.content.querySelector('.position');
+            var last_update = template.content.querySelector('.last_update');
+
+            avail_bike.textContent = station.available_bikes;
+            avail_stands.textContent = station.available_bike_stands;
+            distance.textContent = station.distance;
+            position.textContent = station.position;
+            last_update.textContent = station.last_update;
+
+            return template;
         };
 
         // init the table with starred stations
