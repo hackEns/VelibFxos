@@ -303,10 +303,11 @@ var Views = (function() {
             var station_exist = $.grep(stations, function(v) {
                 return v.number == station_id;
             });
+
             // If station doesn't exist : redirection
-            if (typeof station_exist[0] == object) { // CORRIGER
+            if (station_exist.length == 0) {
                 alert("La station n'existe pas !");
-                console.log("Views.js", "station", "station doesn't exist", station_exist);
+                console.log("Views.js", "station", "station doesn't exist", station_exist.length);
                 window.location.hash = "/index";
             } else {
                 viewStruct.view = "station";
