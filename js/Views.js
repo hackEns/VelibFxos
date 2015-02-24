@@ -86,7 +86,7 @@ var Views = (function() {
 
                         avail_bike.textContent = stationFormatted.available_bikes;
                         avail_stands.textContent = stationFormatted.available_bike_stands;
-                        //distance.textContent = viewStruct.station.distance;
+                        distance.textContent = stationFormatted.distance;
                         position.textContent = stationFormatted.position;
                         last_update.textContent = stationFormatted.last_update;
 
@@ -294,20 +294,35 @@ var Views = (function() {
         var pathArray = window.location.hash.split('/');
         var station_id = pathArray[pathArray.length-1];
 
-        viewStruct.station = Stations.getStationDetails(station_id)[0];
+        if (Geolocation.waitPosition(station) && Stations.waitList(station)) {
+            // Allow to get distance between station and current position
+            var stations = Stations.getClosestStations(Geolocation.getPosition());
 
-        viewStruct.view = "station";
-        viewStruct.title = viewStruct.station.address;
-        viewStruct.img = "favori";
-        viewStruct.src = "plus-dark-blue.svg";
-        viewStruct.alt = "plus";
-        viewStruct.value = "Ajouter aux favoris";
-        viewStruct.prop = "readonly";
+            viewStruct.station = Stations.getStationDetails(station_id)[0];
 
-        console.log('Views', viewStruct.view, "display page");
-        header.update(viewStruct);
-        body.update(viewStruct);
-        footer.update(viewStruct);
+            var station_exist = $.grep(stations, function(v) {
+                return v.number == station_id;
+            });
+            // If station doesn't exist : redirection
+            if (typeof station_exist[0] == object) { // CORRIGER
+                alert("La station n'existe pas !");
+                console.log("Views.js", "station", "station doesn't exist", station_exist);
+                window.location.hash = "/index";
+            } else {
+                viewStruct.view = "station";
+                viewStruct.title = viewStruct.station.address;
+                viewStruct.img = "favori";
+                viewStruct.src = "plus-dark-blue.svg";
+                viewStruct.alt = "plus";
+                viewStruct.value = "Ajouter aux favoris";
+                viewStruct.prop = "readonly";
+
+                console.log('Views', viewStruct.view, "display page");
+                header.update(viewStruct);
+                body.update(viewStruct);
+                footer.update(viewStruct);
+            }
+        }
     };
 
     var search = function() {
@@ -324,11 +339,10 @@ var Views = (function() {
         body.update(viewStruct);
         footer.update(viewStruct);
 
-        if( Geolocation.waitPosition(search) ) {
-            console.log('Views', viewStruct.view, 'Geolocation ok');
-            Map.init(Geolocation.getPosition());
-        } else {
-            console.log('Views', viewStruct.view, 'Looking for geolocation');
+        if(Geolocation.waitPosition(search)) {
+            var pos = Geolocation.getPosition();
+            Map.init(pos);
+            Map.addMarkers(pos);
         }
 
         $('.station-info, .info').addClass('hidden');

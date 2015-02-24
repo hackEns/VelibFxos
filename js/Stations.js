@@ -118,6 +118,8 @@ var Stations = (function() {
     var getFormattedStation = function(station) {
         var formatted = {};
 
+        console.log('Station.js', 'getFormattedStation In', station);
+
         // Availables bikes & stands
         formatted.available_bikes = station.available_bikes;
         formatted.available_bike_stands = station.available_bike_stands;
@@ -147,8 +149,13 @@ var Stations = (function() {
                 text = 'un instant';
             formatted.last_update = text;
         }
+        // distance
+        formatted.distance = (parseFloat(station.distance)/1000).toFixed(2) + " km";
+
         // lat - lng
         formatted.position = station.position.lat.toFixed(2) + ' - ' + station.position.lng.toFixed(2);
+
+        console.log('Station.js', 'getFormattedStation Out', formatted);
 
         return formatted;
     };

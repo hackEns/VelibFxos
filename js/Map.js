@@ -26,8 +26,17 @@ var Map = (function() {
         var osmGeocoder = new L.Control.OSMGeocoder();
         map.addControl(osmGeocoder);
 
-        // markers
-        console.log('Map', 'init', 'Add markers');
+        window.map.panTo([pos.latitude, pos.longitude]);
+        L.tileLayer(selectedLayer).addTo(window.map);
+
+        console.log('Map', 'init', 'Map built');
+
+        return init;
+    });
+
+    // Add all markers to the Map
+    var addMarkers = (function(pos) {
+        console.log('Map', 'Add markers');
         var stations = Stations.getFullList();
         for(var i=0; i < stations.length; i++) {
             L.marker( stations[i].position, {
@@ -43,16 +52,12 @@ var Map = (function() {
             });
         }
 
-        window.map.panTo([pos.latitude, pos.longitude]);
-        L.tileLayer(selectedLayer).addTo(window.map);
-
-        console.log('Map', 'init', 'Map built');
-
-        return init;
+        return addMarkers;
     });
 
     return {
         init: init,
+        addMarkers: addMarkers
     };
 
 })();
