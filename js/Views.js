@@ -11,7 +11,7 @@ var Views = (function() {
     var footer = {};
     var template = '';
 
-	window.mySwiper = new Swiper('.swiper-container', {       
+	window.mySwiper = new Swiper('.swiper-container', {
 		// general settings
 		hashNav: false,
 		keyboardControl: true,
@@ -22,7 +22,7 @@ var Views = (function() {
 		paginationClickable: true,
 		createPagination: true                
 	});
-	
+
     header = (function() {
 
         header.update = function(viewStruct) {
@@ -34,6 +34,16 @@ var Views = (function() {
             $('#app-bar menu img').attr('src', 'img/' + viewStruct.img + '.svg');
             console.log('Views', viewStruct.view, 'header updated');
         };
+
+        $('#app-bar a').click(function(e) {
+            e.preventDefault();
+            goBack();
+        });
+
+        var goBack = (function() {
+            console.log('Views', viewStruct.view, 'go back');
+            window.history.back()
+        });
 
         return header;
 
@@ -47,11 +57,11 @@ var Views = (function() {
         body.update = function(viewStruct) {
             var clone = '';
 
+            body.clean();
             console.log('Views', viewStruct.view, 'body.update');
             $('main').removeClass().addClass(viewStruct.view);
 
             if ('content' in document.createElement('template')) {
-
                 switch(viewStruct.view) {
                     case "index":
                         template = document.getElementById('index');
@@ -75,7 +85,11 @@ var Views = (function() {
                         initStarredContent();
                         break;
                     case "station":
+                        var stationFormatted = Stations.getFormattedStation(viewStruct.station);
+
                         template = document.getElementById('stationDetail');
+                        template = completeStationDetails(template, stationFormatted);
+
                         var clone = document.importNode(template.content, true);
                         mainSection.appendChild(clone);
                         break;
@@ -85,12 +99,8 @@ var Views = (function() {
                         mainSection.appendChild(clone);
                         break;
                 }
-
             } else {
                 console.log('Views', 'body', 'template is NOT supported');
-                //
-                // should be tested with a creepy browser
-                //
                 switch (viewStruct.view) {
                     case "index":
                         template = $('#index').html();
@@ -112,6 +122,23 @@ var Views = (function() {
                         mainSection.append(template);
                 }
             }
+        };
+
+        // Insert in Station template, details from a specific station
+        var completeStationDetails = function(template, station) {
+            var avail_bike = template.content.querySelector('.bikes');
+            var avail_stands = template.content.querySelector('.stands');
+            var distance = template.content.querySelector('.distance');
+            var position = template.content.querySelector('.position');
+            var last_update = template.content.querySelector('.last_update');
+
+            avail_bike.textContent = station.available_bikes;
+            avail_stands.textContent = station.available_bike_stands;
+            distance.textContent = station.distance;
+            position.textContent = station.position;
+            last_update.textContent = station.last_update;
+
+            return template;
         };
 
         // init the table with starred stations
@@ -149,8 +176,14 @@ var Views = (function() {
     footer = (function() {
 
         var update = function(data) {
-            $("footer").html("<input class='" + data.view + "' type='text' " + (data.value !== "" ? "value='" + data.value + "'" : "") + data.prop + "/><a href='#'><img class='" + data.view + "' alt='" + data.alt + "' src='img/" + data.src + "'/></a>");
-            $("footer").removeClass().addClass(data.view);
+
+            $("footer").removeClass().addClass(data.view).html('');
+
+            if(data.view == 'search') {
+                //
+            } else {
+                $("footer").html("<input class='" + data.view + "' type='text' " + (data.value !== "" ? "value='" + data.value + "'" : "") + data.prop + "/><a href='#'><img class='" + data.view + "' alt='" + data.alt + "' src='img/" + data.src + "'/></a>");
+            }
         };
 
         var disableFooterDisplay = function() {
@@ -210,7 +243,6 @@ var Views = (function() {
         Views.footer.update(viewStruct);
 
         header.update(viewStruct);
-        body.clean();
         body.update(viewStruct);
 
         if (Geolocation.waitPosition(bikes) && Stations.waitList(bikes)) {
@@ -249,8 +281,6 @@ var Views = (function() {
 
         console.log('Views', viewStruct.view, "display page");
         header.update(viewStruct);
-        body.clean();
-        body.update(viewStruct);
 
         if (Geolocation.waitPosition(stands) && Stations.waitList(stands)) {
             console.log('Views', 'stands', 'Geolocation ok');
@@ -278,7 +308,6 @@ var Views = (function() {
 
         console.log('Views', viewStruct.view, "display page");
         header.update(viewStruct);
-        body.clean();
         body.update(viewStruct);
 
         $("tbody tr td").click(function() {
@@ -295,24 +324,38 @@ var Views = (function() {
     };
 
     var station = function() {
-        viewStruct.view = "station";
-        viewStruct.title = "AVENUE DE L'ELYSEE";
-        viewStruct.img = "favori";
-        viewStruct.src = "plus-dark-blue.svg";
-        viewStruct.alt = "plus";
-        viewStruct.value = "Ajouter aux favoris";
-        viewStruct.prop = "readonly";
+        var pathArray = window.location.hash.split('/');
+        var station_id = pathArray[pathArray.length-1];
 
-        Views.footer.update(viewStruct);
+        if (Geolocation.waitPosition(station) && Stations.waitList(station)) {
+            // Allow to get distance between station and current position
+            var stations = Stations.getClosestStations(Geolocation.getPosition());
 
-        console.log('Views', viewStruct.view, "display page");
-        header.update(viewStruct);
-        body.clean();
-        body.update(viewStruct);
+            viewStruct.station = Stations.getStationDetails(station_id)[0];
 
-        Geolocation.noWaitPosition();
-        if (Stations.waitList(search)) {
-            $('.station-info').html('');
+            var station_exist = $.grep(stations, function(v) {
+                return v.number == station_id;
+            });
+
+            // If station doesn't exist : redirection
+            if (station_exist.length == 0) {
+                alert("La station n'existe pas !");
+                console.log("Views.js", "station", "station doesn't exist", station_exist.length);
+                window.location.hash = "/index";
+            } else {
+                viewStruct.view = "station";
+                viewStruct.title = viewStruct.station.address;
+                viewStruct.img = "favori";
+                viewStruct.src = "plus-dark-blue.svg";
+                viewStruct.alt = "plus";
+                viewStruct.value = "Ajouter aux favoris";
+                viewStruct.prop = "readonly";
+
+                console.log('Views', viewStruct.view, "display page");
+                header.update(viewStruct);
+                body.update(viewStruct);
+                footer.update(viewStruct);
+            }
         }
     };
 
@@ -325,21 +368,19 @@ var Views = (function() {
         viewStruct.value = "";
         viewStruct.prop = "placeHolder='Rechercher'";
 
-        Views.footer.update(viewStruct);
-
         console.log('Views', viewStruct.view, "display page");
         header.update(viewStruct);
-        body.clean();
+        body.update(viewStruct);
+        footer.update(viewStruct);
+
+        if(Geolocation.waitPosition(search)) {
+            var pos = Geolocation.getPosition();
+            Map.init(pos);
+            Map.addMarkers(pos);
+        }
+
         $('.station-info, .info').addClass('hidden');
 
-        body.update(viewStruct);
-
-        if( Geolocation.waitPosition(search) ) {
-            console.log('Views', 'search', 'Geolocation ok');
-            Map.init(Geolocation.getPosition());
-        } else {
-            console.log('Views', 'search', 'Looking for geolocation');
-        }
     };
 
     return {
