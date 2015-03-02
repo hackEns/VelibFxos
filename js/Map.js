@@ -19,6 +19,7 @@ var Map = (function() {
             boxZoom: false,
             keyboard: false,
             zoomControl: false,
+            touchZoom: true,
             zoom: 16
         }).setView([pos.latitude, pos.longitude], 16);
 
