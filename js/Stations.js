@@ -82,7 +82,7 @@ var Stations = (function() {
 
     // Computes distances for each stations
     var computeDistances = function(list, coords) {
-        list = full_stations_list.map(function(item) {
+        list = list.map(function(item) {
             item["distance"] = distance(coords, item);
             return item;
         });
@@ -110,7 +110,7 @@ var Stations = (function() {
           return v.number == id;
         });
 
-        console.log('Stations', 'getStationDetails', elements);
+        console.log('Stations', 'getStationDetails', element);
         return element;
     };
 
@@ -172,13 +172,21 @@ var Stations = (function() {
     // Retrieve the up to date list of starred stations
     var getStarredStations = function(coords) {
         var full_starred_stations_list = [];
-        for (var i = 0; i < starred_stations.length; i++) {
-            full_starred_stations_list.push($.grep(full_stations_list.grep, function(item) {
-                return item.id == station_id;
-            }));
-        }
+        starred_stations = JSON.parse(localStorage.getItem('starred_stations'));
+
+        console.log("Stations", "getStarredStations", "full_stations_list", full_stations_list);
+        console.log("Stations", "getStarredStations", "starred_stations_list", starred_stations);
+
+        full_starred_stations_list = $.grep(full_stations_list, function(item) {
+            return starred_stations.indexOf(item.number) != -1;
+        });
+
+        console.log("Stations", "getStarredStations", "full_starred_stations_list", full_starred_stations_list);
+
         full_starred_stations_list = computeDistances(full_starred_stations_list, coords);
         // TODO : Update
+
+        console.log("Stations", "getStarredStations", "full_starred_stations_list_v2", full_starred_stations_list);
         return full_starred_stations_list;
     };
 
