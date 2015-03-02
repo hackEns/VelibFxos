@@ -13,13 +13,12 @@ var Map = (function() {
 
         window.map = L.map('map', {
             dragging: true,
-            touchZoom: false,
-            doubleClickZoom: false,
-            scrollWheelZoom: true,
+            touchZoom: true,
+            doubleClickZoom: true,
+            scrollWheelZoom: false,
             boxZoom: true,
             keyboard: false,
             zoomControl: false,
-            touchZoom: true,
             zoom: 16
         }).setView([pos.latitude, pos.longitude], 16);
 
@@ -47,8 +46,7 @@ var Map = (function() {
             // Set icon for each markers
             myIcon = L.divIcon({
                 className: 'mapIcon',
-                html:  '<div class="avail_bikes">' + stations[i].available_bikes + '</div>'
-                        + '<div class="avail_bike_stands">' + stations[i].available_bike_stands + '</div>'
+                html: '<div class="avail_bikes">' + stations[i].available_bikes + '</div>' + '<div class="avail_bike_stands">' + stations[i].available_bike_stands + '</div>'
             });
 
             // Set markers
