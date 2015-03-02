@@ -59,7 +59,7 @@ var Views = (function() {
 
             body.clean();
             console.log('Views', viewStruct.view, 'body.update');
-            $('main').addClass(viewStruct.view);
+            $('main').removeClass().addClass(viewStruct.view);
 
             if ('content' in document.createElement('template')) {
                 switch(viewStruct.view) {
@@ -224,10 +224,9 @@ var Views = (function() {
         viewStruct.value = "Informations";
         viewStruct.prop = "readonly";
 
-        Views.footer.update(viewStruct);
-
         header.update(viewStruct);
         body.update(viewStruct);
+        footer.update(viewStruct);
 
         if (Geolocation.waitPosition(bikes) && Stations.waitList(bikes)) {
             var stations = Stations.getClosestStations(Geolocation.getPosition(), 10, function(item) {
@@ -254,10 +253,10 @@ var Views = (function() {
         viewStruct.value = "Informations";
         viewStruct.prop = "readonly";
 
-        Views.footer.update(viewStruct);
-
         console.log('Views', viewStruct.view, "display page");
         header.update(viewStruct);
+        body.update(viewStruct);
+        footer.update(viewStruct);
 
         if (Geolocation.waitPosition(stands) && Stations.waitList(stands)) {
             console.log(Stations.getClosestStations(Geolocation.getPosition(), 10, function(item) {
@@ -276,11 +275,10 @@ var Views = (function() {
         viewStruct.value = "Ajouter";
         viewStruct.prop = "readonly";
 
-        Views.footer.update(viewStruct);
-
         console.log('Views', viewStruct.view, "display page");
         header.update(viewStruct);
         body.update(viewStruct);
+        footer.update(viewStruct);
 
         $("tbody tr td").click(function() {
             window.location.hash = "/station";
