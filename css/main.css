@@ -276,32 +276,42 @@ footer.station {
     text-transform: uppercase;
 }
 
-main.bikesContent,
-main.standsContent,
-main.starredContent,
-main.searchContent
+main.bikes,
+main.stands,
+main.starred,
+main.search
 {
-  margin : 10px;
+  margin-top : 10px;
 }
 
-main.bikesContent
+main.bikes section
 {
   border: 2px solid #DC1681;
 }
 
-main.standsContent {
+main.stands {
   border: 2px solid #009BB7;
 }
 
-main.starredContent {
+main.starred {
   border: 2px solid #A54D93;
 }
 
-main.searchContent {
+main.search {
   border: 2px solid #F7AD00;
 }
 
-main.indexContent {
+main.index {
   border: 0px white;
   margin : 0px;
+}
+.map-circle {
+    border-radius: 50%;
+    margin: 10px 10px 10px 10px;
+    background-color: #DDD;
+}
+
+.pagination {
+  margin-top: 30px;
+  margin-bottom: 30px;
 }

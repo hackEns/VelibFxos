@@ -34,12 +34,12 @@
         <!-- Action takes place here -->
         <section></section>
 
-        <!-- swiper element -->
+	<!-- swiper element -->
         <div class="swiper-container">
             <div class="swiper-wrapper"></div>
             <div class="pagination"></div>
         </div>
-
+<!--
         <div class="station-info">
             <p class="center">Chargement en cours…</p>
         </div>
@@ -48,7 +48,7 @@
             <h5 class="info--title">Position</h5>
             <p class="info--content">Recherche de position…</p>
         </div>
-
+-->	
         <!-- index template -->
         <template id="index">
             <div class="station-info">
@@ -69,20 +69,16 @@
 
         <!-- available template -->
         <template id="available">
-            <section>
-                <div class="uppercase">
-                    <p>ADRESSE</p>
-                    <p>0.0km</p>
-                </div>
-                <div class="available-element uppercase">
-                    5 <span>ELEMENT DISPONIBLE</span>
-                </div>
-                <div>
-                    <!-- img starrified -->
-                </div>
-                <div id="map"></div>
-            </section>
-        </template>
+		<div class="uppercase">
+			<p class="adresse"></p>
+			<p class="distance"></p>
+		</div>
+		<div class="available-element uppercase"><span></span></div>
+		<div>
+			<!-- img starrified -->
+		</div>
+		<div class="map-circle" id="map"></div>
+	</template>
 
         <!-- starred template -->
         <template id="starred">
@@ -146,7 +142,7 @@
             </table>
         </template>
     </main>
-
+    
     <footer></footer>
 
     <script src="js/jquery.min.js"></script>

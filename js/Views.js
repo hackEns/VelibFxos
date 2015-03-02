@@ -17,10 +17,10 @@ var Views = (function() {
 		keyboardControl: true,
 		calculateHeight: true,
 		// pagination settings
-		loop: true,
+		//loop: true,
 		pagination: '.pagination',
 		paginationClickable: true,
-		createPagination: true
+		createPagination: true                
 	});
 	
     header = (function() {
@@ -48,13 +48,23 @@ var Views = (function() {
             var clone = '';
 
             console.log('Views', viewStruct.view, 'body.update');
-            $('main').addClass(viewStruct.view);
+            $('main').removeClass().addClass(viewStruct.view);
 
             if ('content' in document.createElement('template')) {
 
                 switch(viewStruct.view) {
                     case "index":
                         template = document.getElementById('index');
+                        var clone = document.importNode(template.content, true);
+                        mainSection.appendChild(clone);
+                        break;
+                    case "bikes":
+                        template = document.getElementById('available');
+                        var clone = document.importNode(template.content, true);
+                        mainSection.appendChild(clone);
+                        break;
+                    case "stands":
+                        template = document.getElementById('available');
                         var clone = document.importNode(template.content, true);
                         mainSection.appendChild(clone);
                         break;
@@ -84,6 +94,12 @@ var Views = (function() {
                 switch (viewStruct.view) {
                     case "index":
                         template = $('#index').html();
+                        mainSection.append(template);
+                    case "bikes":
+                        template = $('#bikes').html();
+                        mainSection.append(template);
+                    case "stands":
+                        template = $('#stands').html();
                         mainSection.append(template);
                     case "starred":
                         template = $('#starred').html();
@@ -198,19 +214,26 @@ var Views = (function() {
         body.update(viewStruct);
 
         if (Geolocation.waitPosition(bikes) && Stations.waitList(bikes)) {
-            var stations = Stations.getClosestStations(Geolocation.getPosition(), 10, function(item) {
+           var stations = Stations.getClosestStations(Geolocation.getPosition(), 10, function(item) {
                 return item.available_bikes > 0;
             });
             console.log(stations);
-
+            
             // Stations slides creation
             var newSlide = '';
             for (var i = 0; i < stations.length; i++) {
                 console.log(stations[i].name);
                 newSlide = window.mySwiper.createSlide('<div>Station ' + stations[i].name + '<br>Vélos disponibles ' + stations[i].available_bikes + '</div>');
                 newSlide.append();
+                $('.available-element').text('Vélos disponibles ' + stations[i].available_bikes);
+                $('.adresse').text('Station ' + stations[i].name);
             }
+            
+            console.log('Views', 'bikes', 'Geolocation ok');
+            Map.init(Geolocation.getPosition());
         }
+        else
+            console.log('Views', 'bikes', 'Looking for geolocation');
     };
 
     var stands = function() {
@@ -227,12 +250,18 @@ var Views = (function() {
         console.log('Views', viewStruct.view, "display page");
         header.update(viewStruct);
         body.clean();
+        body.update(viewStruct);
 
         if (Geolocation.waitPosition(stands) && Stations.waitList(stands)) {
+            console.log('Views', 'stands', 'Geolocation ok');
+            Map.init(Geolocation.getPosition());
             console.log(Stations.getClosestStations(Geolocation.getPosition(), 10, function(item) {
                 return item.available_bike_stands > 0;
             }));
             $('.station-info').html('');
+        }
+        else if (!Geolocation.waitPosition(stands)) {
+            console.log('Views', 'stands', 'Looking for geolocation');
         }
     };
 
