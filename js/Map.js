@@ -15,8 +15,8 @@ var Map = (function() {
             dragging: true,
             touchZoom: false,
             doubleClickZoom: false,
-            scrollWheelZoom: false,
-            boxZoom: false,
+            scrollWheelZoom: true,
+            boxZoom: true,
             keyboard: false,
             zoomControl: false,
             touchZoom: true,
@@ -40,8 +40,20 @@ var Map = (function() {
     var addMarkers = (function(pos) {
         console.log('Map', 'Add markers');
         var stations = Stations.getFullList();
+        var myIcon = '';
+
         for(var i=0; i < stations.length; i++) {
+
+            // Set icon for each markers
+            myIcon = L.divIcon({
+                className: 'mapIcon',
+                html:  '<div class="avail_bikes">' + stations[i].available_bikes + '</div>'
+                        + '<div class="avail_bike_stands">' + stations[i].available_bike_stands + '</div>'
+            });
+
+            // Set markers
             L.marker( stations[i].position, {
+                icon: myIcon,
                 clickable: true,
                 draggable: false,
                 title: stations[i].address,
