@@ -218,6 +218,9 @@ table.station tr td p {
 table.station img.vplus {
     margin-top: 5px;
 }
+table.station img.vplus:hover {
+    cursor: pointer;
+}
 table.station tr td p.title {
     padding-top: 40px;
 }

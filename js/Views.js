@@ -161,13 +161,26 @@ var Views = (function() {
                 tbody.removeChild(tbody.firstChild);
             }
 
-            // boucle de test
-            for (var i = 1; i <= 5; i++) {
-                row.querySelector('td.stations > span').textContent = "My station " + i;
-                row.querySelector('td.stations > span.dist').textContent = i;
-                row.querySelector('td.bikes').textContent = Math.floor((Math.random() * 10) + i);
-                row.querySelector('td.stands').textContent = Math.floor((Math.random() * 10) + i);
-                document.querySelector('table.starred tbody').appendChild(document.importNode(row, true));
+            if(Geolocation.waitPosition(initStarredContent) && Stations.waitList(initStarredContent))
+            {
+                var currentPosition = Geolocation.getPosition();
+                var starredStations = Stations.getStarredStations(currentPosition);
+
+                $.each(starredStations, function(id, station) {
+                    station = Stations.getFormattedStation(station);
+
+                    // Construction du DOM
+                    row.id = station.number;
+                    row.querySelector('td.stations > span').textContent = station.address;
+                    row.querySelector('td.stations > span.dist').textContent = station.distance;
+                    row.querySelector('td.bikes').textContent = station.available_bikes;
+                    row.querySelector('td.stands').textContent = station.available_bike_stands;
+                    document.querySelector('table.starred tbody').appendChild(document.importNode(row, true));
+
+                    $( "#" +  station.number).click(function() {
+                        window.location.hash = "/station/" + station.number;
+                    });
+                });
             }
         };
 
@@ -318,10 +331,6 @@ var Views = (function() {
         body.update(viewStruct);
         footer.update(viewStruct);
 
-        $("tbody tr td").click(function() {
-            window.location.hash = "/station";
-        });
-
         Geolocation.noWaitPosition();
         if (Stations.waitList(starred)) {
             console.log(Stations.getClosestStations(Geolocation.getPosition(), 10, function(item) {
@@ -365,6 +374,14 @@ var Views = (function() {
                 header.update(viewStruct);
                 body.update(viewStruct);
                 footer.update(viewStruct);
+
+                var station_id = window.location.hash.substr(2).split("/")[1];
+
+                // click to starred the station
+                $(".vplus").click(function() {
+                    var returnedStation = Stations.toggleStarStation(station_id);
+                    alert(returnedStation ? "La station " + station_id + " a été ajoutée/retirée." : "Indice invalide");
+                });
             }
         }
     };
