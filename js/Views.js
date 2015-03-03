@@ -143,8 +143,6 @@ var Views = (function() {
                 var currentPosition = Geolocation.getPosition();
                 var starredStations = Stations.getStarredStations(currentPosition);
 
-                console.log("Views", "initStarredContent", starredStations);
-
                 $.each(starredStations, function(id, station) {
                     station = Stations.getFormattedStation(station);
 
@@ -158,7 +156,6 @@ var Views = (function() {
 
                     $( "#" +  station.number).click(function() {
                         window.location.hash = "/station/" + station.number;
-                        console.log("hash de la mort", window.location.hash);
                     });
                 });
             }
