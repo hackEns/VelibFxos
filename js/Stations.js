@@ -120,6 +120,10 @@ var Stations = (function() {
 
         console.log('Station.js', 'getFormattedStation In', station);
 
+        // Station address and number
+        formatted.address = station.address;
+        formatted.number = station.number;
+
         // Availables bikes & stands
         formatted.available_bikes = station.available_bikes;
         formatted.available_bike_stands = station.available_bike_stands;
@@ -212,13 +216,14 @@ var Stations = (function() {
             starred_stations.push(station_id);
         }
         localStorage.setItem('starred_stations', JSON.stringify(starred_stations));
+        console.log("Stations", "toggleStarStation", localStorage.getItem('starred_stations'));
         return true;
     };
 
     // Retrieve the up to date list of starred stations
     var getStarredStations = function(coords) {
         var full_starred_stations_list = [];
-        starred_stations = JSON.parse(localStorage.getItem('starred_stations'));
+        starred_stations = localStorage.getItem('starred_stations') != '' ? JSON.parse(localStorage.getItem('starred_stations')) : new Array();
 
         console.log("Stations", "getStarredStations", "full_stations_list", full_stations_list);
         console.log("Stations", "getStarredStations", "starred_stations_list", starred_stations);
