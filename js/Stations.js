@@ -213,7 +213,7 @@ var Stations = (function() {
             if (starred_stations.length >= window.Config.max_starred_stations) {
                 return false;
             }
-            starred_stations.push(station_id);
+            starred_stations.push(parseInt(station_id));
         }
         localStorage.setItem('starred_stations', JSON.stringify(starred_stations));
         console.log("Stations", "toggleStarStation", localStorage.getItem('starred_stations'));
@@ -223,7 +223,7 @@ var Stations = (function() {
     // Retrieve the up to date list of starred stations
     var getStarredStations = function(coords) {
         var full_starred_stations_list = [];
-        starred_stations = localStorage.getItem('starred_stations') != '' ? JSON.parse(localStorage.getItem('starred_stations')) : new Array();
+        starred_stations = (localStorage.getItem('starred_stations') != '' && localStorage.getItem('starred_stations') != null)  ? JSON.parse(localStorage.getItem('starred_stations')) : new Array();
 
         console.log("Stations", "getStarredStations", "full_stations_list", full_stations_list);
         console.log("Stations", "getStarredStations", "starred_stations_list", starred_stations);
