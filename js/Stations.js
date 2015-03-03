@@ -107,11 +107,57 @@ var Stations = (function() {
     var getStationDetails = function(id) {
         var elements = getFullList();
         var element = $.grep(elements, function(v) {
-          return v.number == id;
+            return v.number == id;
         });
 
         console.log('Stations', 'getStationDetails', element);
         return element;
+    };
+
+    // Returns formatted station informations object
+    var getFormattedStation = function(station) {
+        var formatted = {};
+
+        console.log('Station.js', 'getFormattedStation In', station);
+
+        // Availables bikes & stands
+        formatted.available_bikes = station.available_bikes;
+        formatted.available_bike_stands = station.available_bike_stands;
+
+        // Last update
+        if(station.last_update != null) {
+            var diff = dateDiff(station.last_update);
+            var text = "";
+
+            if (diff.day > 1)
+                text = diff.day + ' jours';
+            else if (diff.day == 1)
+                text = diff.day + ' jour';
+            else if (diff.hour > 1)
+                text = diff.day + ' heures';
+            else if (diff.hour == 1)
+                text = diff.day + ' heure';
+            else if (diff.min > 1)
+                text = diff.day + ' minutes';
+            else if (diff.min == 1)
+                text = diff.day + ' minute';
+            else if (diff.sec > 1)
+                text = diff.day + ' secondes';
+            else if (diff.sec == 1)
+                text = diff.day + ' seconde';
+            else
+                text = 'un instant';
+            formatted.last_update = text;
+        }
+        // distance
+        formatted.distance = (parseFloat(station.distance)/1000).toFixed(2) + " km";
+
+        // lat - lng
+        formatted.position = station.position.lat.toFixed(2) + ' - ' + station.position.lng.toFixed(2);
+
+        console.log('Station.js', 'getFormattedStation Out', formatted);
+
+        return formatted;
     };
 
     // Returns `limit` closest stations with up to date infos and a matching criterion
@@ -204,6 +250,8 @@ var Stations = (function() {
         refresh: refresh,
         waitList: waitList,
         noWaitList: noWaitList,
+        getStationDetails: getStationDetails,
+        getFormattedStation: getFormattedStation,
         getClosestStations: getClosestStations,
         toggleStarStation: toggleStarStation,
         getStarredStations: getStarredStations,
