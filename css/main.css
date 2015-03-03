@@ -46,7 +46,7 @@ main {
     background-color: white;
     border-bottom: 3px solid #979797;
     box-sizing: border-box;
-    padding-top: 4rem;
+    /*padding-top: 4rem;*/
 }
 main.index {
     padding-top: 0 !important;
@@ -321,4 +321,45 @@ footer.station {
 }
 .uppercase {
     text-transform: uppercase;
+}
+
+main.bikes,
+main.stands,
+main.starred,
+main.search
+{
+  margin: 1em;
+}
+
+main.bikes section
+{
+  border: 2px solid #DC1681;
+}
+
+main.stands {
+  border: 2px solid #009BB7;
+}
+
+main.starred {
+  border: 2px solid #A54D93;
+}
+
+main.search {
+  border: 2px solid #F7AD00;
+}
+
+main.index {
+  border: 0px white;
+  margin : 0px;
+}
+
+.map-circle {
+    border-radius: 50%;
+    margin: 10px 10px 10px 10px;
+    background-color: #DDD;
+}
+
+.pagination {
+  margin-top: 30px;
+  margin-bottom: 30px;
 }
