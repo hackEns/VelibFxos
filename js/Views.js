@@ -165,6 +165,7 @@ var Views = (function() {
             {
                 var currentPosition = Geolocation.getPosition();
                 var starredStations = Stations.getStarredStations(currentPosition);
+                console.log('IDE', starredStations);
 
                 $.each(starredStations, function(id, station) {
                     station = Stations.getFormattedStation(station);
@@ -332,7 +333,7 @@ var Views = (function() {
         footer.update(viewStruct);
 
         Geolocation.noWaitPosition();
-        if (Stations.waitList(starred)) {
+        if (Geolocation.waitPosition(starred) && Stations.waitList(starred)) {
             console.log(Stations.getClosestStations(Geolocation.getPosition(), 10, function(item) {
                 return item.starred > 0;
             }));
@@ -380,7 +381,7 @@ var Views = (function() {
                 // click to starred the station
                 $(".vplus").click(function() {
                     var returnedStation = Stations.toggleStarStation(station_id);
-                    alert(returnedStation ? "La station " + station_id + " a été ajoutée/retirée." : "Indice invalide");
+                    //alert(returnedStation ? "La station " + station_id + " a été ajoutée/retirée." : "Indice invalide");
                 });
             }
         }

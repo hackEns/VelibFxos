@@ -46,7 +46,7 @@ main {
     background-color: white;
     border-bottom: 3px solid #979797;
     box-sizing: border-box;
-    /*padding-top: 4rem;*/
+    padding-top: 4rem;
 }
 main.index {
     padding-top: 0 !important;

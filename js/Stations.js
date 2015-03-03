@@ -207,24 +207,35 @@ var Stations = (function() {
 
     // Star / Unstar a station
     var toggleStarStation = function(station_id) {
+        console.log('toggleStarStation', 'starred_stations before', starred_stations);
         var index = starred_stations.indexOf(station_id);
+
+        // Star a new station
         if (index != -1) {
-            starred_stations.splice(index, 1);
-        } else {
+            alert('ANIMATION : station retirée');
+            starred_stations.slice(index, 1);
+        }
+        // Unstar a station from favourites
+        else {
+            //console.log('toggleStarStation', index, 'non-present');
             if (starred_stations.length >= window.Config.max_starred_stations) {
+                console.log('toggleStarStation', index, 'too much stations are starred');
                 return false;
+            } else {
+                alert('ANIMATION : station ajoutée');
+                starred_stations.push(station_id);
             }
-            starred_stations.push(parseInt(station_id));
         }
         localStorage.setItem('starred_stations', JSON.stringify(starred_stations));
-        console.log("Stations", "toggleStarStation", localStorage.getItem('starred_stations'));
+        console.log('toggleStarStation', 'starred_stations after', starred_stations);
+
         return true;
     };
 
     // Retrieve the up to date list of starred stations
     var getStarredStations = function(coords) {
         var full_starred_stations_list = [];
-        starred_stations = (localStorage.getItem('starred_stations') != '' && localStorage.getItem('starred_stations') != null) ? JSON.parse(localStorage.getItem('starred_stations')) : new Array();
+        starred_stations = localStorage.getItem('starred_stations');
 
         console.log("Stations", "getStarredStations", "full_stations_list", full_stations_list);
         console.log("Stations", "getStarredStations", "starred_stations_list", starred_stations);
@@ -234,11 +245,10 @@ var Stations = (function() {
         });
 
         console.log("Stations", "getStarredStations", "full_starred_stations_list", full_starred_stations_list);
+
         full_starred_stations_list = computeDistances(full_starred_stations_list, coords);
 
-        // TODO : Update
         console.log("Stations", "getStarredStations", "full_starred_stations_list_v2", full_starred_stations_list);
-
         return full_starred_stations_list;
     };
 
