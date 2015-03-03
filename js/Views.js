@@ -20,7 +20,16 @@ var Views = (function() {
 		//loop: true,
 		pagination: '.pagination',
 		paginationClickable: true,
-		createPagination: true                
+		createPagination: true,
+                onSlideChangeStart: function(e){
+                    body.update(viewStruct);
+                    Map.init_circle(Geolocation.getPosition());
+                    var station_detail = $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2);
+                    //console.log(station_detail[1]); //get active slide
+                    var active_station = Stations.getStationDetails(station_detail[1]);
+                    
+                    Map.addMarker(Geolocation.getPosition(), active_station);
+                }
 	});
 
     header = (function() {
@@ -257,12 +266,17 @@ var Views = (function() {
                 console.log(stations[i].name);
                 newSlide = window.mySwiper.createSlide('<div>Station ' + stations[i].name + '<br>Vélos disponibles ' + stations[i].available_bikes + '</div>');
                 newSlide.append();
-                $('.available-element').text('Vélos disponibles ' + stations[i].available_bikes);
-                $('.adresse').text('Station ' + stations[i].name);
+                //$('.available-element').text('Vélos disponibles ' + stations[i].available_bikes);
+                //$('.adresse').text('Station ' + stations[i].name);
             }
             
             console.log('Views', 'bikes', 'Geolocation ok');
-            Map.init(Geolocation.getPosition());
+            Map.init_circle(Geolocation.getPosition());
+            
+            var station_detail = $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2);
+            //console.log(station_detail[1]); //get active slide
+            var active_station = Stations.getStationDetails(station_detail[1]);
+            Map.addMarker(Geolocation.getPosition(), active_station);
         }
         else
             console.log('Views', 'bikes', 'Looking for geolocation');
@@ -281,13 +295,14 @@ var Views = (function() {
 
         console.log('Views', viewStruct.view, "display page");
         header.update(viewStruct);
+        body.update(viewStruct);
 
         if (Geolocation.waitPosition(stands) && Stations.waitList(stands)) {
             console.log('Views', 'stands', 'Geolocation ok');
-            Map.init(Geolocation.getPosition());
             console.log(Stations.getClosestStations(Geolocation.getPosition(), 10, function(item) {
                 return item.available_bike_stands > 0;
             }));
+            Map.init_circle(Geolocation.getPosition());
             $('.station-info').html('');
         }
         else if (!Geolocation.waitPosition(stands)) {
@@ -325,14 +340,16 @@ var Views = (function() {
 
     var station = function() {
         var pathArray = window.location.hash.split('/');
+        console.log("pathArray : "+ pathArray);
         var station_id = pathArray[pathArray.length-1];
-
+        console.log("station_id : "+station_id);
+        
         if (Geolocation.waitPosition(station) && Stations.waitList(station)) {
             // Allow to get distance between station and current position
             var stations = Stations.getClosestStations(Geolocation.getPosition());
 
             viewStruct.station = Stations.getStationDetails(station_id)[0];
-
+            console.log("viewStruct.station : "+ viewStruct.station);
             var station_exist = $.grep(stations, function(v) {
                 return v.number == station_id;
             });
