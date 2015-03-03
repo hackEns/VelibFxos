@@ -324,9 +324,7 @@ footer.station {
 }
 
 main.bikes,
-main.stands,
-main.starred,
-main.search
+main.stands
 {
   margin: 1em;
 }
@@ -338,14 +336,6 @@ main.bikes section
 
 main.stands {
   border: 2px solid #009BB7;
-}
-
-main.starred {
-  border: 2px solid #A54D93;
-}
-
-main.search {
-  border: 2px solid #F7AD00;
 }
 
 main.index {
