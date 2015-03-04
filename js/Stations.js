@@ -213,13 +213,12 @@ var Stations = (function() {
         // Star a new station
         if (index != -1) {
             alert('ANIMATION : station retirée');
-            starred_stations.slice(index, 1);
+            starred_stations = starred_stations.slice(index+1);
         }
         // Unstar a station from favourites
         else {
-            //console.log('toggleStarStation', index, 'non-present');
             if (starred_stations.length >= window.Config.max_starred_stations) {
-                console.log('toggleStarStation', index, 'too much stations are starred');
+                console.log('Stations.js', 'toggleStarStation', 'too much stations are starred');
                 return false;
             } else {
                 alert('ANIMATION : station ajoutée');
@@ -271,7 +270,6 @@ var Stations = (function() {
         getClosestStations: getClosestStations,
         toggleStarStation: toggleStarStation,
         getStarredStations: getStarredStations,
-        getStationDetails: getStationDetails,
         getFullList: getFullList
     };
 })();
