@@ -46,9 +46,10 @@ main {
     background-color: white;
     border-bottom: 3px solid #979797;
     box-sizing: border-box;
+    padding-top: 4rem;
 }
-#map {
-    height: 400px;
+main.index {
+    padding-top: 0 !important;
 }
 .station-info {
     padding: 10px;
@@ -217,6 +218,9 @@ table.station tr td p {
 table.station img.vplus {
     margin-top: 5px;
 }
+table.station img.vplus:hover {
+    cursor: pointer;
+}
 table.station tr td p.title {
     padding-top: 40px;
 }
@@ -237,8 +241,6 @@ table.station p.bikes {
 table.station p.stands {
     color: #006FB3;
 }
-
-/* general style */
 
 footer {
     height: 40px;
@@ -288,9 +290,69 @@ footer.search {
 footer.station {
     border-bottom: 5px solid #006FB3;
 }
+
+/*
+ * Map elements
+ */
+ #map {
+     height: 400px;
+ }
+.mapIcon {
+    background: white;
+    display: inline-flex;
+    height: 35px !important;
+    width: 35px !important;
+    opacity: 0.75;
+    border-radius: 20px;
+}
+.mapIcon div {
+    line-height: 30px;
+    margin: auto;
+}
+.mapIcon .avail_bikes {
+    color: #dc1681;
+}
+.mapIcon .avail_bike_stands {
+    color: #009bb7;
+}
+
+/*
+ * Classic elements
+ */
 .hidden {
     display: none;
 }
 .uppercase {
     text-transform: uppercase;
+}
+
+main.bikes,
+main.stands
+{
+  margin: 1em;
+}
+
+main.bikes section
+{
+  border: 2px solid #DC1681;
+}
+
+main.stands {
+  border: 2px solid #009BB7;
+}
+
+main.index {
+  border: 0px white;
+  margin : 0px;
+}
+
+.map-circle {
+    border-radius: 50%;
+    margin: 10px 10px 10px 10px;
+    background-color: #DDD;
+}
+
+.pagination {
+  margin-top: 30px;
+  margin-bottom: 30px;
 }
