@@ -338,8 +338,7 @@ var Views = (function() {
                 body.update(viewStruct);
                 footer.update(viewStruct);
 
-                var station_id = window.location.hash.substr(2).split("/")[1];
-                console.log("LolIloL", station_id);
+                var station_id = parseInt(window.location.hash.substr(2).split("/")[1]);
 
                 $(".vplus").click(function() {
                     var bReturn = Stations.toggleStarStation(station_id);
