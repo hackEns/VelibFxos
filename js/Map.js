@@ -44,7 +44,7 @@ var Map = (function() {
             dragging: true,
             touchZoom: true,
             doubleClickZoom: false,
-            scrollWheelZoom: false,
+            scrollWheelZoom: true,
             boxZoom: true,
             keyboard: false,
             zoomControl: true,
@@ -65,14 +65,22 @@ var Map = (function() {
         var stations = Stations.getFullList();
         var myIcon = '';
 
+        // 1st marker is the current position
+        L.marker([pos.latitude, pos.longitude], {
+            clickable: false,
+            draggable: false,
+            title: "Moi",
+            alt: "Vous êtes ici !"
+        }).addTo(window.map);
+
         for(var i=0; i < stations.length; i++) {
-            // Set icon for each markers
+            // Set icon for each stations
             myIcon = L.divIcon({
                 className: 'mapIcon',
                 html: '<div class="avail_bikes">' + stations[i].available_bikes + '</div>' + '<div class="avail_bike_stands">' + stations[i].available_bike_stands + '</div>'
             });
 
-            // Set markers
+            // Set markers for each stations
             L.marker( stations[i].position, {
                 icon: myIcon,
                 clickable: true,
@@ -87,20 +95,58 @@ var Map = (function() {
             });
         }
 
-        return addMarkers;
+        return true;
+    });
+
+    // Add a marker for any search
+    var addMarkerSearch = (function(position) {
+        console.log('Map', 'addMarkers');
+        var stations = Stations.getFullList();
+        var myIcon = '';
+
+        L.marker([position._initialCenter.lat, position._initialCenter.lng], {
+            clickable: false,
+            draggable: false,
+            title: "Station recherchée",
+            alt: "Je veux aller ici"
+        }).addTo(window.map);
+
+        return true;
     });
 
     // Add markers from position to a station
-    var addMarker = (function(pos, activeStation) {
+    var addMarker = (function(pos, activeStation, view) {
+
+        var startIcon = L.icon({
+            iconUrl: 'js/images/map-my-position.svg',
+            iconSize: [40, 45]
+        });
+
+        // icon is customed according to the view
+        if(view == 'bikes') {
+            var endIcon = L.icon({
+                iconUrl: 'js/images/map-available-bike.svg',
+                iconSize: [40, 45]
+            });
+        } else {
+            var endIcon = L.icon({
+                iconUrl: 'js/images/map-available-stand.svg',
+                iconSize: [40, 45]
+            });
+        }
+
         // 1st marker is the current position
         L.marker([pos.latitude, pos.longitude], {
+            icon: startIcon,
             clickable: false,
             draggable: false,
-            title: 'Vous êtes ici !'
+            title: "Moi",
+            alt: "Vous êtes ici !"
         }).addTo(window.map);
 
         // 2nd marker is the activeStation
         L.marker(activeStation[0].position, {
+            icon: endIcon,
             clickable: true,
             draggable: false,
             title: activeStation[0].address,
@@ -109,13 +155,14 @@ var Map = (function() {
             number: activeStation[0].number
         }).addTo(window.map);
 
-        return addMarker;
+        return true;
     });
 
     return {
         init: init,
         initCircle: initCircle,
         addMarkers: addMarkers,
-        addMarker: addMarker
+        addMarker: addMarker,
+        addMarkerSearch: addMarkerSearch
     };
 })();

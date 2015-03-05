@@ -20,6 +20,9 @@ L.Control.OSMGeocoder = L.Control.extend({
 			second = new L.LatLng(bbox[1], bbox[3]),
 			bounds = new L.LatLngBounds([first, second]);
 			this._map.fitBounds(bounds);
+
+			// IDE - Map have the power to draw a marker
+			Map.addMarkerSearch(this._map.fitBounds(bounds));
 		}
 	},
 
@@ -42,7 +45,7 @@ L.Control.OSMGeocoder = L.Control.extend({
 		var input = this._input = document.createElement('input');
 		input.type = "text";
 		input.placeholder = "Rechercher";
-	
+
 		var submit = document.createElement('input');
 		submit.id = "submit";
 		submit.type = "image";
@@ -72,7 +75,6 @@ L.Control.OSMGeocoder = L.Control.extend({
 
 		// IDE - insert field in the footer.search
 		document.querySelector('footer.search').appendChild(form);
-
 		return container;
 	},
 

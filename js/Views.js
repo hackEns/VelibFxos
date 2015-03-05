@@ -27,7 +27,7 @@ var Views = (function() {
             var station_detail = $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2);
 
             var active_station = Stations.getStationDetails(station_detail[1]); // get details from the active slide
-            Map.addMarker(Geolocation.getPosition(), active_station);
+            Map.addMarker(Geolocation.getPosition(), active_station, viewStruct.view);
         }
 	});
 
@@ -50,7 +50,7 @@ var Views = (function() {
 
         var goBack = (function() {
             console.log('Views', viewStruct.view, 'go back');
-            window.history.back()
+            window.location.hash = '/';
         });
 
         return header;
@@ -172,7 +172,7 @@ var Views = (function() {
 
                     // Construction du DOM
                     row.id = station.number;
-                    row.querySelector('td.stations > span').textContent = station.address;
+                    row.querySelector('td.stations > div').textContent = station.address;
                     row.querySelector('td.stations > span.dist').textContent = station.distance;
                     row.querySelector('td.bikes').textContent = station.available_bikes;
                     row.querySelector('td.stands').textContent = station.available_bike_stands;
@@ -203,6 +203,8 @@ var Views = (function() {
 
             if(data.view == 'search') {
                 //
+            } else if(data.view == 'starred') {
+                $("footer").html('<div>Ajouter</div><input src="img/plus-violet.svg" id="submit" type="image">');
             } else {
                 $("footer").html("<input class='" + data.view + "' type='text' " + (data.value !== "" ? "value='" + data.value + "'" : "") + data.prop + "/><a href='#'><img class='" + data.view + "' alt='" + data.alt + "' src='img/" + data.src + "'/></a>");
             }
@@ -285,7 +287,7 @@ var Views = (function() {
 
             var station_detail = $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2);
             var active_station = Stations.getStationDetails(station_detail[1]); // get details for the active slide
-            Map.addMarker(Geolocation.getPosition(), active_station);
+            Map.addMarker(Geolocation.getPosition(), active_station, viewStruct.view);
         }
         else
             console.log('Views', 'bikes', 'Looking for geolocation');
@@ -306,12 +308,25 @@ var Views = (function() {
         footer.update(viewStruct);
 
         if (Geolocation.waitPosition(stands) && Stations.waitList(stands)) {
-            console.log('Views', 'stands', 'Geolocation ok');
-            console.log(Stations.getClosestStations(Geolocation.getPosition(), 10, function(item) {
+            var stations = Stations.getClosestStations(Geolocation.getPosition(), 10, function(item) {
                 return item.available_bike_stands > 0;
-            }));
+            });
+            console.log(stations);
+
+            // Stations slides creation
+            var newSlide = '';
+            for (var i = 0; i < stations.length; i++) {
+                console.log(stations[i].name);
+                newSlide = window.mySwiper.createSlide('<div>Station ' + stations[i].name + '<br>Bornes disponibles ' + stations[i].available_bikes + '</div>');
+                newSlide.append();
+                //$('.available-element').text('Vélos disponibles ' + stations[i].available_bikes);
+                //$('.adresse').text('Station ' + stations[i].name);
+            }
             Map.initCircle(Geolocation.getPosition());
-            $('.station-info').html('');
+
+            var station_detail = $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2);
+            var active_station = Stations.getStationDetails(station_detail[1]); // get details for the active slide
+            Map.addMarker(Geolocation.getPosition(), active_station, viewStruct.view);
         }
         else if (!Geolocation.waitPosition(stands)) {
             console.log('Views', 'stands', 'Looking for geolocation');

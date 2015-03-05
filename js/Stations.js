@@ -208,22 +208,21 @@ var Stations = (function() {
     // Star / Unstar a station
     var toggleStarStation = function(station_id) {
         console.log('toggleStarStation', 'starred_stations before', starred_stations);
-        var index = starred_stations.indexOf(station_id);
+        var index = starred_stations.indexOf(parseInt(station_id));
 
         // Star a new station
         if (index != -1) {
             alert('ANIMATION : station retirée');
-            starred_stations.slice(index, 1);
+            starred_stations = starred_stations.slice(index+1);
         }
         // Unstar a station from favourites
         else {
-            //console.log('toggleStarStation', index, 'non-present');
-            if (starred_stations.length >= window.Config.max_starred_stations) {
-                console.log('toggleStarStation', index, 'too much stations are starred');
+            if (starred_stations.length > window.Config.max_starred_stations) {
+                console.log('Stations.js', 'toggleStarStation', 'too much stations are starred');
                 return false;
-            } else {
+            } else if (starred_stations.length <= window.Config.max_starred_stations) {
                 alert('ANIMATION : station ajoutée');
-                starred_stations.push(station_id);
+                starred_stations.push(parseInt(station_id));
             }
         }
         localStorage.setItem('starred_stations', JSON.stringify(starred_stations));
@@ -271,7 +270,6 @@ var Stations = (function() {
         getClosestStations: getClosestStations,
         toggleStarStation: toggleStarStation,
         getStarredStations: getStarredStations,
-        getStationDetails: getStationDetails,
         getFullList: getFullList
     };
 })();
