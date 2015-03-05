@@ -65,14 +65,22 @@ var Map = (function() {
         var stations = Stations.getFullList();
         var myIcon = '';
 
+        // 1st marker is the current position
+        L.marker([pos.latitude, pos.longitude], {
+            clickable: false,
+            draggable: false,
+            title: "Moi",
+            alt: "Vous êtes ici !"
+        }).addTo(window.map);
+
         for(var i=0; i < stations.length; i++) {
-            // Set icon for each markers
+            // Set icon for each stations
             myIcon = L.divIcon({
                 className: 'mapIcon',
                 html: '<div class="avail_bikes">' + stations[i].available_bikes + '</div>' + '<div class="avail_bike_stands">' + stations[i].available_bike_stands + '</div>'
             });
 
-            // Set markers
+            // Set markers for each stations
             L.marker( stations[i].position, {
                 icon: myIcon,
                 clickable: true,
@@ -96,7 +104,8 @@ var Map = (function() {
         L.marker([pos.latitude, pos.longitude], {
             clickable: false,
             draggable: false,
-            title: 'Vous êtes ici !'
+            title: "Moi",
+            alt: "Vous êtes ici !"
         }).addTo(window.map);
 
         // 2nd marker is the activeStation
