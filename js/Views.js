@@ -50,7 +50,7 @@ var Views = (function() {
 
         var goBack = (function() {
             console.log('Views', viewStruct.view, 'go back');
-            window.history.back()
+            window.location.hash = '/';
         });
 
         return header;
@@ -172,7 +172,7 @@ var Views = (function() {
 
                     // Construction du DOM
                     row.id = station.number;
-                    row.querySelector('td.stations > span').textContent = station.address;
+                    row.querySelector('td.stations > div').textContent = station.address;
                     row.querySelector('td.stations > span.dist').textContent = station.distance;
                     row.querySelector('td.bikes').textContent = station.available_bikes;
                     row.querySelector('td.stands').textContent = station.available_bike_stands;
@@ -203,6 +203,8 @@ var Views = (function() {
 
             if(data.view == 'search') {
                 //
+            } else if(data.view == 'starred') {
+                $("footer").html('<div>Ajouter</div><input src="img/plus-violet.svg" id="submit" type="image">');
             } else {
                 $("footer").html("<input class='" + data.view + "' type='text' " + (data.value !== "" ? "value='" + data.value + "'" : "") + data.prop + "/><a href='#'><img class='" + data.view + "' alt='" + data.alt + "' src='img/" + data.src + "'/></a>");
             }
