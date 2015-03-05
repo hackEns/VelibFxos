@@ -198,7 +198,7 @@ section[role="region"] > header:first-child .icon.icon-close {
 }
 
 section[role="region"] > header:first-child .icon.icon-back {
-  background-image: url(headers/images/icons/back.png);
+  background-image: url(headers/images/icons/back.svg);
   padding: 0 0.3rem;
 }
 
