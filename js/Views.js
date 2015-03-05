@@ -27,7 +27,7 @@ var Views = (function() {
             var station_detail = $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2);
 
             var active_station = Stations.getStationDetails(station_detail[1]); // get details from the active slide
-            Map.addMarker(Geolocation.getPosition(), active_station);
+            Map.addMarker(Geolocation.getPosition(), active_station, viewStruct.view);
         }
 	});
 
@@ -287,7 +287,7 @@ var Views = (function() {
 
             var station_detail = $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2);
             var active_station = Stations.getStationDetails(station_detail[1]); // get details for the active slide
-            Map.addMarker(Geolocation.getPosition(), active_station);
+            Map.addMarker(Geolocation.getPosition(), active_station, viewStruct.view);
         }
         else
             console.log('Views', 'bikes', 'Looking for geolocation');
@@ -308,12 +308,25 @@ var Views = (function() {
         footer.update(viewStruct);
 
         if (Geolocation.waitPosition(stands) && Stations.waitList(stands)) {
-            console.log('Views', 'stands', 'Geolocation ok');
-            console.log(Stations.getClosestStations(Geolocation.getPosition(), 10, function(item) {
+            var stations = Stations.getClosestStations(Geolocation.getPosition(), 10, function(item) {
                 return item.available_bike_stands > 0;
-            }));
+            });
+            console.log(stations);
+
+            // Stations slides creation
+            var newSlide = '';
+            for (var i = 0; i < stations.length; i++) {
+                console.log(stations[i].name);
+                newSlide = window.mySwiper.createSlide('<div>Station ' + stations[i].name + '<br>Bornes disponibles ' + stations[i].available_bikes + '</div>');
+                newSlide.append();
+                //$('.available-element').text('Vélos disponibles ' + stations[i].available_bikes);
+                //$('.adresse').text('Station ' + stations[i].name);
+            }
             Map.initCircle(Geolocation.getPosition());
-            $('.station-info').html('');
+
+            var station_detail = $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2);
+            var active_station = Stations.getStationDetails(station_detail[1]); // get details for the active slide
+            Map.addMarker(Geolocation.getPosition(), active_station, viewStruct.view);
         }
         else if (!Geolocation.waitPosition(stands)) {
             console.log('Views', 'stands', 'Looking for geolocation');
