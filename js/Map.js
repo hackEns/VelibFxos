@@ -15,9 +15,9 @@ var Map = (function() {
             dragging: true,
             touchZoom: true,
             doubleClickZoom: true,
-            scrollWheelZoom: false,
+            scrollWheelZoom: true,
             boxZoom: true,
-            keyboard: false,
+            keyboard: true,
             zoomControl: false,
             zoom: 16
         }).setView([pos.latitude, pos.longitude], 16);
