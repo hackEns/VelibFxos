@@ -23,11 +23,11 @@ var Views = (function() {
 		createPagination: true,
         onSlideChangeStart: function(e){
             body.update(viewStruct);
-            Map.initCircle(Geolocation.getPosition());
+            RoadMap.initCircle(Geolocation.getPosition());
             var station_detail = $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2);
 
             var active_station = Stations.getStationDetails(station_detail[1]); // get details from the active slide
-            Map.addMarker(Geolocation.getPosition(), active_station, viewStruct.view);
+            RoadMap.addMarker(Geolocation.getPosition(), active_station, viewStruct.view);
         }
 	});
 
@@ -283,11 +283,11 @@ var Views = (function() {
                 //$('.available-element').text('Vélos disponibles ' + stations[i].available_bikes);
                 //$('.adresse').text('Station ' + stations[i].name);
             }
-            Map.initCircle(Geolocation.getPosition());
+            RoadMap.initCircle(Geolocation.getPosition());
 
             var station_detail = $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2);
             var active_station = Stations.getStationDetails(station_detail[1]); // get details for the active slide
-            Map.addMarker(Geolocation.getPosition(), active_station, viewStruct.view);
+            RoadMap.addMarker(Geolocation.getPosition(), active_station, viewStruct.view);
         }
         else
             console.log('Views', 'bikes', 'Looking for geolocation');
@@ -322,11 +322,11 @@ var Views = (function() {
                 //$('.available-element').text('Vélos disponibles ' + stations[i].available_bikes);
                 //$('.adresse').text('Station ' + stations[i].name);
             }
-            Map.initCircle(Geolocation.getPosition());
+            RoadMap.initCircle(Geolocation.getPosition());
 
             var station_detail = $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2);
             var active_station = Stations.getStationDetails(station_detail[1]); // get details for the active slide
-            Map.addMarker(Geolocation.getPosition(), active_station, viewStruct.view);
+            RoadMap.addMarker(Geolocation.getPosition(), active_station, viewStruct.view);
         }
         else if (!Geolocation.waitPosition(stands)) {
             console.log('Views', 'stands', 'Looking for geolocation');
@@ -416,12 +416,12 @@ var Views = (function() {
         body.update(viewStruct);
         footer.update(viewStruct);
 
-        Map.init();
-        Map.addMarkers();
+        RoadMap.init();
+        RoadMap.addMarkers();
 
         if(Geolocation.waitPosition(search)) {
             var pos = Geolocation.getPosition();
-            Map.addMarkerPosition(pos);
+            RoadMap.addMarkerPosition(pos);
         }
 
         $('.station-info, .info').addClass('hidden');
