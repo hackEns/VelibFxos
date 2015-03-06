@@ -3,6 +3,7 @@
  * ---------------------------------- */
 section[role="region"] > header:first-child {
   position: fixed;
+  top: 0;
   z-index: 10;
   padding: 0;
   height: 4rem;
@@ -197,7 +198,7 @@ section[role="region"] > header:first-child .icon.icon-close {
 }
 
 section[role="region"] > header:first-child .icon.icon-back {
-  background-image: url(headers/images/icons/back.png);
+  background-image: url(headers/images/icons/back.svg);
   padding: 0 0.3rem;
 }
 
