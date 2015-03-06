@@ -7,7 +7,7 @@
 var Map = (function() {
 
     // Init the map
-    var init = (function(pos) {
+    var init = (function() {
         console.log('Map', 'init', 'Map under construction');
         var selectedLayer = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 
@@ -20,14 +20,13 @@ var Map = (function() {
             keyboard: true,
             zoomControl: false,
             zoom: 16
-        }).setView([pos.latitude, pos.longitude], 16);
+        }).setView([48.842206, 2.345169], 16); // default position if there is no geolocation
 
         // search plugin
         console.log('Map', 'init', 'Search plugin is available');
         var osmGeocoder = new L.Control.OSMGeocoder();
         map.addControl(osmGeocoder);
 
-        window.map.panTo([pos.latitude, pos.longitude]);
         L.tileLayer(selectedLayer).addTo(window.map);
 
         console.log('Map', 'init', 'Map built');
@@ -51,7 +50,7 @@ var Map = (function() {
             zoom: 16
         }).setView([pos.latitude, pos.longitude], 16);
 
-        window.map.panTo([pos.latitude, pos.longitude]);
+        //window.map.panTo([pos.latitude, pos.longitude]);
         L.tileLayer(selectedLayer).addTo(window.map);
 
         console.log('Map', 'init_circl', 'Map built');
@@ -60,18 +59,10 @@ var Map = (function() {
     });
 
     // Add all markers to the Map
-    var addMarkers = (function(pos) {
+    var addMarkers = (function() {
         console.log('Map', 'addMarkers');
         var stations = Stations.getFullList();
         var myIcon = '';
-
-        // 1st marker is the current position
-        L.marker([pos.latitude, pos.longitude], {
-            clickable: false,
-            draggable: false,
-            title: "Moi",
-            alt: "Vous êtes ici !"
-        }).addTo(window.map);
 
         for(var i=0; i < stations.length; i++) {
             // Set icon for each stations
@@ -98,6 +89,18 @@ var Map = (function() {
         return true;
     });
 
+    // Add a marker for the current position
+    var addMarkerPosition = (function(pos) {
+        L.marker([pos.latitude, pos.longitude], {
+            clickable: false,
+            draggable: false,
+            title: "Moi",
+            alt: "Vous êtes ici !"
+        }).addTo(window.map);
+
+        window.map.panTo([pos.latitude, pos.longitude]);
+    });
+
     // Add a marker for any search
     var addMarkerSearch = (function(position) {
         console.log('Map', 'addMarkers');
@@ -122,7 +125,7 @@ var Map = (function() {
             iconSize: [40, 45]
         });
 
-        // icon is customed according to the view
+        // icon is customized according to the view
         if(view == 'bikes') {
             var endIcon = L.icon({
                 iconUrl: 'js/images/map-available-bike.svg',
@@ -163,6 +166,7 @@ var Map = (function() {
         initCircle: initCircle,
         addMarkers: addMarkers,
         addMarker: addMarker,
-        addMarkerSearch: addMarkerSearch
+        addMarkerSearch: addMarkerSearch,
+        addMarkerPosition: addMarkerPosition
     };
 })();

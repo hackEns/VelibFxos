@@ -416,10 +416,12 @@ var Views = (function() {
         body.update(viewStruct);
         footer.update(viewStruct);
 
+        Map.init();
+        Map.addMarkers();
+
         if(Geolocation.waitPosition(search)) {
             var pos = Geolocation.getPosition();
-            Map.init(pos);
-            Map.addMarkers(pos);
+            Map.addMarkerPosition(pos);
         }
 
         $('.station-info, .info').addClass('hidden');
