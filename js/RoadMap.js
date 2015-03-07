@@ -1,46 +1,45 @@
 "use strict";
 
 /********
- * Map
+ * RoadMap
  ********/
 
-var Map = (function() {
+var RoadMap = (function() {
 
-    // Init the map
-    var init = (function(pos) {
-        console.log('Map', 'init', 'Map under construction');
+    // Init the roadMap
+    var init = (function() {
+        console.log('RoadMap', 'init', 'RoadMap under construction');
         var selectedLayer = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 
-        window.map = L.map('map', {
+        window.roadMap = L.map('map', {
             dragging: true,
             touchZoom: true,
             doubleClickZoom: true,
-            scrollWheelZoom: false,
+            scrollWheelZoom: true,
             boxZoom: true,
-            keyboard: false,
+            keyboard: true,
             zoomControl: false,
             zoom: 16
-        }).setView([pos.latitude, pos.longitude], 16);
+        }).setView([48.842206, 2.345169], 16); // default position if there is no geolocation
 
         // search plugin
-        console.log('Map', 'init', 'Search plugin is available');
+        console.log('RoadMap', 'init', 'Search plugin is available');
         var osmGeocoder = new L.Control.OSMGeocoder();
-        map.addControl(osmGeocoder);
+        roadMap.addControl(osmGeocoder);
 
-        window.map.panTo([pos.latitude, pos.longitude]);
-        L.tileLayer(selectedLayer).addTo(window.map);
+        L.tileLayer(selectedLayer).addTo(window.roadMap);
 
-        console.log('Map', 'init', 'Map built');
+        console.log('RoadMap', 'init', 'RoadMap built');
 
         return init;
     });
 
     // Init map for bikes and stands view
     var initCircle = (function(pos) {
-        console.log('Map', 'init_circl', 'Map under construction');
+        console.log('RoadMap', 'init_circl', 'RoadMap under construction');
         var selectedLayer = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 
-        window.map = L.map('map', {
+        window.roadMap = L.map('map', {
             dragging: true,
             touchZoom: true,
             doubleClickZoom: false,
@@ -51,27 +50,19 @@ var Map = (function() {
             zoom: 16
         }).setView([pos.latitude, pos.longitude], 16);
 
-        window.map.panTo([pos.latitude, pos.longitude]);
-        L.tileLayer(selectedLayer).addTo(window.map);
+        //window.roadMap.panTo([pos.latitude, pos.longitude]);
+        L.tileLayer(selectedLayer).addTo(window.roadMap);
 
-        console.log('Map', 'init_circl', 'Map built');
+        console.log('RoadMap', 'init_circl', 'RoadMap built');
 
         return initCircle;
     });
 
     // Add all markers to the Map
-    var addMarkers = (function(pos) {
-        console.log('Map', 'addMarkers');
+    var addMarkers = (function() {
+        console.log('RoadMap', 'addMarkers');
         var stations = Stations.getFullList();
         var myIcon = '';
-
-        // 1st marker is the current position
-        L.marker([pos.latitude, pos.longitude], {
-            clickable: false,
-            draggable: false,
-            title: "Moi",
-            alt: "Vous êtes ici !"
-        }).addTo(window.map);
 
         for(var i=0; i < stations.length; i++) {
             // Set icon for each stations
@@ -89,7 +80,7 @@ var Map = (function() {
                 alt: stations[i].name,
                 address: stations[i].address,
                 number: stations[i].number
-            }).addTo(window.map).on('click', function (e) {
+            }).addTo(window.roadMap).on('click', function (e) {
                 // Click on marker for more details about the station
                 window.location.hash = "/station/" + e.target.options.number;
             });
@@ -98,9 +89,21 @@ var Map = (function() {
         return true;
     });
 
+    // Add a marker for the current position
+    var addMarkerPosition = (function(pos) {
+        L.marker([pos.latitude, pos.longitude], {
+            clickable: false,
+            draggable: false,
+            title: "Moi",
+            alt: "Vous êtes ici !"
+        }).addTo(window.roadMap);
+
+        window.roadMap.panTo([pos.latitude, pos.longitude]);
+    });
+
     // Add a marker for any search
     var addMarkerSearch = (function(position) {
-        console.log('Map', 'addMarkers');
+        console.log('RoadMap', 'addMarkers');
         var stations = Stations.getFullList();
         var myIcon = '';
 
@@ -109,7 +112,7 @@ var Map = (function() {
             draggable: false,
             title: "Station recherchée",
             alt: "Je veux aller ici"
-        }).addTo(window.map);
+        }).addTo(window.roadMap);
 
         return true;
     });
@@ -122,7 +125,7 @@ var Map = (function() {
             iconSize: [40, 45]
         });
 
-        // icon is customed according to the view
+        // icon is customized according to the view
         if(view == 'bikes') {
             var endIcon = L.icon({
                 iconUrl: 'js/images/map-available-bike.svg',
@@ -142,7 +145,7 @@ var Map = (function() {
             draggable: false,
             title: "Moi",
             alt: "Vous êtes ici !"
-        }).addTo(window.map);
+        }).addTo(window.roadMap);
 
         // 2nd marker is the activeStation
         L.marker(activeStation[0].position, {
@@ -153,7 +156,7 @@ var Map = (function() {
             alt: activeStation[0].name,
             address: activeStation[0].address,
             number: activeStation[0].number
-        }).addTo(window.map);
+        }).addTo(window.roadMap);
 
         return true;
     });
@@ -163,6 +166,7 @@ var Map = (function() {
         initCircle: initCircle,
         addMarkers: addMarkers,
         addMarker: addMarker,
-        addMarkerSearch: addMarkerSearch
+        addMarkerSearch: addMarkerSearch,
+        addMarkerPosition: addMarkerPosition
     };
 })();
