@@ -34,7 +34,7 @@
         <!-- Action takes place here -->
         <section></section>
 
-	<!-- swiper element -->
+        <!-- swiper element -->
         <div class="swiper-container">
             <div class="swiper-wrapper"></div>
             <div class="pagination"></div>
@@ -52,16 +52,20 @@
         <!-- index template -->
         <template id="index">
             <div class="station-info">
-                <div class="entry bikes"><span>vélos<br/>disponibles</span>
+                <div class="entry bikes">
+                    <span>vélos<br/>disponibles</span>
                     <img class="entry--logo" alt="" src="img/velib.svg" />
                 </div>
-                <div class="entry stands"><span>places<br/>libres</span>
+                <div class="entry stands">
+                    <span>places<br/>libres</span>
                     <img class="entry--logo" alt="" src="img/borne.svg" />
                 </div>
-                <div class="entry starred"><span>Favoris</span>
+                <div class="entry starred">
+                    <span>Favoris</span>
                     <img class="entry--logo" alt="" src="img/favori.svg" />
                 </div>
-                <div class="entry search"><span>Rechercher</span>
+                <div class="entry search">
+                    <span>Rechercher</span>
                     <img class="entry--logo" alt="" src="img/loupe.svg" />
                 </div>
             </div>
@@ -69,16 +73,16 @@
 
         <!-- available template -->
         <template id="available">
-		<div class="uppercase">
-			<p class="adresse"></p>
-			<p class="distance"></p>
-		</div>
-		<div class="available-element uppercase"><span></span></div>
-		<div>
-			<!-- img starrified -->
-		</div>
-		<div class="map-circle" id="map"></div>
-	</template>
+            <div class="uppercase">
+                <p class="adresse"></p>
+                <p class="distance"></p>
+            </div>
+            <div class="available-element uppercase"><span></span></div>
+            <div>
+                <!-- img starrified -->
+            </div>
+            <div class="map-circle" id="map"></div>
+        </template>
 
         <!-- starred template -->
         <template id="starred">
@@ -87,10 +91,10 @@
                     <tr>
                         <td>Station</td>
                         <td class="center">
-                            <img class="entry--logo" alt="" src="img/velib-pink.svg">
+                            <img class="entry--logo" alt="Vélos" src="img/velib-pink.svg">
                         </td>
                         <td class="center">
-                            <img class="entry--logo" alt="" src="img/borne-blue.svg">
+                            <img class="entry--logo" alt="Places" src="img/borne-blue.svg">
                         </td>
                     </tr>
                 </thead>
@@ -152,13 +156,13 @@
     <script src="js/leaflet.min.js"></script>
 
     <script src="js/utils.js"></script>
-	<script src="js/Config.js"></script>
-	<script src="js/Geolocation.js"></script>
+    <script src="js/Config.js"></script>
+    <script src="js/Geolocation.js"></script>
     <script src="js/RoadMap.js"></script>
     <script src="js/Control.OSMGeocoder.js"></script>
-	<script src="js/Stations.js"></script>
-	<script src="js/Views.js"></script>
-	<script src="js/Router.js"></script>
+    <script src="js/Stations.js"></script>
+    <script src="js/Views.js"></script>
+    <script src="js/Router.js"></script>
     <script src="js/app.js"></script>
 </body>
 

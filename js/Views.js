@@ -9,27 +9,30 @@ var Views = (function() {
     var header = {};
     var body =   {};
     var footer = {};
+    var swiper = {};
     var template = '';
 
-	window.mySwiper = new Swiper('.swiper-container', {
-		// general settings
-		hashNav: false,
-		keyboardControl: true,
-		calculateHeight: true,
-		// pagination settings
-		//loop: true,
-		pagination: '.pagination',
-		paginationClickable: true,
-		createPagination: true,
-        onSlideChangeStart: function(e){
-            body.update(viewStruct);
-            RoadMap.initCircle(Geolocation.getPosition());
-            var station_detail = $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2);
+    var init = function() {
+        swiper = new Swiper('.swiper-container', {
+            // general settings
+            hashNav: false,
+            keyboardControl: true,
+            calculateHeight: true,
+            // pagination settings
+            //loop: true,
+            pagination: '.pagination',
+            paginationClickable: true,
+            createPagination: true,
+            onSlideChangeStart: function(e){
+                body.update(viewStruct);
+                RoadMap.initCircle(Geolocation.getPosition());
+                var station_detail = $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2);
 
-            var active_station = Stations.getStationDetails(station_detail[1]); // get details from the active slide
-            RoadMap.addMarker(Geolocation.getPosition(), active_station, viewStruct.view);
-        }
-	});
+                var active_station = Stations.getStationDetails(station_detail[1]); // get details from the active slide
+                RoadMap.addMarker(Geolocation.getPosition(), active_station, viewStruct.view);
+            }
+        });
+    };
 
     header = (function() {
 
@@ -278,7 +281,7 @@ var Views = (function() {
             var newSlide = '';
             for (var i = 0; i < stations.length; i++) {
                 console.log(stations[i].name);
-                newSlide = window.mySwiper.createSlide('<div>Station ' + stations[i].name + '<br>Vélos disponibles ' + stations[i].available_bikes + '</div>');
+                newSlide = swiper.createSlide('<div>Station ' + stations[i].name + '<br>Vélos disponibles ' + stations[i].available_bikes + '</div>');
                 newSlide.append();
                 //$('.available-element').text('Vélos disponibles ' + stations[i].available_bikes);
                 //$('.adresse').text('Station ' + stations[i].name);
@@ -317,7 +320,7 @@ var Views = (function() {
             var newSlide = '';
             for (var i = 0; i < stations.length; i++) {
                 console.log(stations[i].name);
-                newSlide = window.mySwiper.createSlide('<div>Station ' + stations[i].name + '<br>Bornes disponibles ' + stations[i].available_bikes + '</div>');
+                newSlide = swiper.createSlide('<div>Station ' + stations[i].name + '<br>Bornes disponibles ' + stations[i].available_bikes + '</div>');
                 newSlide.append();
                 //$('.available-element').text('Vélos disponibles ' + stations[i].available_bikes);
                 //$('.adresse').text('Station ' + stations[i].name);
@@ -429,6 +432,7 @@ var Views = (function() {
     };
 
     return {
+        init: init,
         index: index,
         bikes: bikes,
         stands: stands,
