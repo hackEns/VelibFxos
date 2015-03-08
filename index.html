@@ -9,144 +9,181 @@
     <link rel="stylesheet" href="css/normalize.css">
     <link rel="stylesheet" href="css/leaflet.css">
     <link rel="stylesheet" href="css/headers.css">
+    <link rel="stylesheet" href="css/util.css">
     <link rel="stylesheet" href="css/main.css">
 </head>
 
 <body>
 
-    <section role="region">
-        <header id="app-bar">
-            <a href="#"><span class="icon icon-back">back</span></a>
-            <menu type="toolbar">
-                <img class="entry--logo" alt="" src="img/velib.svg" />
-            </menu>
-            <h1>Velib</h1>
-        </header>
+
+
+
+
+    <!-- Action takes place here -->
+    <main></main>
+
+    <!-- swiper element -->
+    <div class="swiper-container">
+        <div class="swiper-wrapper"></div>
+        <div class="pagination"></div>
+    </div>
+
+    <!-- index template -->
+    <template id="index">
         <header id="app-logo">
-            <a href="#">
-                <img alt="Velib'" src="img/logo.svg" class="velib-logo" />
-            </a>
+            <img alt="Velib'" src="img/logo.svg" class="velib-logo" />
         </header>
-    </section>
-
-    <main>
-
-        <!-- Action takes place here -->
-        <section></section>
-
-        <!-- swiper element -->
-        <div class="swiper-container">
-            <div class="swiper-wrapper"></div>
-            <div class="pagination"></div>
-        </div>
-<!--
         <div class="station-info">
-            <p class="center">Chargement en cours…</p>
+            <div class="entry bikes">
+                <span>vélos<br/>disponibles</span>
+                <img class="entry--logo" alt="" src="img/velib.svg" />
+            </div>
+            <div class="entry stands">
+                <span>places<br/>libres</span>
+                <img class="entry--logo" alt="" src="img/borne.svg" />
+            </div>
+            <div class="entry starred">
+                <span>Favoris</span>
+                <img class="entry--logo" alt="" src="img/favori.svg" />
+            </div>
+            <div class="entry search">
+                <span>Rechercher</span>
+                <img class="entry--logo" alt="" src="img/loupe.svg" />
+            </div>
         </div>
+    </template>
 
-        <div class="info">
-            <h5 class="info--title">Position</h5>
-            <p class="info--content">Recherche de position…</p>
-        </div>
--->
-        <!-- index template -->
-        <template id="index">
-            <div class="station-info">
-                <div class="entry bikes">
-                    <span>vélos<br/>disponibles</span>
-                    <img class="entry--logo" alt="" src="img/velib.svg" />
+    <!-- available template -->
+    <template id="available">
+        <section role="region" class="skin-velib">
+            <header id="app-bar" class="fixed">
+                <a href="#"><span class="icon icon-back">back</span></a>
+                <menu type="toolbar">
+                    <button>
+                        <span class="icon icon-velib"></span>
+                    </button>
+                </menu>
+                <h1>Vélos disponibles</h1>
+            </header>
+
+            <article class="content scrollable header">
+                <div class="uppercase">
+                    <p class="adresse"></p>
+                    <p class="distance"></p>
                 </div>
-                <div class="entry stands">
-                    <span>places<br/>libres</span>
-                    <img class="entry--logo" alt="" src="img/borne.svg" />
+                <div class="available-element uppercase"><span></span></div>
+                <div>
+                    <!-- img starrified -->
                 </div>
-                <div class="entry starred">
-                    <span>Favoris</span>
-                    <img class="entry--logo" alt="" src="img/favori.svg" />
-                </div>
-                <div class="entry search">
-                    <span>Rechercher</span>
-                    <img class="entry--logo" alt="" src="img/loupe.svg" />
-                </div>
-            </div>
-        </template>
+                <div class="map-circle" id="map"></div>
+            </article>
+        </section>
+    </template>
 
-        <!-- available template -->
-        <template id="available">
-            <div class="uppercase">
-                <p class="adresse"></p>
-                <p class="distance"></p>
-            </div>
-            <div class="available-element uppercase"><span></span></div>
-            <div>
-                <!-- img starrified -->
-            </div>
-            <div class="map-circle" id="map"></div>
-        </template>
+    <!-- starred template -->
+    <template id="starred">
+        <section role="region" class="skin-starred">
+            <header id="app-bar" class="fixed">
+                <a href="#"><span class="icon icon-back">back</span></a>
+                <menu type="toolbar">
+                    <button>
+                        <span class="icon icon-starred"></span>
+                    </button>
+                </menu>
+                <h1>Favoris</h1>
+            </header>
 
-        <!-- starred template -->
-        <template id="starred">
-            <table class="starred">
-                <thead>
-                    <tr>
-                        <td>Station</td>
-                        <td class="center">
-                            <img class="entry--logo" alt="Vélos" src="img/velib-pink.svg">
-                        </td>
-                        <td class="center">
-                            <img class="entry--logo" alt="Places" src="img/borne-blue.svg">
-                        </td>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="stations">
-                            <div class="uppercase">Station name</div>
-                            <span class="dist">00</span>
-                        </td>
-                        <td class="bikes">0</td>
-                        <td class="stands">0</td>
-                    </tr>
-                </tbody>
-            </table>
-        </template>
+            <article class="content scrollable header">
+                <table class="starred">
+                    <thead>
+                        <tr>
+                            <td>Station</td>
+                            <td class="center">
+                                <img class="entry--logo" alt="Vélos" src="img/velib-pink.svg">
+                            </td>
+                            <td class="center">
+                                <img class="entry--logo" alt="Places" src="img/borne-blue.svg">
+                            </td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="stations">
+                                <div class="uppercase">Station name</div>
+                                <span class="dist">00</span>
+                            </td>
+                            <td class="bikes">0</td>
+                            <td class="stands">0</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </article>
+        </section>
+    </template>
 
-        <!-- search template -->
-        <template id="search">
-            <div id="map"></div>
-        </template>
+    <!-- search template -->
+    <template id="search">
+        <section role="region" class="skin-search">
+            <header id="app-bar" class="fixed">
+                <a href="#"><span class="icon icon-back">back</span></a>
+                <menu type="toolbar">
+                    <button>
+                        <span class="icon icon-search"></span>
+                    </button>
+                </menu>
+                <h1>Rechercher</h1>
+            </header>
 
-        <!-- detail template -->
-        <template id="stationDetail">
-            <table class="station">
-                <tbody>
-                    <tr>
-                        <td><p class="uppercase title">Vélos disponibles</p></td>
-                        <td><p class="uppercase title">Places Libres</p></td></tr>
-                    <tr>
-                        <td><p class="bikes">0</p></td>
-                        <td><p class="stands">0</p></td>
-                    </tr>
-                    <tr>
-                        <td><p class="uppercase title">Station V+</p></td>
-                        <td><p class="uppercase title">Distance</p></td>
-                    </tr>
-                    <tr>
-                        <td><img class="entry--logo vplus" alt="" src="img/v-plus.svg" /></td>
-                        <td><p class="distance">0 km</p></td>
-                    </tr>
-                    <tr>
-                        <td><p class="uppercase title">Position</p></td>
-                        <td><p class="uppercase title">Mise à jour</p></td>
-                    </tr>
-                    <tr>
-                        <td><p class="position">00.00</p></td>
-                        <td><p>Il y a <span class="last_update"></span></p></td>
-                    </tr>
-                </tbody>
-            </table>
-        </template>
-    </main>
+            <article class="content scrollable header full-width">
+                <div id="map"></div>
+            </article>
+        </section>
+    </template>
+
+    <!-- detail template -->
+    <template id="stationDetail">
+        <section role="region" class="skin-station">
+            <header id="app-bar" class="fixed">
+                <a href="#"><span class="icon icon-back">back</span></a>
+                <menu type="toolbar">
+                    <button>
+                        <span class="icon icon-station"></span>
+                    </button>
+                </menu>
+                <h1>Rechercher</h1>
+            </header>
+
+            <article class="content scrollable header full-width">
+                <table class="station">
+                    <tbody>
+                        <tr>
+                            <td><p class="uppercase title">Vélos disponibles</p></td>
+                            <td><p class="uppercase title">Places Libres</p></td></tr>
+                        <tr>
+                            <td><p class="bikes">0</p></td>
+                            <td><p class="stands">0</p></td>
+                        </tr>
+                        <tr>
+                            <td><p class="uppercase title">Station V+</p></td>
+                            <td><p class="uppercase title">Distance</p></td>
+                        </tr>
+                        <tr>
+                            <td><img class="entry--logo vplus" alt="" src="img/v-plus.svg" /></td>
+                            <td><p class="distance">0 km</p></td>
+                        </tr>
+                        <tr>
+                            <td><p class="uppercase title">Position</p></td>
+                            <td><p class="uppercase title">Mise à jour</p></td>
+                        </tr>
+                        <tr>
+                            <td><p class="position">00.00</p></td>
+                            <td><p>Il y a <span class="last_update"></span></p></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </article>
+        </section>
+    </template>
 
     <footer></footer>
 

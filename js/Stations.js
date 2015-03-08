@@ -28,7 +28,7 @@ var Stations = (function() {
         try {
             full_stations_list = JSON.parse(localStorage.getItem('stations'));
         } catch (e) {
-            full_stations_list = null;
+            full_stations_list = [];
         }
 
         try {

@@ -42,15 +42,13 @@ body {
     overflow-y: auto;
     background-color: white;
 }
+
 main {
     background-color: white;
     border-bottom: 3px solid #979797;
     box-sizing: border-box;
-    padding-top: 4rem;
 }
-main.index {
-    padding-top: 0 !important;
-}
+
 .station-info {
     padding: 10px;
 }
@@ -69,8 +67,11 @@ main.index {
     color: #545454;
 }
 .velib-logo {
-    margin: 1em auto;
+    margin: 0 auto;
     display: block;
+}
+#app-logo {
+    padding: 2em 0;
 }
 .station-info .entry {
     display: flex;
@@ -332,18 +333,12 @@ footer.station {
     text-transform: uppercase;
 }
 
-main.bikes,
-main.stands
-{
-  margin: 1em;
-}
 
-main.bikes section
-{
+main.bikes section {
   border: 2px solid #DC1681;
 }
 
-main.stands {
+main.stands section {
   border: 2px solid #009BB7;
 }
 
@@ -361,4 +356,62 @@ main.index {
 .pagination {
   margin-top: 30px;
   margin-bottom: 30px;
+}
+
+
+/* ---------- Layout ---------- */
+
+.full-width {
+    padding: 0;
+}
+
+/* ---------- Header ---------- */
+
+section[role="region"] > header:first-child .icon-velib {
+    background-image: url('../img/velib.svg');
+}
+
+section.skin-velib[role="region"] > header:first-child,
+.skin-velib > section[role="region"] > header:first-child {
+    background-color: #dc1681;
+}
+
+
+section[role="region"] > header:first-child .icon-starred {
+    background-image: url('../img/star.svg');
+}
+
+section.skin-starred[role="region"] > header:first-child,
+.skin-starred > section[role="region"] > header:first-child {
+    background-color: #a54d93;
+}
+
+
+section[role="region"] > header:first-child .icon-search {
+    background-image: url('../img/search.svg');
+}
+
+section.skin-search[role="region"] > header:first-child,
+.skin-search > section[role="region"] > header:first-child {
+    background-color: #f7ad00;
+}
+
+
+section[role="region"] > header:first-child .icon-station {
+    background-image: url('../img/station.svg');
+}
+
+section.skin-station[role="region"] > header:first-child,
+.skin-station > section[role="region"] > header:first-child {
+    background-color: #006fb3;
+}
+
+
+section[role="region"] > header:first-child .icon-stands {
+    background-image: url('../img/stand.svg');
+}
+
+section.skin-stands[role="region"] > header:first-child,
+.skin-stands > section[role="region"] > header:first-child {
+    background-color: #009bb7;
 }

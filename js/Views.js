@@ -11,7 +11,7 @@ var Views = (function() {
     var footer = {};
     var swiper = {};
     var template = '';
-
+    var defaultMainClass = '';
     var init = function() {
         swiper = new Swiper('.swiper-container', {
             // general settings
@@ -46,6 +46,14 @@ var Views = (function() {
             console.log('Views', viewStruct.view, 'header updated');
         };
 
+        header.disableHeaderDisplay = function() {
+            $("#header").addClass("hidden");
+        };
+
+        header.enableHeaderDisplay = function() {
+            $("#header").removeClass("hidden");
+        };
+
         $('#app-bar a').click(function(e) {
             e.preventDefault();
             goBack();
@@ -62,7 +70,7 @@ var Views = (function() {
 
     body = (function() {
         // mainSection is where the action takes place
-        var mainSection = document.querySelector('main > section');
+        var mainSection = document.querySelector('main');
 
         // update the body from the views
         body.update = function(viewStruct) {
@@ -439,6 +447,7 @@ var Views = (function() {
         starred: starred,
         station: station,
         search: search,
+        header: header,
         footer: footer
     };
 
