@@ -45,8 +45,6 @@ body {
 
 main {
     background-color: white;
-    border-bottom: 3px solid #979797;
-    box-sizing: border-box;
 }
 
 .station-info {
@@ -247,6 +245,7 @@ footer {
     height: 40px;
     width: 100%;
     display: inline-block;
+    border-top: 3px solid #979797;
 }
 footer div {
     font-size: 20px;
@@ -414,4 +413,48 @@ section[role="region"] > header:first-child .icon-stands {
 section.skin-stands[role="region"] > header:first-child,
 .skin-stands > section[role="region"] > header:first-child {
     background-color: #009bb7;
+}
+
+
+/* ---------- Lists ---------- */
+
+[data-type="list"] > header aside .icon {
+    background: transparent none no-repeat scroll center center / 3rem auto;
+    font-size: 0;
+    display: block;
+    width: 3rem;
+    height: 3rem;
+}
+
+[data-type="list"] > header aside .icon-velib-pink {
+    background-image: url('../img/velib-pink.svg');
+}
+
+[data-type="list"] > header aside .icon-stand-blue {
+    background-image: url('../img/stand-blue.svg');
+}
+
+.skin-starred [data-type="list"] header {
+    color: #a54d93;
+}
+
+[data-type="list"] aside.counter:first-child {
+    margin-right: 1.5rem;
+}
+
+[data-type="list"] aside.counter {
+    width: 3rem;
+    vertical-align: center;
+    line-height: 5rem;
+    font-weight: bold;
+    font-size: 3rem;
+    text-align: center;
+}
+
+[data-type="list"] aside.counter.bikes {
+    color: #dc1681;
+}
+
+[data-type="list"] aside.counter.stands {
+    color: #009bb7;;
 }

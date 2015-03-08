@@ -5,11 +5,18 @@
     <meta charset="UTF-8">
     <title>Vélib'</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+
+    <!-- External libs -->    
     <link rel="stylesheet" href="css/idangerous.swiper.css">
     <link rel="stylesheet" href="css/normalize.css">
     <link rel="stylesheet" href="css/leaflet.css">
+
+    <!-- Mozilla Building Blocks -->
     <link rel="stylesheet" href="css/headers.css">
+    <link rel="stylesheet" href="css/lists.css">
     <link rel="stylesheet" href="css/util.css">
+    
+    <!-- Local style -->
     <link rel="stylesheet" href="css/main.css">
 </head>
 
@@ -94,29 +101,35 @@
             </header>
 
             <article class="content scrollable header">
-                <table class="starred">
-                    <thead>
-                        <tr>
-                            <td>Station</td>
-                            <td class="center">
-                                <img class="entry--logo" alt="Vélos" src="img/velib-pink.svg">
-                            </td>
-                            <td class="center">
-                                <img class="entry--logo" alt="Places" src="img/borne-blue.svg">
-                            </td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="stations">
-                                <div class="uppercase">Station name</div>
-                                <span class="dist">00</span>
-                            </td>
-                            <td class="bikes">0</td>
-                            <td class="stands">0</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <section data-type="list">
+                    <header>
+                        <aside class="pack-end">
+                            <span class="icon icon-velib-pink">Vélos</span>
+                        </aside>
+                        <aside class="pack-end">
+                            <span class="icon icon-stand-blue">Places</span>
+                        </aside>
+                        Station
+                    </header>
+                    <ul>
+                        <li>
+                            <aside class="pack-end  bikes counter">0</aside>
+                            <aside class="pack-end stands counter">0</aside>
+                            <a href="#/station/foo">
+                                <p>Station name</p>
+                                <p class="dist">00</p>
+                            </a>
+                        </li>
+                        <li>
+                            <aside class="pack-end  bikes counter">11</aside>
+                            <aside class="pack-end stands counter">8</aside>
+                            <a href="#/station/bar">
+                                <p>Another station</p>
+                                <p class="dist">42</p>
+                            </a>
+                        </li>
+                    </ul>
+                </section>
             </article>
         </section>
     </template>
