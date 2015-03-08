@@ -96,10 +96,12 @@ main {
     text-align: right;
     padding: 0 0.5rem;
 }
-.station-info .entry--logo {
+
+.entry .logo {
     margin-left: auto;
     height: 3em;
 }
+
 #app-bar {
     position: fixed;
     width: 100%;
