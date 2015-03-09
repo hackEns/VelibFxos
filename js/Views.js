@@ -6,10 +6,22 @@
 
 var Views = (function() {
     var viewStruct = {};
-    var body =   {};
-    var swiper = {};
+    var body = {};
     var template = '';
     var defaultMainClass = '';
+
+
+    var swiper = {};
+    var indexTemplate = '';
+    var bikesTemplate = '';
+    var standsTemplate = '';
+    var starredTemplate = '';
+    var stationTemplate = '';
+    var searchTemplate = '';
+    var starredItemTemplate = '';
+    var mainSection = '';
+
+
     var init = function() {
         swiper = new Swiper('.swiper-container', {
             // general settings
@@ -30,40 +42,48 @@ var Views = (function() {
                 RoadMap.addMarker(Geolocation.getPosition(), active_station, viewStruct.view);
             }
         });
+
+        
+        indexTemplate = document.getElementById('index');
+        bikesTemplate = document.getElementById('bikes');
+        standsTemplate = document.getElementById('stands');
+        starredTemplate = document.getElementById('starred');
+        stationTemplate = document.getElementById('station');
+        searchTemplate = document.getElementById('search');
+        starredItemTemplate = document.getElementById('starred-item');
+        
+        mainSection = document.querySelector('main');
     };
 
 
     body = (function() {
-        // mainSection is where the action takes place
-        var mainSection = document.querySelector('main');
-
         // update the body from the views
         body.update = function(viewStruct) {
             var clone = '';
 
             body.clean();
             console.log('Views', viewStruct.view, 'body.update');
-            $('main').removeClass().addClass(viewStruct.view);
+            $(mainSection).removeClass().addClass(viewStruct.view);
 
             if ('content' in document.createElement('template')) {
                 switch(viewStruct.view) {
                     case "index":
-                        template = document.getElementById('index');
-                        var clone = document.importNode(template.content, true);
+                        template = indexTemplate;
+                        clone = document.importNode(template.content, true);
                         mainSection.appendChild(clone);
                         break;
                     case "bikes":
-                        template = document.getElementById('available');
-                        var clone = document.importNode(template.content, true);
+                        template = bikesTemplate;
+                        clone = document.importNode(template.content, true);
                         mainSection.appendChild(clone);
                         break;
                     case "stands":
-                        template = document.getElementById('available');
-                        var clone = document.importNode(template.content, true);
+                        template = standsTemplate;
+                        clone = document.importNode(template.content, true);
                         mainSection.appendChild(clone);
                         break;
                     case "starred":
-                        template = document.getElementById('starred');
+                        template = starredTemplate;
                         clone = document.importNode(template.content, true);
                         mainSection.appendChild(clone);
                         initStarredContent();
@@ -71,15 +91,15 @@ var Views = (function() {
                     case "station":
                         var stationFormatted = Stations.getFormattedStation(viewStruct.station);
 
-                        template = document.getElementById('stationDetail');
+                        template = stationTemplate;
                         template = completeStationDetails(template, stationFormatted);
 
-                        var clone = document.importNode(template.content, true);
+                        clone = document.importNode(template.content, true);
                         mainSection.appendChild(clone);
                         break;
                     case "search":
-                        template = document.getElementById('search');
-                        var clone = document.importNode(template.content, true);
+                        template = searchTemplate;
+                        clone = document.importNode(template.content, true);
                         mainSection.appendChild(clone);
                         break;
                 }
@@ -87,7 +107,7 @@ var Views = (function() {
                 console.log('Views', 'body', 'template is NOT supported');
                 switch (viewStruct.view) {
                     case "index":
-                        template = $('#index').html();
+                        template = $(indexTemplate).html();
                         mainSection.append(template);
                     case "bikes":
                         template = $('#bikes').html();
@@ -127,15 +147,10 @@ var Views = (function() {
 
         // init the table with starred stations
         var initStarredContent = function() {
-            var row = '';
-            template = document.getElementById('starred');
-            row = template.content.querySelector('tbody tr');
+            var starredList = document.getElementById('starred-list');
+            template = starredTemplate;
 
-            // delete first template row
-            var tbody = document.querySelector('tbody');
-            while (tbody.firstChild) {
-                tbody.removeChild(tbody.firstChild);
-            }
+            $(starredList).empty();
 
             if(Geolocation.waitPosition(initStarredContent) && Stations.waitList(initStarredContent))
             {
@@ -147,16 +162,13 @@ var Views = (function() {
                     station = Stations.getFormattedStation(station);
 
                     // Construction du DOM
-                    row.id = station.number;
-                    row.querySelector('td.stations > div').textContent = station.address;
-                    row.querySelector('td.stations > span.dist').textContent = station.distance;
-                    row.querySelector('td.bikes').textContent = station.available_bikes;
-                    row.querySelector('td.stands').textContent = station.available_bike_stands;
-                    document.querySelector('table.starred tbody').appendChild(document.importNode(row, true));
-
-                    $( "#" +  station.number).click(function() {
-                        window.location.hash = "/station/" + station.number;
-                    });
+                    starredItemTemplate.id = station.number;
+                    starredItemTemplate.querySelector('a').href += station.number
+                    starredItemTemplate.querySelector('.name').textContent = station.address;
+                    starredItemTemplate.querySelector('.dist').textContent = station.distance;
+                    starredItemTemplate.querySelector('.bikes').textContent = station.available_bikes;
+                    starredItemTemplate.querySelector('.stands').textContent = station.available_bike_stands;
+                    starredList.appendChild(document.importNode(starredItemTemplate, true));
                 });
             }
         };

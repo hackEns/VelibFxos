@@ -418,8 +418,8 @@ section[role="region"] > header:first-child .icon-velib {
     background-image: url('../img/velib.svg');
 }
 
-section.skin-velib[role="region"] > header:first-child,
-.skin-velib > section[role="region"] > header:first-child {
+section.skin-bikes[role="region"] > header:first-child,
+.skin-bikes > section[role="region"] > header:first-child {
     background-color: #dc1681;
 }
 
@@ -454,7 +454,7 @@ section.skin-station[role="region"] > header:first-child,
 }
 
 
-section[role="region"] > header:first-child .icon-stands {
+section[role="region"] > header:first-child .icon-stand {
     background-image: url('../img/stand.svg');
 }
 
