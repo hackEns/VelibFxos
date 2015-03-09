@@ -67,17 +67,25 @@
                 <h1>Vélos disponibles</h1>
             </header>
 
-            <article class="content scrollable header">
-                <div class="uppercase">
-                    <p class="adresse"></p>
-                    <p class="distance"></p>
-                </div>
-                <div class="available-element uppercase"><span></span></div>
-                <div>
-                    <!-- img starrified -->
-                </div>
-                <div class="map-circle" id="map"></div>
+            <article class="content scrollable header footer">
+                <section class="station-map">
+                    <div class="station-map--availability counter">
+                        <p class="counter--value">5</p>
+                        <p class="counter--legend">vélos<br/>disponibles</p>
+                    </div>
+                    <div class="station-map--info">
+                        <p class="station-map--name">Rue Érasme</p>
+                        <p class="station-map--distance">2.8 km</p>
+                    </div>
+                    <div>
+                        <!-- img starrified -->
+                    </div>
+                    <div class="station-map--map-circle" id="map"></div>
+                </section>
             </article>
+
+            <footer>
+            </footer>
         </section>
     </template>
 
@@ -94,7 +102,7 @@
                 <h1>Favoris</h1>
             </header>
 
-            <article class="content scrollable header footer">
+            <article class="content scrollable header">
                 <section data-type="list">
                     <header>
                         <aside class="pack-end">
@@ -134,7 +142,6 @@
                 </section>
             </article>
 
-            <footer></footer>
         </section>
     </template>
 

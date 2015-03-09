@@ -308,9 +308,6 @@ footer.station {
 /*
  * Map elements
  */
- #map {
-     height: 400px;
- }
 .mapIcon {
     background-image: url("../img/station-marker.svg");
     display: inline-flex;
@@ -339,23 +336,9 @@ footer.station {
 }
 
 
-main.bikes section {
-  border: 2px solid #DC1681;
-}
-
-main.stands section {
-  border: 2px solid #009BB7;
-}
-
 main.index {
   border: 0px white;
   margin : 0px;
-}
-
-.map-circle {
-    border-radius: 50%;
-    margin: 10px 10px 10px 10px;
-    background-color: #DDD;
 }
 
 .pagination {
@@ -364,7 +347,92 @@ main.index {
 }
 
 
-/* ---------- Layout ---------- */
+/*
+ * StationMap
+ */
+
+.station-map {
+    padding: 1rem;
+}
+
+.station-map--map-circle {
+    height: calc(100vw - 5rem);
+    border-radius: 50%;
+    background-color: #DDD;
+}
+
+.station-map--name,
+.station-map--distance {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border: medium none;
+    display: block;
+    margin: 0px;
+    color: #858585;
+    font-size: 1.5rem;
+    line-height: 2rem;
+}
+
+.station-map--name {
+    text-transform: uppercase;
+    color: #404040;
+    font-size: 1.8rem;
+    line-height: 2.2rem;
+}
+
+.station-map--availability {
+    float: right;
+}
+
+
+/* (context dependencies) */
+
+.bikes .station-map {
+    border: 2px solid #DC1681;
+}
+
+.bikes .station-map--availability {
+    color: #DC1681;
+}
+
+.stands .station-map {
+    border: 2px solid #009BB7;
+}
+
+.stands .station-map--availability {
+    color: #009BB7;
+}
+
+
+
+/*
+ * Counter
+ */
+
+.counter p {
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+}
+
+.counter--value {
+    line-height: 5rem;
+    font-weight: bold;
+    font-size: 3rem;
+    text-align: center;
+}
+
+.counter--legend {
+    text-transform: uppercase;
+    font-size: 1em;
+    line-height: 1em;
+    color: #404040;
+}
+
+/*
+ * Footer Layout
+ */
 
 section[role="region"] {
     min-height: 100vh;
@@ -377,12 +445,15 @@ section[role="region"] {
     top: 0;
 }
 
-
 .footer {
     overflow: auto;
     padding-bottom: 6.5rem;
 }
 
+
+/*
+ * Other Layout
+ */
 
 .full-width {
     padding: 0;
@@ -392,7 +463,10 @@ section[role="region"] {
     display: none;
 }
 
-/* ---------- Header ---------- */
+
+/*
+ * Header
+ */
 
 section[role="region"] > header:first-child .icon-velib {
     background-image: url('../img/velib.svg');
@@ -444,7 +518,9 @@ section.skin-stands[role="region"] > header:first-child,
 }
 
 
-/* ---------- Lists ---------- */
+/*
+ * Lists
+ */
 
 [data-type="list"] > header aside .icon {
     background: transparent none no-repeat scroll center center / 3rem auto;
@@ -464,6 +540,15 @@ section.skin-stands[role="region"] > header:first-child,
 
 .skin-starred [data-type="list"] header {
     color: #a54d93;
+}
+
+[data-type="list"] header {
+    border-bottom: 0.1rem solid #E7E7E7;
+}
+
+[data-type="list"] li p:first-of-type {
+    text-transform: uppercase;
+    color: #404040;
 }
 
 [data-type="list"] aside.counter:first-child {
