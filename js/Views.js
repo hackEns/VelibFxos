@@ -110,19 +110,19 @@ var Views = (function() {
                         template = $(indexTemplate).html();
                         mainSection.append(template);
                     case "bikes":
-                        template = $('#bikes').html();
+                        template = $('bikesTemplate').html();
                         mainSection.append(template);
                     case "stands":
-                        template = $('#stands').html();
+                        template = $('standsTemplate').html();
                         mainSection.append(template);
                     case "starred":
-                        template = $('#starred').html();
+                        template = $('starredTemplate').html();
                         mainSection.append(template);
                     case "station":
-                        template = $('#stationDetail').html();
+                        template = $('stationTemplate').html();
                         mainSection.append(template);
                     case "search":
-                        template = $('#search').html();
+                        template = $('searchTemplate').html();
                         mainSection.append(template);
                 }
             }
