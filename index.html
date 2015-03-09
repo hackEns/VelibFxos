@@ -29,42 +29,38 @@
     <!-- Action takes place here -->
     <main></main>
 
-    <!-- swiper element -->
-    <div class="swiper-container">
-        <div class="swiper-wrapper"></div>
-        <div class="pagination"></div>
-    </div>
-
     <!-- index template -->
     <template id="index">
         <header id="app-logo">
             <img alt="Velib'" src="img/logo.svg" class="velib-logo" />
         </header>
         <div class="station-info">
-            <div class="entry bikes">
+            <a href="#/bikes" class="entry bikes">
                 <span>vélos<br/>disponibles</span>
-                <img class="logo" alt="" src="img/velib.svg" />
-            </div>
-            <div class="entry stands">
+                <img class="entry--logo" alt="" src="img/velib.svg" />
+            </a>
+            <a href="#/stands" class="entry stands">
                 <span>places<br/>libres</span>
-                <img class="logo" alt="" src="img/stand.svg" />
-            </div>
-            <div class="entry starred">
+                <img class="entry--logo" alt="" src="img/stand.svg" />
+            </a>
+            <a href="#/starred" class="entry starred">
                 <span>Favoris</span>
-                <img class="logo" alt="" src="img/star.svg" />
-            </div>
-            <div class="entry search">
+                <img class="entry--logo" alt="" src="img/star.svg" />
+            </a>
+            <a href="#/search" class="entry search">
                 <span>Rechercher</span>
-                <img class="logo" alt="" src="img/search.svg" />
-            </div>
+                <img class="entry--logo" alt="" src="img/search.svg" />
+            </a>
         </div>
     </template>
 
-    <!-- available template -->
-    <template id="available">
-        <section role="region" class="skin-velib">
+    <!-- bikes template -->
+    <template id="bikes">
+        <section role="region" class="skin-bikes">
             <header id="app-bar" class="fixed">
-                <a href="#"><span class="icon icon-back">back</span></a>
+                <a href="#/">
+                    <span class="icon icon-back">back</span>
+                </a>
                 <menu type="toolbar">
                     <button>
                         <span class="icon icon-velib"></span>
@@ -73,17 +69,74 @@
                 <h1>Vélos disponibles</h1>
             </header>
 
-            <article class="content scrollable header">
-                <div class="uppercase">
-                    <p class="adresse"></p>
-                    <p class="distance"></p>
-                </div>
-                <div class="available-element uppercase"><span></span></div>
-                <div>
-                    <!-- img starrified -->
-                </div>
-                <div class="map-circle" id="map"></div>
+            <article class="content scrollable header footer">
+                <section class="station-map">
+                    <div class="station-map--availability counter">
+                        <p class="counter--value">5</p>
+                        <p class="counter--legend">vélos<br/>disponibles</p>
+                    </div>
+                    <div class="station-map--info">
+                        <p class="station-map--name">Rue Érasme</p>
+                        <p class="station-map--distance">2.8 km</p>
+                    </div>
+                    <div>
+                        <!-- img starrified -->
+                    </div>
+                    <div class="station-map--map-circle" id="map"></div>
+                </section>
             </article>
+
+            <footer>
+                <a href="#/station/foo">
+                    <aside class="pack-end">
+                        <span class="icon icon-plus-pink">+</span>
+                    </aside>
+                    Informations
+                </a>
+            </footer>
+        </section>
+    </template>
+
+    <!-- stands template -->
+    <template id="stands">
+        <section role="region" class="skin-stands">
+            <header id="app-bar" class="fixed">
+                <a href="#/">
+                    <span class="icon icon-back">back</span>
+                </a>
+                <menu type="toolbar">
+                    <button>
+                        <span class="icon icon-stand"></span>
+                    </button>
+                </menu>
+                <h1>Places libres</h1>
+            </header>
+
+            <article class="content scrollable header footer">
+                <section class="station-map">
+                    <div class="station-map--availability counter">
+                        <p class="counter--value">5</p>
+                        <p class="counter--legend">places<br/>libres</p>
+                    </div>
+                    <div class="station-map--info">
+                        <p class="station-map--name">Rue Érasme</p>
+                        <p class="station-map--distance">2.8 km</p>
+                    </div>
+                    <div>
+                        <!-- img starrified -->
+                    </div>
+                    <div class="station-map--map-circle" id="map"></div>
+                </section>
+            </article>
+
+            <footer>
+                <a href="#/station/foo">
+                    <aside class="pack-end">
+                        <span class="icon icon-plus-blue">+</span>
+                    </aside>
+                    Informations
+                </a>
+            </footer>
         </section>
     </template>
 
@@ -91,7 +144,9 @@
     <template id="starred">
         <section role="region" class="skin-starred">
             <header id="app-bar" class="fixed">
-                <a href="#"><span class="icon icon-back">back</span></a>
+                <a href="#/">
+                    <span class="icon icon-back">back</span>
+                </a>
                 <menu type="toolbar">
                     <button>
                         <span class="icon icon-starred"></span>
@@ -100,45 +155,51 @@
                 <h1>Favoris</h1>
             </header>
 
-            <article class="content scrollable header">
+            <article class="content scrollable header footer">
                 <section data-type="list">
                     <header>
                         <aside class="pack-end">
-                            <span class="icon icon-velib-pink">Vélos</span>
+                            <span class="icon icon-stand-blue">Places</span>
                         </aside>
                         <aside class="pack-end">
-                            <span class="icon icon-stand-blue">Places</span>
+                            <span class="icon icon-velib-pink">Vélos</span>
                         </aside>
                         Station
                     </header>
-                    <ul>
-                        <li>
-                            <aside class="pack-end  bikes counter">0</aside>
-                            <aside class="pack-end stands counter">0</aside>
-                            <a href="#/station/foo">
-                                <p>Station name</p>
-                                <p class="dist">00</p>
-                            </a>
-                        </li>
-                        <li>
-                            <aside class="pack-end  bikes counter">11</aside>
-                            <aside class="pack-end stands counter">8</aside>
-                            <a href="#/station/bar">
-                                <p>Another station</p>
-                                <p class="dist">42</p>
-                            </a>
-                        </li>
+                    <ul id="starred-list">
                     </ul>
                 </section>
             </article>
+
+            <footer>
+                <a href="#/station/foo">
+                    <aside class="pack-end">
+                        <span class="icon icon-plus-violet">+</span>
+                    </aside>
+                    Ajouter
+                </a>
+            </footer>
         </section>
+    </template>
+
+    <template id="starred-item">
+        <li>
+            <aside class="pack-end stands counter"></aside>
+            <aside class="pack-end  bikes counter"></aside>
+            <a href="#/station/">
+                <p class="name"></p>
+                <p class="dist"></p>
+            </a>
+        </li>
     </template>
 
     <!-- search template -->
     <template id="search">
         <section role="region" class="skin-search">
             <header id="app-bar" class="fixed">
-                <a href="#"><span class="icon icon-back">back</span></a>
+                <a href="#/">
+                    <span class="icon icon-back">back</span>
+                </a>
                 <menu type="toolbar">
                     <button>
                         <span class="icon icon-search"></span>
@@ -147,17 +208,28 @@
                 <h1>Rechercher</h1>
             </header>
 
-            <article class="content scrollable header full-width">
+            <article class="content scrollable header footer full-width">
                 <div id="map"></div>
             </article>
+
+            <footer>
+                <a href="#">
+                    <aside class="pack-end">
+                        <span class="icon icon-search-yellow">+</span>
+                    </aside>
+                    Rechercher
+                </a>
+            </footer>
         </section>
     </template>
 
     <!-- detail template -->
-    <template id="stationDetail">
+    <template id="station">
         <section role="region" class="skin-station">
             <header id="app-bar" class="fixed">
-                <a href="#"><span class="icon icon-back">back</span></a>
+                <a href="#/">
+                    <span class="icon icon-back">back</span>
+                </a>
                 <menu type="toolbar">
                     <button>
                         <span class="icon icon-station"></span>
@@ -198,7 +270,11 @@
         </section>
     </template>
 
-    <footer></footer>
+    <!-- swiper element -->
+    <div class="swiper-container">
+        <div class="swiper-wrapper"></div>
+        <div class="pagination"></div>
+    </div>
 
     <script src="js/jquery.min.js"></script>
     <script src="js/idangerous.swiper.min.js"></script>

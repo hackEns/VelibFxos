@@ -45,6 +45,7 @@ body {
 
 main {
     background-color: white;
+    min-height: 100%;
 }
 
 .station-info {
@@ -81,6 +82,7 @@ main {
     margin-top: 5px;
     color: white;
     text-transform: uppercase;
+    text-decoration: none;
     font-size: 1.55em;
     font-weight: 400;
     height: 3em;
@@ -243,70 +245,10 @@ table.station p.stands {
     color: #006FB3;
 }
 
-footer {
-    height: 40px;
-    width: 100%;
-    display: inline-block;
-    border-top: 3px solid #979797;
-}
-footer div {
-    font-size: 20px;
-    position: absolute;
-    margin-left: 20px;
-    line-height: 35px;
-    font-weight: 300;
-    font-style: italic;
-    cursor: default;
-}
-footer input {
-    color: #808080;
-    height: 30px;
-    font-size: 25px;
-    font-family: "Open Sans";
-    padding-left: 10px;
-    border: 0px none;
-    height: auto;
-    vertical-align: middle;
-    width: 80%;
-}
-footer input#submit {
-    position: absolute;
-    width: 30px;
-    right: 0px;
-    vertical-align: middle;
-    margin: 5px;
-}
-footer a {
-    position: absolute;
-    right: 0px;
-}
-footer img {
-    width: 50px;
-    height: 25px;
-    margin-top: 7px;
-}
-footer.bikes {
-    border-bottom: 5px solid #dc1681;
-}
-footer.stands {
-    border-bottom: 5px solid #009bb7;
-}
-footer.starred {
-    border-bottom: 5px solid #a54d93;
-}
-footer.search {
-    border-bottom: 5px solid #f7ad00;
-}
-footer.station {
-    border-bottom: 5px solid #006FB3;
-}
 
 /*
  * Map elements
  */
- #map {
-     height: 400px;
- }
 .mapIcon {
     background-image: url("../img/station-marker.svg");
     display: inline-flex;
@@ -335,23 +277,9 @@ footer.station {
 }
 
 
-main.bikes section {
-  border: 2px solid #DC1681;
-}
-
-main.stands section {
-  border: 2px solid #009BB7;
-}
-
 main.index {
   border: 0px white;
   margin : 0px;
-}
-
-.map-circle {
-    border-radius: 50%;
-    margin: 10px 10px 10px 10px;
-    background-color: #DDD;
 }
 
 .pagination {
@@ -360,20 +288,141 @@ main.index {
 }
 
 
-/* ---------- Layout ---------- */
+/*
+ * StationMap
+ */
+
+.station-map {
+    padding: 1rem;
+}
+
+.station-map--map-circle {
+    height: calc(100vw - 5rem);
+    border-radius: 50%;
+    background-color: #DDD;
+}
+
+.station-map--name,
+.station-map--distance {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border: medium none;
+    display: block;
+    margin: 0px;
+    color: #858585;
+    font-size: 1.5rem;
+    line-height: 2rem;
+}
+
+.station-map--name {
+    text-transform: uppercase;
+    color: #404040;
+    font-size: 1.8rem;
+    line-height: 2.2rem;
+}
+
+.station-map--availability {
+    float: right;
+}
+
+
+/* (context dependencies) */
+
+.bikes .station-map {
+    border: 2px solid #DC1681;
+}
+
+.bikes .station-map--availability {
+    color: #DC1681;
+}
+
+.stands .station-map {
+    border: 2px solid #009BB7;
+}
+
+.stands .station-map--availability {
+    color: #009BB7;
+}
+
+
+
+/*
+ * Counter
+ */
+
+.counter p {
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+}
+
+.counter--value {
+    line-height: 5rem;
+    font-weight: bold;
+    font-size: 3rem;
+    text-align: center;
+}
+
+.counter--legend {
+    text-transform: uppercase;
+    font-size: 1em;
+    line-height: 1em;
+    color: #404040;
+}
+
+/*
+ * Footer Layout
+ */
+
+footer {
+    position: absolute;
+    bottom: 0;
+    height: 5rem;
+    width: 100%;
+    clear:both;
+}
+
+section[role="region"] {
+    min-height: 100vh;
+    position: relative;
+}
+
+.scrollable.header {
+    padding-top: 6.5rem;
+    position: normal;
+    top: 0;
+}
+
+.footer {
+    overflow: auto;
+    padding-bottom: 6.5rem;
+}
+
+
+/*
+ * Other Layout
+ */
 
 .full-width {
     padding: 0;
 }
 
-/* ---------- Header ---------- */
+.swiper-container {
+    display: none;
+}
+
+
+/*
+ * Header
+ */
 
 section[role="region"] > header:first-child .icon-velib {
     background-image: url('../img/velib.svg');
 }
 
-section.skin-velib[role="region"] > header:first-child,
-.skin-velib > section[role="region"] > header:first-child {
+section.skin-bikes[role="region"] > header:first-child,
+.skin-bikes > section[role="region"] > header:first-child {
     background-color: #dc1681;
 }
 
@@ -408,7 +457,7 @@ section.skin-station[role="region"] > header:first-child,
 }
 
 
-section[role="region"] > header:first-child .icon-stands {
+section[role="region"] > header:first-child .icon-stand {
     background-image: url('../img/stand.svg');
 }
 
@@ -418,13 +467,15 @@ section.skin-stands[role="region"] > header:first-child,
 }
 
 
-/* ---------- Lists ---------- */
+/*
+ * Lists
+ */
 
 [data-type="list"] > header aside .icon {
     background: transparent none no-repeat scroll center center / 3rem auto;
     font-size: 0;
     display: block;
-    width: 3rem;
+    width: 4rem;
     height: 3rem;
 }
 
@@ -440,12 +491,21 @@ section.skin-stands[role="region"] > header:first-child,
     color: #a54d93;
 }
 
+[data-type="list"] header {
+    border-bottom: 0.1rem solid #E7E7E7;
+}
+
+[data-type="list"] li p:first-of-type {
+    text-transform: uppercase;
+    color: #404040;
+}
+
 [data-type="list"] aside.counter:first-child {
     margin-right: 1.5rem;
 }
 
 [data-type="list"] aside.counter {
-    width: 3rem;
+    width: 4rem;
     vertical-align: center;
     line-height: 5rem;
     font-weight: bold;
@@ -459,4 +519,59 @@ section.skin-stands[role="region"] > header:first-child,
 
 [data-type="list"] aside.counter.stands {
     color: #009bb7;;
+}
+
+/*
+ * Footer
+ */
+
+footer aside.pack-end {
+    float: right;
+    text-align: end;
+}
+
+footer aside .icon {
+    background: transparent none no-repeat scroll center center / 3rem auto;
+    font-size: 0px;
+    display: inline-block;
+    width: 3rem;
+    height: 3rem;
+}
+
+footer aside .icon-search-yellow {
+    background-image: url("../img/search-yellow.svg");
+}
+
+footer aside .icon-plus-pink {
+    background-image: url("../img/plus-pink.svg");
+}
+
+footer aside .icon-plus-blue {
+    background-image: url("../img/plus-blue.svg");
+}
+
+footer aside .icon-plus-dark-blue {
+    background-image: url("../img/plus-dark-blue.svg");
+}
+
+footer aside .icon-plus-violet {
+    background-image: url("../img/plus-violet.svg");
+}
+
+/* (context dependencies) */
+
+.bikes footer a {
+    border-bottom: 0.5rem solid #dc1681;
+}
+.stands footer a {
+    border-bottom: 0.5rem solid #009bb7;
+}
+.starred footer a {
+    border-bottom: 0.5rem solid #a54d93;
+}
+.search footer a {
+    border-bottom: 0.5rem solid #f7ad00;
+}
+.station footer a {
+    border-bottom: 0.5rem solid #006fb3;
 }
