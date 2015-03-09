@@ -58,7 +58,9 @@
     <template id="available">
         <section role="region" class="skin-velib">
             <header id="app-bar" class="fixed">
-                <a href="#"><span class="icon icon-back">back</span></a>
+                <a href="#/">
+                    <span class="icon icon-back">back</span>
+                </a>
                 <menu type="toolbar">
                     <button>
                         <span class="icon icon-velib"></span>
@@ -85,6 +87,12 @@
             </article>
 
             <footer>
+                <a href="#/station/foo">
+                    <aside class="pack-end">
+                        <span class="icon icon-plus-pink">+</span>
+                    </aside>
+                    Informations
+                </a>
             </footer>
         </section>
     </template>
@@ -93,7 +101,9 @@
     <template id="starred">
         <section role="region" class="skin-starred">
             <header id="app-bar" class="fixed">
-                <a href="#"><span class="icon icon-back">back</span></a>
+                <a href="#/">
+                    <span class="icon icon-back">back</span>
+                </a>
                 <menu type="toolbar">
                     <button>
                         <span class="icon icon-starred"></span>
@@ -102,7 +112,7 @@
                 <h1>Favoris</h1>
             </header>
 
-            <article class="content scrollable header">
+            <article class="content scrollable header footer">
                 <section data-type="list">
                     <header>
                         <aside class="pack-end">
@@ -142,6 +152,14 @@
                 </section>
             </article>
 
+            <footer>
+                <a href="#/station/foo">
+                    <aside class="pack-end">
+                        <span class="icon icon-plus-violet">+</span>
+                    </aside>
+                    Ajouter
+                </a>
+            </footer>
         </section>
     </template>
 
@@ -149,7 +167,9 @@
     <template id="search">
         <section role="region" class="skin-search">
             <header id="app-bar" class="fixed">
-                <a href="#"><span class="icon icon-back">back</span></a>
+                <a href="#/">
+                    <span class="icon icon-back">back</span>
+                </a>
                 <menu type="toolbar">
                     <button>
                         <span class="icon icon-search"></span>
@@ -158,9 +178,18 @@
                 <h1>Rechercher</h1>
             </header>
 
-            <article class="content scrollable header full-width">
+            <article class="content scrollable header footer full-width">
                 <div id="map"></div>
             </article>
+
+            <footer>
+                <a href="#">
+                    <aside class="pack-end">
+                        <span class="icon icon-search-yellow">+</span>
+                    </aside>
+                    Rechercher
+                </a>
+            </footer>
         </section>
     </template>
 
@@ -168,7 +197,9 @@
     <template id="stationDetail">
         <section role="region" class="skin-station">
             <header id="app-bar" class="fixed">
-                <a href="#"><span class="icon icon-back">back</span></a>
+                <a href="#/">
+                    <span class="icon icon-back">back</span>
+                </a>
                 <menu type="toolbar">
                     <button>
                         <span class="icon icon-station"></span>

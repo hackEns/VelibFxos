@@ -6,9 +6,7 @@
 
 var Views = (function() {
     var viewStruct = {};
-    var header = {};
     var body =   {};
-    var footer = {};
     var swiper = {};
     var template = '';
     var defaultMainClass = '';
@@ -34,39 +32,6 @@ var Views = (function() {
         });
     };
 
-    header = (function() {
-
-        header.update = function(viewStruct) {
-            $('#app-bar').removeClass().addClass(viewStruct.view);
-            $('#app-logo').addClass('hidden');
-            $('#app-bar').addClass(viewStruct.view);
-
-            $('#app-bar h1').html(viewStruct.title);
-            $('#app-bar menu img').attr('src', 'img/' + viewStruct.img + '.svg');
-            console.log('Views', viewStruct.view, 'header updated');
-        };
-
-        header.disableHeaderDisplay = function() {
-            $("#header").addClass("hidden");
-        };
-
-        header.enableHeaderDisplay = function() {
-            $("#header").removeClass("hidden");
-        };
-
-        $('#app-bar a').click(function(e) {
-            e.preventDefault();
-            goBack();
-        });
-
-        var goBack = (function() {
-            console.log('Views', viewStruct.view, 'go back');
-            window.location.hash = '/';
-        });
-
-        return header;
-
-    })();
 
     body = (function() {
         // mainSection is where the action takes place
@@ -206,45 +171,12 @@ var Views = (function() {
 
     })();
 
-    footer = (function() {
-
-        var update = function(data) {
-
-            $("footer").removeClass().addClass(data.view).html('');
-
-            if(data.view == 'search') {
-                //
-            } else if(data.view == 'starred') {
-                $("footer").html('<div>Ajouter</div><input src="img/plus-violet.svg" id="submit" type="image">');
-            } else {
-                $("footer").html("<input class='" + data.view + "' type='text' " + (data.value !== "" ? "value='" + data.value + "'" : "") + data.prop + "/><a href='#'><img class='" + data.view + "' alt='" + data.alt + "' src='img/" + data.src + "'/></a>");
-            }
-        };
-
-        var disableFooterDisplay = function() {
-            $("footer").addClass("hidden");
-        };
-
-        var enableFooterDisplay = function() {
-            $("footer").removeClass("hidden");
-        };
-
-        return {
-            update: update,
-            enableFooterDisplay: enableFooterDisplay,
-            disableFooterDisplay: disableFooterDisplay
-        };
-
-    })();
 
     var index = function() {
         viewStruct.view = "index";
 
         Geolocation.noWaitPosition();
         Stations.noWaitList();
-        // cleaning header
-        $('#app-bar').addClass('hidden');
-        $('#app-logo').removeClass('hidden');
         // clean by removing stations swiper
         $('.swiper-wrapper, .pagination').empty().attr('style', '');
 
@@ -275,9 +207,7 @@ var Views = (function() {
         viewStruct.value = "Informations";
         viewStruct.prop = "readonly";
 
-        header.update(viewStruct);
         body.update(viewStruct);
-        footer.update(viewStruct);
 
         if (Geolocation.waitPosition(bikes) && Stations.waitList(bikes)) {
            var stations = Stations.getClosestStations(Geolocation.getPosition(), 10, function(item) {
@@ -314,9 +244,7 @@ var Views = (function() {
         viewStruct.prop = "readonly";
 
         console.log('Views', viewStruct.view, "display page");
-        header.update(viewStruct);
         body.update(viewStruct);
-        footer.update(viewStruct);
 
         if (Geolocation.waitPosition(stands) && Stations.waitList(stands)) {
             var stations = Stations.getClosestStations(Geolocation.getPosition(), 10, function(item) {
@@ -354,9 +282,7 @@ var Views = (function() {
         viewStruct.prop = "readonly";
 
         console.log('Views', viewStruct.view, "display page");
-        header.update(viewStruct);
         body.update(viewStruct);
-        footer.update(viewStruct);
 
         Geolocation.noWaitPosition();
         if (Geolocation.waitPosition(starred) && Stations.waitList(starred)) {
@@ -398,9 +324,7 @@ var Views = (function() {
                 viewStruct.prop = "readonly";
 
                 console.log('Views', viewStruct.view, "display page");
-                header.update(viewStruct);
                 body.update(viewStruct);
-                footer.update(viewStruct);
 
                 var station_id = window.location.hash.substr(2).split("/")[1];
 
@@ -423,9 +347,7 @@ var Views = (function() {
         viewStruct.prop = "placeHolder='Rechercher'";
 
         console.log('Views', viewStruct.view, "display page");
-        header.update(viewStruct);
         body.update(viewStruct);
-        footer.update(viewStruct);
 
         RoadMap.init();
         RoadMap.addMarkers();
@@ -446,9 +368,7 @@ var Views = (function() {
         stands: stands,
         starred: starred,
         station: station,
-        search: search,
-        header: header,
-        footer: footer
+        search: search
     };
 
 })();

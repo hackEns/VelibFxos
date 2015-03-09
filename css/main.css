@@ -242,68 +242,6 @@ table.station p.stands {
     color: #006FB3;
 }
 
-footer {
-    position: absolute;
-    bottom: 0;
-    height: 5rem;
-    width: 100%;
-    border-top: 3px solid #979797;
-    box-sizing: border-box;
-    clear:both;
-}
-
-footer div {
-    font-size: 20px;
-    position: absolute;
-    margin-left: 20px;
-    line-height: 35px;
-    font-weight: 300;
-    font-style: italic;
-    cursor: default;
-}
-
-footer input {
-    color: #808080;
-    height: 30px;
-    font-size: 25px;
-    font-family: "Open Sans";
-    padding-left: 10px;
-    border: 0px none;
-    height: auto;
-    vertical-align: middle;
-    width: 80%;
-}
-footer input#submit {
-    position: absolute;
-    width: 30px;
-    right: 0px;
-    vertical-align: middle;
-    margin: 5px;
-}
-footer a {
-    position: absolute;
-    right: 0px;
-}
-footer img {
-    width: 50px;
-    height: 25px;
-    margin-top: 7px;
-}
-footer.bikes {
-    border-bottom: 5px solid #dc1681;
-}
-footer.stands {
-    border-bottom: 5px solid #009bb7;
-}
-footer.starred {
-    border-bottom: 5px solid #a54d93;
-}
-footer.search {
-    border-bottom: 5px solid #f7ad00;
-}
-footer.station {
-    border-bottom: 5px solid #006FB3;
-}
 
 /*
  * Map elements
@@ -433,6 +371,14 @@ main.index {
 /*
  * Footer Layout
  */
+
+footer {
+    position: absolute;
+    bottom: 0;
+    height: 5rem;
+    width: 100%;
+    clear:both;
+}
 
 section[role="region"] {
     min-height: 100vh;
@@ -570,4 +516,85 @@ section.skin-stands[role="region"] > header:first-child,
 
 [data-type="list"] aside.counter.stands {
     color: #009bb7;;
+}
+
+
+
+/*
+ * Footer
+ */
+
+footer a {
+    height: 5rem;
+    display: block;
+    border-top: 0.3px solid #979797;
+    box-sizing: border-box;
+    padding-left: 1rem;
+
+    font-size: 1.8rem;
+    line-height: 4.2rem;
+    vertical-align: center;
+    color: #666;
+    font-style: italic;
+    font-weight: 200;
+    text-decoration: none;
+}
+
+footer aside {
+    float: left;
+    margin: 0px;
+    -moz-margin-end: 0.5rem;
+    height: 100%;
+    position: relative;
+}
+
+footer aside.pack-end {
+    float: right;
+    text-align: end;
+}
+
+footer aside .icon {
+    background: transparent none no-repeat scroll center center / 3rem auto;
+    font-size: 0px;
+    display: inline-block;
+    width: 3rem;
+    height: 3rem;
+}
+
+footer aside .icon-search-yellow {
+    background-image: url("../img/search-yellow.svg");
+}
+
+footer aside .icon-plus-pink {
+    background-image: url("../img/plus-pink.svg");
+}
+
+footer aside .icon-plus-blue {
+    background-image: url("../img/plus-blue.svg");
+}
+
+footer aside .icon-plus-dark-blue {
+    background-image: url("../img/plus-dark-blue.svg");
+}
+
+footer aside .icon-plus-violet {
+    background-image: url("../img/plus-violet.svg");
+}
+
+/* (context dependencies) */
+
+.bikes footer a {
+    border-bottom: 0.5rem solid #dc1681;
+}
+.stands footer a {
+    border-bottom: 0.5rem solid #009bb7;
+}
+.starred footer a {
+    border-bottom: 0.5rem solid #a54d93;
+}
+.search footer a {
+    border-bottom: 0.5rem solid #f7ad00;
+}
+.station footer a {
+    border-bottom: 0.5rem solid #006fb3;
 }
