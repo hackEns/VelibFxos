@@ -12,13 +12,7 @@ var Views = (function() {
 
 
     var swiper = {};
-    var indexTemplate = '';
-    var bikesTemplate = '';
-    var standsTemplate = '';
-    var starredTemplate = '';
-    var stationTemplate = '';
-    var searchTemplate = '';
-    var starredItemTemplate = '';
+    var templates = {}
     var mainSection = '';
 
 
@@ -43,14 +37,13 @@ var Views = (function() {
             }
         });
 
-        
-        indexTemplate = document.getElementById('index');
-        bikesTemplate = document.getElementById('bikes');
-        standsTemplate = document.getElementById('stands');
-        starredTemplate = document.getElementById('starred');
-        stationTemplate = document.getElementById('station');
-        searchTemplate = document.getElementById('search');
-        starredItemTemplate = document.getElementById('starred-item');
+        templates['index'] = document.getElementById('index');
+        templates['bikes'] = document.getElementById('bikes');
+        templates['stands'] = document.getElementById('stands');
+        templates['starred'] = document.getElementById('starred');
+        templates['station'] = document.getElementById('station');
+        templates['search'] = document.getElementById('search');
+        templates['starredItem'] = document.getElementById('starred-item');
         
         mainSection = document.querySelector('main');
     };
@@ -63,68 +56,16 @@ var Views = (function() {
 
             body.clean();
             console.log('Views', viewStruct.view, 'body.update');
-            $(mainSection).removeClass().addClass(viewStruct.view);
+            mainSection.className = viewStruct.view;
+
+            template = templates[viewStruct.view];
 
             if ('content' in document.createElement('template')) {
-                switch(viewStruct.view) {
-                    case "index":
-                        template = indexTemplate;
-                        clone = document.importNode(template.content, true);
-                        mainSection.appendChild(clone);
-                        break;
-                    case "bikes":
-                        template = bikesTemplate;
-                        clone = document.importNode(template.content, true);
-                        mainSection.appendChild(clone);
-                        break;
-                    case "stands":
-                        template = standsTemplate;
-                        clone = document.importNode(template.content, true);
-                        mainSection.appendChild(clone);
-                        break;
-                    case "starred":
-                        template = starredTemplate;
-                        clone = document.importNode(template.content, true);
-                        mainSection.appendChild(clone);
-                        initStarredContent();
-                        break;
-                    case "station":
-                        var stationFormatted = Stations.getFormattedStation(viewStruct.station);
-
-                        template = stationTemplate;
-                        template = completeStationDetails(template, stationFormatted);
-
-                        clone = document.importNode(template.content, true);
-                        mainSection.appendChild(clone);
-                        break;
-                    case "search":
-                        template = searchTemplate;
-                        clone = document.importNode(template.content, true);
-                        mainSection.appendChild(clone);
-                        break;
-                }
+                mainSection.appendChild(document.importNode(template.content, true));
             } else {
                 console.log('Views', 'body', 'template is NOT supported');
-                switch (viewStruct.view) {
-                    case "index":
-                        template = $(indexTemplate).html();
-                        mainSection.append(template);
-                    case "bikes":
-                        template = $('bikesTemplate').html();
-                        mainSection.append(template);
-                    case "stands":
-                        template = $('standsTemplate').html();
-                        mainSection.append(template);
-                    case "starred":
-                        template = $('starredTemplate').html();
-                        mainSection.append(template);
-                    case "station":
-                        template = $('stationTemplate').html();
-                        mainSection.append(template);
-                    case "search":
-                        template = $('searchTemplate').html();
-                        mainSection.append(template);
-                }
+                template = $(template).html();
+                mainSection.append(template);
             }
         };
 
@@ -148,7 +89,6 @@ var Views = (function() {
         // init the table with starred stations
         var initStarredContent = function() {
             var starredList = document.getElementById('starred-list');
-            template = starredTemplate;
 
             $(starredList).empty();
 
@@ -162,13 +102,14 @@ var Views = (function() {
                     station = Stations.getFormattedStation(station);
 
                     // Construction du DOM
-                    starredItemTemplate.id = station.number;
-                    starredItemTemplate.querySelector('a').href += station.number
-                    starredItemTemplate.querySelector('.name').textContent = station.address;
-                    starredItemTemplate.querySelector('.dist').textContent = station.distance;
-                    starredItemTemplate.querySelector('.bikes').textContent = station.available_bikes;
-                    starredItemTemplate.querySelector('.stands').textContent = station.available_bike_stands;
-                    starredList.appendChild(document.importNode(starredItemTemplate, true));
+                    var row = templates['starredItem'];
+                    row.id = station.number;
+                    row.querySelector('a').href += station.number
+                    row.querySelector('.name').textContent = station.address;
+                    row.querySelector('.dist').textContent = station.distance;
+                    row.querySelector('.bikes').textContent = station.available_bikes;
+                    row.querySelector('.stands').textContent = station.available_bike_stands;
+                    starredList.appendChild(document.importNode(row, true));
                 });
             }
         };
@@ -192,37 +133,19 @@ var Views = (function() {
         // clean by removing stations swiper
         $('.swiper-wrapper, .pagination').empty().attr('style', '');
 
-        body.clean();
         console.log('Views', "Index", "display page");
         body.update(viewStruct);
 
-        $('.entry.bikes').click(function() {
-            window.location.hash = "/bikes";
-        });
-        $('.entry.stands').click(function() {
-            window.location.hash = "/stands";
-        });
-        $('.entry.starred').click(function() {
-            window.location.hash = "/starred";
-        });
-        $('.entry.search').click(function() {
-            window.location.hash = "/search";
-        });
     };
 
     var bikes = function() {
         viewStruct.view = "bikes";
-        viewStruct.title = "Vélos disponibles";
-        viewStruct.img = "velib";
-        viewStruct.src = "plus-pink.svg";
-        viewStruct.alt = "plus";
-        viewStruct.value = "Informations";
         viewStruct.prop = "readonly";
 
         body.update(viewStruct);
 
         if (Geolocation.waitPosition(bikes) && Stations.waitList(bikes)) {
-           var stations = Stations.getClosestStations(Geolocation.getPosition(), 10, function(item) {
+            var stations = Stations.getClosestStations(Geolocation.getPosition(), 10, function(item) {
                 return item.available_bikes > 0;
             });
             console.log(stations);
@@ -233,26 +156,20 @@ var Views = (function() {
                 console.log(stations[i].name);
                 newSlide = swiper.createSlide('<div>Station ' + stations[i].name + '<br>Vélos disponibles ' + stations[i].available_bikes + '</div>');
                 newSlide.append();
-                //$('.available-element').text('Vélos disponibles ' + stations[i].available_bikes);
-                //$('.adresse').text('Station ' + stations[i].name);
             }
             RoadMap.initCircle(Geolocation.getPosition());
 
-            var station_detail = $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2);
-            var active_station = Stations.getStationDetails(station_detail[1]); // get details for the active slide
-            RoadMap.addMarker(Geolocation.getPosition(), active_station, viewStruct.view);
+            var stationDetail = $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2);
+            var activeStation = Stations.getStationDetails(stationDetail[1]); // get details for the active slide
+            RoadMap.addMarker(Geolocation.getPosition(), activeStation, viewStruct.view);
         }
-        else
+        else {
             console.log('Views', 'bikes', 'Looking for geolocation');
+        }
     };
 
     var stands = function() {
         viewStruct.view = "stands";
-        viewStruct.title = "Places libres";
-        viewStruct.img = "borne";
-        viewStruct.src = "plus-blue.svg";
-        viewStruct.alt = "plus";
-        viewStruct.value = "Informations";
         viewStruct.prop = "readonly";
 
         console.log('Views', viewStruct.view, "display page");
@@ -270,14 +187,12 @@ var Views = (function() {
                 console.log(stations[i].name);
                 newSlide = swiper.createSlide('<div>Station ' + stations[i].name + '<br>Bornes disponibles ' + stations[i].available_bikes + '</div>');
                 newSlide.append();
-                //$('.available-element').text('Vélos disponibles ' + stations[i].available_bikes);
-                //$('.adresse').text('Station ' + stations[i].name);
             }
             RoadMap.initCircle(Geolocation.getPosition());
 
-            var station_detail = $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2);
-            var active_station = Stations.getStationDetails(station_detail[1]); // get details for the active slide
-            RoadMap.addMarker(Geolocation.getPosition(), active_station, viewStruct.view);
+            var stationDetail = $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2);
+            var activeStation = Stations.getStationDetails(stationDetail[1]); // get details for the active slide
+            RoadMap.addMarker(Geolocation.getPosition(), activeStation, viewStruct.view);
         }
         else if (!Geolocation.waitPosition(stands)) {
             console.log('Views', 'stands', 'Looking for geolocation');
@@ -286,39 +201,33 @@ var Views = (function() {
 
     var starred = function() {
         viewStruct.view = "starred";
-        viewStruct.title = "Favoris";
-        viewStruct.img = "favori";
-        viewStruct.src = "plus-violet.svg";
-        viewStruct.alt = "plus";
-        viewStruct.value = "Ajouter";
         viewStruct.prop = "readonly";
 
         console.log('Views', viewStruct.view, "display page");
         body.update(viewStruct);
+        body.initStarredContent();
 
         Geolocation.noWaitPosition();
-        if (Geolocation.waitPosition(starred) && Stations.waitList(starred)) {
+        if (Stations.waitList(starred)) {
             console.log(Stations.getClosestStations(Geolocation.getPosition(), 10, function(item) {
                 return item.starred > 0;
             }));
-            $('.station-info').html('');
+            $('.station-info').empty();
         }
     };
 
     var station = function() {
-        var pathArray = window.location.hash.split('/');
-        console.log("pathArray : "+ pathArray);
-        var station_id = pathArray[pathArray.length-1];
-        console.log("station_id : "+station_id);
+        var stationId = window.hash.substr(9); // hash = /station/{stationId}
+        console.log("stationId : " + stationId);
 
         if (Geolocation.waitPosition(station) && Stations.waitList(station)) {
             // Allow to get distance between station and current position
             var stations = Stations.getClosestStations(Geolocation.getPosition());
 
-            viewStruct.station = Stations.getStationDetails(station_id)[0];
+            viewStruct.station = Stations.getStationDetails(stationId)[0];
             console.log("viewStruct.station : "+ viewStruct.station);
             var station_exist = $.grep(stations, function(v) {
-                return v.number == station_id;
+                return v.number == stationId;
             });
 
             // If station doesn't exist : redirection
@@ -336,14 +245,15 @@ var Views = (function() {
                 viewStruct.prop = "readonly";
 
                 console.log('Views', viewStruct.view, "display page");
+                var stationFormatted = Stations.getFormattedStation(viewStruct.station);
+                templates['station'] = completeStationDetails(templates['station'], stationFormatted);
                 body.update(viewStruct);
 
-                var station_id = window.location.hash.substr(2).split("/")[1];
+                var stationId = window.location.hash.substr(2).split("/")[1];
 
                 // click to starred the station
                 $(".vplus").click(function() {
-                    var returnedStation = Stations.toggleStarStation(station_id);
-                    //alert(returnedStation ? "La station " + station_id + " a été ajoutée/retirée." : "Indice invalide");
+                    var returnedStation = Stations.toggleStarStation(stationId);
                 });
             }
         }
