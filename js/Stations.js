@@ -234,30 +234,21 @@ var Stations = (function() {
     // Retrieve the up to date list of starred stations
     var getStarredStations = function(coords) {
         var full_starred_stations_list = [];
-<<<<<<< HEAD
-        starred_stations = (localStorage.getItem('starred_stations') != '' && localStorage.getItem('starred_stations') != null)  ? JSON.parse(localStorage.getItem('starred_stations')) : new Array();
-=======
-        starred_stations = localStorage.getItem('starred_stations');
+        starred_stations = (localStorage.getItem('starred_stations') != '' && localStorage.getItem('starred_stations') != null && localStorage.getItem('starred_stations') != 'undefined')  ? JSON.parse(localStorage.getItem('starred_stations')) : new Array();
 
         console.log("Stations", "getStarredStations", "full_stations_list", full_stations_list);
         console.log("Stations", "getStarredStations", "starred_stations_list", starred_stations);
->>>>>>> 1a94dc0643694b28e674417636838c64650406ec
 
         full_starred_stations_list = $.grep(full_stations_list, function(item) {
             return starred_stations.indexOf(item.number) != -1;
         });
 
-<<<<<<< HEAD
-        full_starred_stations_list = computeDistances(full_starred_stations_list, coords);
-        // TODO : Update
-
-=======
         console.log("Stations", "getStarredStations", "full_starred_stations_list", full_starred_stations_list);
 
         full_starred_stations_list = computeDistances(full_starred_stations_list, coords);
 
         console.log("Stations", "getStarredStations", "full_starred_stations_list_v2", full_starred_stations_list);
->>>>>>> 1a94dc0643694b28e674417636838c64650406ec
+
         return full_starred_stations_list;
     };
 
