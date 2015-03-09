@@ -82,7 +82,6 @@ main {
     margin-top: 5px;
     color: white;
     text-transform: uppercase;
-    text-decoration: none;
     font-size: 1.55em;
     font-weight: 400;
     height: 3em;
@@ -98,12 +97,10 @@ main {
     text-align: right;
     padding: 0 0.5rem;
 }
-
-.entry .logo {
+.station-info .entry--logo {
     margin-left: auto;
     height: 3em;
 }
-
 #app-bar {
     position: fixed;
     width: 100%;
@@ -399,6 +396,7 @@ section[role="region"] {
     padding-bottom: 6.5rem;
 }
 
+
 /*
  * Other Layout
  */
@@ -420,8 +418,8 @@ section[role="region"] > header:first-child .icon-velib {
     background-image: url('../img/velib.svg');
 }
 
-section.skin-bikes[role="region"] > header:first-child,
-.skin-bikes > section[role="region"] > header:first-child {
+section.skin-velib[role="region"] > header:first-child,
+.skin-velib > section[role="region"] > header:first-child {
     background-color: #dc1681;
 }
 
@@ -456,7 +454,7 @@ section.skin-station[role="region"] > header:first-child,
 }
 
 
-section[role="region"] > header:first-child .icon-stand {
+section[role="region"] > header:first-child .icon-stands {
     background-image: url('../img/stand.svg');
 }
 
@@ -517,12 +515,38 @@ section.skin-stands[role="region"] > header:first-child,
 }
 
 [data-type="list"] aside.counter.stands {
-    color: #009bb7;
+    color: #009bb7;;
 }
+
+
 
 /*
  * Footer
  */
+
+footer a {
+    height: 5rem;
+    display: block;
+    border-top: 0.3px solid #979797;
+    box-sizing: border-box;
+    padding-left: 1rem;
+
+    font-size: 1.8rem;
+    line-height: 4.2rem;
+    vertical-align: center;
+    color: #666;
+    font-style: italic;
+    font-weight: 200;
+    text-decoration: none;
+}
+
+footer aside {
+    float: left;
+    margin: 0px;
+    -moz-margin-end: 0.5rem;
+    height: 100%;
+    position: relative;
+}
 
 footer aside.pack-end {
     float: right;
