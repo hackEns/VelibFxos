@@ -399,7 +399,6 @@ section[role="region"] {
     padding-bottom: 6.5rem;
 }
 
-
 /*
  * Other Layout
  */
@@ -518,7 +517,7 @@ section.skin-stands[role="region"] > header:first-child,
 }
 
 [data-type="list"] aside.counter.stands {
-    color: #009bb7;;
+    color: #009bb7;
 }
 
 /*
