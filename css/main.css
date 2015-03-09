@@ -45,6 +45,7 @@ body {
 
 main {
     background-color: white;
+    min-height: 100%;
 }
 
 .station-info {
@@ -242,11 +243,15 @@ table.station p.stands {
 }
 
 footer {
-    height: 40px;
+    position: absolute;
+    bottom: 0;
+    height: 5rem;
     width: 100%;
-    display: inline-block;
     border-top: 3px solid #979797;
+    box-sizing: border-box;
+    clear:both;
 }
+
 footer div {
     font-size: 20px;
     position: absolute;
@@ -256,6 +261,7 @@ footer div {
     font-style: italic;
     cursor: default;
 }
+
 footer input {
     color: #808080;
     height: 30px;
@@ -360,8 +366,30 @@ main.index {
 
 /* ---------- Layout ---------- */
 
+section[role="region"] {
+    min-height: 100vh;
+    position: relative;
+}
+
+.scrollable.header {
+    padding-top: 6.5rem;
+    position: normal;
+    top: 0;
+}
+
+
+.footer {
+    overflow: auto;
+    padding-bottom: 6.5rem;
+}
+
+
 .full-width {
     padding: 0;
+}
+
+.swiper-container {
+    display: none;
 }
 
 /* ---------- Header ---------- */
@@ -422,7 +450,7 @@ section.skin-stands[role="region"] > header:first-child,
     background: transparent none no-repeat scroll center center / 3rem auto;
     font-size: 0;
     display: block;
-    width: 3rem;
+    width: 4rem;
     height: 3rem;
 }
 
@@ -443,7 +471,7 @@ section.skin-stands[role="region"] > header:first-child,
 }
 
 [data-type="list"] aside.counter {
-    width: 3rem;
+    width: 4rem;
     vertical-align: center;
     line-height: 5rem;
     font-weight: bold;
