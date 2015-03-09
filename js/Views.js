@@ -177,21 +177,15 @@ var Views = (function() {
             {
                 var currentPosition = Geolocation.getPosition();
                 var starredStations = Stations.getStarredStations(currentPosition);
-<<<<<<< HEAD
-=======
+
                 console.log('IDE', starredStations);
->>>>>>> 1a94dc0643694b28e674417636838c64650406ec
 
                 $.each(starredStations, function(id, station) {
                     station = Stations.getFormattedStation(station);
 
                     // Construction du DOM
                     row.id = station.number;
-<<<<<<< HEAD
-                    row.querySelector('td.stations > span').textContent = station.address;
-=======
                     row.querySelector('td.stations > div').textContent = station.address;
->>>>>>> 1a94dc0643694b28e674417636838c64650406ec
                     row.querySelector('td.stations > span.dist').textContent = station.distance;
                     row.querySelector('td.bikes').textContent = station.available_bikes;
                     row.querySelector('td.stands').textContent = station.available_bike_stands;
@@ -410,7 +404,6 @@ var Views = (function() {
                 body.update(viewStruct);
                 footer.update(viewStruct);
 
-<<<<<<< HEAD
                 var station_id = parseInt(window.location.hash.substr(2).split("/")[1]);
 
                 $(".vplus").click(function() {
