@@ -5,9 +5,6 @@ if (typeof console == "undefined") {
 
 L.Control.OSMGeocoder = L.Control.extend({
 	options: {
-		collapsed: true,
-		position: 'topright',
-		text: 'TEST',
 		bounds: null, // L.LatLngBounds
 		email: null, // String
 		callback: function (results) {
@@ -73,8 +70,8 @@ L.Control.OSMGeocoder = L.Control.extend({
 
 		container.appendChild(form);
 
-		// IDE - insert field in the footer.search
-		document.querySelector('footer.search').appendChild(form);
+		// Insert field in the first Div of the Footer
+		document.querySelector('footer > div').appendChild(form);
 		return container;
 	},
 
