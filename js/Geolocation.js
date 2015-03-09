@@ -29,10 +29,7 @@ var Geolocation = (function() {
 
     var init = function() {
         if (navigator.geolocation) {
-            navigator.geolocation.watchPosition(successFunction, errorFunction, {
-                enableHighAccuracy: true,
-                maximumAge: 10000
-            });
+            navigator.geolocation.watchPosition(successFunction, errorFunction, Config.geolocation);
         } else {
             $('.info--content').addClass('error').html("Votre navigateur ne supporte pas l'API de géolocalisation.");
         }
@@ -42,7 +39,7 @@ var Geolocation = (function() {
     var waitPosition = function(fun) {
         $('.station-info').html('<p class="center">Attente de la position…</p>');
         if (coords === null) {
-            timer = setTimeout(fun, 250);
+            timer = setTimeout(fun, Config.wait_position_timeout);
             return false;
         } else {
             return true;

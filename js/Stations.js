@@ -8,6 +8,7 @@ var Stations = (function() {
     var full_stations_list = null;
     var starred_stations = new Array();
     var ordered_stations_list = null;
+    var starred_stations = new Array();
     var starred_stations_list = null;
     var timer = null;
 
@@ -28,7 +29,7 @@ var Stations = (function() {
         try {
             full_stations_list = JSON.parse(localStorage.getItem('stations'));
         } catch (e) {
-            full_stations_list = null;
+            full_stations_list = [];
         }
 
         try {
@@ -206,32 +207,57 @@ var Stations = (function() {
 
     // Star / Unstar a station
     var toggleStarStation = function(station_id) {
-        var index = starred_stations.indexOf(station_id);
+        console.log('toggleStarStation', 'starred_stations before', starred_stations);
+        var index = starred_stations.indexOf(parseInt(station_id));
+
+        // Star a new station
         if (index != -1) {
-            starred_stations.splice(index, 1);
-        } else {
-            if (starred_stations.length >= window.Config.max_starred_stations) {
+            alert('ANIMATION : station retirée');
+            starred_stations = starred_stations.slice(index+1);
+        }
+        // Unstar a station from favourites
+        else {
+            if (starred_stations.length > window.Config.max_starred_stations) {
+                console.log('Stations.js', 'toggleStarStation', 'too much stations are starred');
                 return false;
+            } else if (starred_stations.length <= window.Config.max_starred_stations) {
+                alert('ANIMATION : station ajoutée');
+                starred_stations.push(parseInt(station_id));
             }
             starred_stations.push(parseInt(station_id));
         }
         localStorage.setItem('starred_stations', JSON.stringify(starred_stations));
-        console.log("Stations", "toggleStarStation", localStorage.getItem('starred_stations'));
+        console.log('toggleStarStation', 'starred_stations after', starred_stations);
         return true;
     };
 
     // Retrieve the up to date list of starred stations
     var getStarredStations = function(coords) {
         var full_starred_stations_list = [];
+<<<<<<< HEAD
         starred_stations = (localStorage.getItem('starred_stations') != '' && localStorage.getItem('starred_stations') != null)  ? JSON.parse(localStorage.getItem('starred_stations')) : new Array();
+=======
+        starred_stations = localStorage.getItem('starred_stations');
+
+        console.log("Stations", "getStarredStations", "full_stations_list", full_stations_list);
+        console.log("Stations", "getStarredStations", "starred_stations_list", starred_stations);
+>>>>>>> 1a94dc0643694b28e674417636838c64650406ec
 
         full_starred_stations_list = $.grep(full_stations_list, function(item) {
             return starred_stations.indexOf(item.number) != -1;
         });
 
+<<<<<<< HEAD
         full_starred_stations_list = computeDistances(full_starred_stations_list, coords);
         // TODO : Update
-        
+
+=======
+        console.log("Stations", "getStarredStations", "full_starred_stations_list", full_starred_stations_list);
+
+        full_starred_stations_list = computeDistances(full_starred_stations_list, coords);
+
+        console.log("Stations", "getStarredStations", "full_starred_stations_list_v2", full_starred_stations_list);
+>>>>>>> 1a94dc0643694b28e674417636838c64650406ec
         return full_starred_stations_list;
     };
 

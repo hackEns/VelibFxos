@@ -42,14 +42,11 @@ body {
     overflow-y: auto;
     background-color: white;
 }
+
 main {
     background-color: white;
-    border-bottom: 3px solid #979797;
-    box-sizing: border-box;
 }
-#map {
-    height: 400px;
-}
+
 .station-info {
     padding: 10px;
 }
@@ -68,8 +65,11 @@ main {
     color: #545454;
 }
 .velib-logo {
-    margin: 1em auto;
+    margin: 0 auto;
     display: block;
+}
+#app-logo {
+    padding: 2em 0;
 }
 .station-info .entry {
     display: flex;
@@ -108,22 +108,19 @@ main {
 #app-bar.bikes {
     background-color: #dc1681;
 }
-.station-info .bikes:hover {
-    background-color: #000;
+.station-info .bikes:hover,
+.station-info .stands:hover,
+.station-info .starred:hover,
+.station-info .search:hover {
+    opacity: 0.75;
 }
 .station-info .stands,
 #app-bar.stands {
     background-color: #009bb7;
 }
-.station-info .stands:hover {
-    background-color: #000;
-}
 .station-info .starred,
 #app-bar.starred {
     background-color: #a54d93;
-}
-.station-info .starred:hover {
-    background-color: #000;
 }
 #app-bar.station {
     background-color: #006FB3;
@@ -131,9 +128,6 @@ main {
 .station-info .search,
 #app-bar.search {
     background-color: #f7ad00;
-}
-.station-info .search:hover {
-    background-color: #000;
 }
 .info {
     width: 50%;
@@ -165,10 +159,16 @@ table.starred tbody td {
 }
 table.starred td.stations {
     line-height: 18px;
-    width: 60%;
+    max-width: 100px;
+}
+table.starred td.stations div {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 100%;
+    overflow: hidden;
 }
 table.starred td.stations .dist {
-    font-size: 0.8em;
+    font-size: 0.7em;
     color: #B1B1B1;
 }
 table.starred td.bikes,
@@ -241,24 +241,31 @@ table.station p.stands {
     color: #006FB3;
 }
 
-/* general style */
-
 footer {
     height: 40px;
     width: 100%;
     display: inline-block;
+    border-top: 3px solid #979797;
+}
+footer div {
+    font-size: 20px;
+    position: absolute;
+    margin-left: 20px;
+    line-height: 35px;
+    font-weight: 300;
+    font-style: italic;
+    cursor: default;
 }
 footer input {
     color: #808080;
     height: 30px;
     font-size: 25px;
     font-family: "Open Sans";
-
     padding-left: 10px;
     border: 0px none;
     height: auto;
     vertical-align: middle;
-    width: 99%;
+    width: 80%;
 }
 footer input#submit {
     position: absolute;
@@ -291,9 +298,163 @@ footer.search {
 footer.station {
     border-bottom: 5px solid #006FB3;
 }
+
+/*
+ * Map elements
+ */
+ #map {
+     height: 400px;
+ }
+.mapIcon {
+    background-image: url("../img/station-marker.svg");
+    display: inline-flex;
+    height: 33px !important;
+    width: 34px !important;
+    opacity: 1;
+}
+.mapIcon div {
+    color: #FFF;
+    font-size: 0.9em;
+    font-weight: bold;
+    line-height: 20px;
+    position: relative;
+    text-align: center;
+    width: 1.6em;
+}
+
+/*
+ * Classic elements
+ */
 .hidden {
     display: none;
 }
 .uppercase {
     text-transform: uppercase;
+}
+
+
+main.bikes section {
+  border: 2px solid #DC1681;
+}
+
+main.stands section {
+  border: 2px solid #009BB7;
+}
+
+main.index {
+  border: 0px white;
+  margin : 0px;
+}
+
+.map-circle {
+    border-radius: 50%;
+    margin: 10px 10px 10px 10px;
+    background-color: #DDD;
+}
+
+.pagination {
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+
+/* ---------- Layout ---------- */
+
+.full-width {
+    padding: 0;
+}
+
+/* ---------- Header ---------- */
+
+section[role="region"] > header:first-child .icon-velib {
+    background-image: url('../img/velib.svg');
+}
+
+section.skin-velib[role="region"] > header:first-child,
+.skin-velib > section[role="region"] > header:first-child {
+    background-color: #dc1681;
+}
+
+
+section[role="region"] > header:first-child .icon-starred {
+    background-image: url('../img/star.svg');
+}
+
+section.skin-starred[role="region"] > header:first-child,
+.skin-starred > section[role="region"] > header:first-child {
+    background-color: #a54d93;
+}
+
+
+section[role="region"] > header:first-child .icon-search {
+    background-image: url('../img/search.svg');
+}
+
+section.skin-search[role="region"] > header:first-child,
+.skin-search > section[role="region"] > header:first-child {
+    background-color: #f7ad00;
+}
+
+
+section[role="region"] > header:first-child .icon-station {
+    background-image: url('../img/station.svg');
+}
+
+section.skin-station[role="region"] > header:first-child,
+.skin-station > section[role="region"] > header:first-child {
+    background-color: #006fb3;
+}
+
+
+section[role="region"] > header:first-child .icon-stands {
+    background-image: url('../img/stand.svg');
+}
+
+section.skin-stands[role="region"] > header:first-child,
+.skin-stands > section[role="region"] > header:first-child {
+    background-color: #009bb7;
+}
+
+
+/* ---------- Lists ---------- */
+
+[data-type="list"] > header aside .icon {
+    background: transparent none no-repeat scroll center center / 3rem auto;
+    font-size: 0;
+    display: block;
+    width: 3rem;
+    height: 3rem;
+}
+
+[data-type="list"] > header aside .icon-velib-pink {
+    background-image: url('../img/velib-pink.svg');
+}
+
+[data-type="list"] > header aside .icon-stand-blue {
+    background-image: url('../img/stand-blue.svg');
+}
+
+.skin-starred [data-type="list"] header {
+    color: #a54d93;
+}
+
+[data-type="list"] aside.counter:first-child {
+    margin-right: 1.5rem;
+}
+
+[data-type="list"] aside.counter {
+    width: 3rem;
+    vertical-align: center;
+    line-height: 5rem;
+    font-weight: bold;
+    font-size: 3rem;
+    text-align: center;
+}
+
+[data-type="list"] aside.counter.bikes {
+    color: #dc1681;
+}
+
+[data-type="list"] aside.counter.stands {
+    color: #009bb7;;
 }

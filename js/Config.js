@@ -14,6 +14,11 @@ var Config = (function() {
         tiles_provider: tiles_provider,
         stations_url: stations_base_url + api_key,
         realtime_url: realtime_url + api_key,
-        max_starred_stations: 10
+        max_starred_stations: 10,
+        geolocation: {
+            enableHighAccuracy: true,
+            maximumAge: 10000
+        },
+        wait_position_timeout: 250
     };
 })();

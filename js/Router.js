@@ -10,6 +10,7 @@
 
 var Router = (function() {
     var route = function() {
+        Views.header.enableHeaderDisplay();
         Views.footer.enableFooterDisplay();
         var hash = window.location.hash.substr(1);
 
@@ -25,8 +26,9 @@ var Router = (function() {
             Views.station();
         } else {
             // Index view
-            Views.footer.disableFooterDisplay();
             Views.index();
+            Views.header.disableHeaderDisplay();
+            Views.footer.disableFooterDisplay();
         }
     };
 

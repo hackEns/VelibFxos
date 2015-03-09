@@ -5,148 +5,199 @@
     <meta charset="UTF-8">
     <title>Vélib'</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+
+    <!-- External libs -->
     <link rel="stylesheet" href="css/idangerous.swiper.css">
     <link rel="stylesheet" href="css/normalize.css">
     <link rel="stylesheet" href="css/leaflet.css">
+
+    <!-- Mozilla Building Blocks -->
     <link rel="stylesheet" href="css/headers.css">
+    <link rel="stylesheet" href="css/lists.css">
+    <link rel="stylesheet" href="css/util.css">
+
+    <!-- Local style -->
     <link rel="stylesheet" href="css/main.css">
 </head>
 
 <body>
 
-    <section role="region">
-        <header id="app-bar">
-            <a href="#"><span class="icon icon-back">back</span></a>
-            <menu type="toolbar">
-                <img class="entry--logo" alt="" src="img/velib.svg" />
-            </menu>
-            <h1>Velib</h1>
-        </header>
+
+
+
+
+    <!-- Action takes place here -->
+    <main></main>
+
+    <!-- swiper element -->
+    <div class="swiper-container">
+        <div class="swiper-wrapper"></div>
+        <div class="pagination"></div>
+    </div>
+
+    <!-- index template -->
+    <template id="index">
         <header id="app-logo">
-            <a href="#">
-                <img alt="Velib'" src="img/logo.svg" class="velib-logo" />
-            </a>
+            <img alt="Velib'" src="img/logo.svg" class="velib-logo" />
         </header>
-    </section>
-
-    <main>
-
-        <!-- Action takes place here -->
-        <section></section>
-
-        <!-- swiper element -->
-        <div class="swiper-container">
-            <div class="swiper-wrapper"></div>
-            <div class="pagination"></div>
-        </div>
-
         <div class="station-info">
-            <p class="center">Chargement en cours…</p>
-        </div>
-
-        <div class="info">
-            <h5 class="info--title">Position</h5>
-            <p class="info--content">Recherche de position…</p>
-        </div>
-
-        <!-- index template -->
-        <template id="index">
-            <div class="station-info">
-                <div class="entry bikes"><span>vélos<br/>disponibles</span>
-                    <img class="entry--logo" alt="" src="img/velib.svg" />
-                </div>
-                <div class="entry stands"><span>places<br/>libres</span>
-                    <img class="entry--logo" alt="" src="img/borne.svg" />
-                </div>
-                <div class="entry starred"><span>Favoris</span>
-                    <img class="entry--logo" alt="" src="img/favori.svg" />
-                </div>
-                <div class="entry search"><span>Rechercher</span>
-                    <img class="entry--logo" alt="" src="img/loupe.svg" />
-                </div>
+            <div class="entry bikes">
+                <span>vélos<br/>disponibles</span>
+                <img class="entry--logo" alt="" src="img/velib.svg" />
             </div>
-        </template>
+            <div class="entry stands">
+                <span>places<br/>libres</span>
+                <img class="entry--logo" alt="" src="img/borne.svg" />
+            </div>
+            <div class="entry starred">
+                <span>Favoris</span>
+                <img class="entry--logo" alt="" src="img/favori.svg" />
+            </div>
+            <div class="entry search">
+                <span>Rechercher</span>
+                <img class="entry--logo" alt="" src="img/loupe.svg" />
+            </div>
+        </div>
+    </template>
 
-        <!-- available template -->
-        <template id="available">
-            <section>
+    <!-- available template -->
+    <template id="available">
+        <section role="region" class="skin-velib">
+            <header id="app-bar" class="fixed">
+                <a href="#"><span class="icon icon-back">back</span></a>
+                <menu type="toolbar">
+                    <button>
+                        <span class="icon icon-velib"></span>
+                    </button>
+                </menu>
+                <h1>Vélos disponibles</h1>
+            </header>
+
+            <article class="content scrollable header">
                 <div class="uppercase">
-                    <p>ADRESSE</p>
-                    <p>0.0km</p>
+                    <p class="adresse"></p>
+                    <p class="distance"></p>
                 </div>
-                <div class="available-element uppercase">
-                    5 <span>ELEMENT DISPONIBLE</span>
-                </div>
+                <div class="available-element uppercase"><span></span></div>
                 <div>
                     <!-- img starrified -->
                 </div>
+                <div class="map-circle" id="map"></div>
+            </article>
+        </section>
+    </template>
+
+    <!-- starred template -->
+    <template id="starred">
+        <section role="region" class="skin-starred">
+            <header id="app-bar" class="fixed">
+                <a href="#"><span class="icon icon-back">back</span></a>
+                <menu type="toolbar">
+                    <button>
+                        <span class="icon icon-starred"></span>
+                    </button>
+                </menu>
+                <h1>Favoris</h1>
+            </header>
+
+            <article class="content scrollable header">
+                <section data-type="list">
+                    <header>
+                        <aside class="pack-end">
+                            <span class="icon icon-velib-pink">Vélos</span>
+                        </aside>
+                        <aside class="pack-end">
+                            <span class="icon icon-stand-blue">Places</span>
+                        </aside>
+                        Station
+                    </header>
+                    <ul>
+                        <li>
+                            <aside class="pack-end  bikes counter">0</aside>
+                            <aside class="pack-end stands counter">0</aside>
+                            <a href="#/station/foo">
+                                <p>Station name</p>
+                                <p class="dist">00</p>
+                            </a>
+                        </li>
+                        <li>
+                            <aside class="pack-end  bikes counter">11</aside>
+                            <aside class="pack-end stands counter">8</aside>
+                            <a href="#/station/bar">
+                                <p>Another station</p>
+                                <p class="dist">42</p>
+                            </a>
+                        </li>
+                    </ul>
+                </section>
+            </article>
+        </section>
+    </template>
+
+    <!-- search template -->
+    <template id="search">
+        <section role="region" class="skin-search">
+            <header id="app-bar" class="fixed">
+                <a href="#"><span class="icon icon-back">back</span></a>
+                <menu type="toolbar">
+                    <button>
+                        <span class="icon icon-search"></span>
+                    </button>
+                </menu>
+                <h1>Rechercher</h1>
+            </header>
+
+            <article class="content scrollable header full-width">
                 <div id="map"></div>
-            </section>
-        </template>
+            </article>
+        </section>
+    </template>
 
-        <!-- starred template -->
-        <template id="starred">
-            <table class="starred">
-                <thead>
-                    <tr>
-                        <td>Station</td>
-                        <td class="center">
-                            <img class="entry--logo" alt="" src="img/velib-pink.svg">
-                        </td>
-                        <td class="center">
-                            <img class="entry--logo" alt="" src="img/borne-blue.svg">
-                        </td>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="stations">
-                            <span class="uppercase">Station name</span><br>
-                            <span class="dist">00</span>
-                        </td>
-                        <td class="bikes">0</td>
-                        <td class="stands">0</td>
-                    </tr>
-                </tbody>
-            </table>
-        </template>
+    <!-- detail template -->
+    <template id="stationDetail">
+        <section role="region" class="skin-station">
+            <header id="app-bar" class="fixed">
+                <a href="#"><span class="icon icon-back">back</span></a>
+                <menu type="toolbar">
+                    <button>
+                        <span class="icon icon-station"></span>
+                    </button>
+                </menu>
+                <h1>Rechercher</h1>
+            </header>
 
-        <!-- search template -->
-        <template id="search">
-            <div id="map"></div>
-        </template>
-
-        <!-- detail template -->
-        <template id="stationDetail">
-            <table class="station">
-                <tbody>
-                    <tr>
-                        <td><p class="uppercase title">Vélos disponibles</p></td>
-                        <td><p class="uppercase title">Places Libres</p></td></tr>
-                    <tr>
-                        <td><p class="bikes">0</p></td>
-                        <td><p class="stands">0</p></td>
-                    </tr>
-                    <tr>
-                        <td><p class="uppercase title">Station V+</p></td>
-                        <td><p class="uppercase title">Distance</p></td>
-                    </tr>
-                    <tr>
-                        <td><img class="entry--logo vplus" alt="" src="img/v-plus.svg" /></td>
-                        <td><p class="distance">0 km</p></td>
-                    </tr>
-                    <tr>
-                        <td><p class="uppercase title">Position</p></td>
-                        <td><p class="uppercase title">Mise à jour</p></td>
-                    </tr>
-                    <tr>
-                        <td><p class="position">00.00</p></td>
-                        <td><p>Il y a <span class="last_update"></span></p></td>
-                    </tr>
-                </tbody>
-            </table>
-        </template>
-    </main>
+            <article class="content scrollable header full-width">
+                <table class="station">
+                    <tbody>
+                        <tr>
+                            <td><p class="uppercase title">Vélos disponibles</p></td>
+                            <td><p class="uppercase title">Places Libres</p></td></tr>
+                        <tr>
+                            <td><p class="bikes">0</p></td>
+                            <td><p class="stands">0</p></td>
+                        </tr>
+                        <tr>
+                            <td><p class="uppercase title">Station V+</p></td>
+                            <td><p class="uppercase title">Distance</p></td>
+                        </tr>
+                        <tr>
+                            <td><img class="entry--logo vplus" alt="" src="img/v-plus.svg" /></td>
+                            <td><p class="distance">0 km</p></td>
+                        </tr>
+                        <tr>
+                            <td><p class="uppercase title">Position</p></td>
+                            <td><p class="uppercase title">Mise à jour</p></td>
+                        </tr>
+                        <tr>
+                            <td><p class="position">00.00</p></td>
+                            <td><p>Il y a <span class="last_update"></span></p></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </article>
+        </section>
+    </template>
+>>>>>>> 1a94dc0643694b28e674417636838c64650406ec
 
     <footer></footer>
 
@@ -156,13 +207,13 @@
     <script src="js/leaflet.min.js"></script>
 
     <script src="js/utils.js"></script>
-	<script src="js/Config.js"></script>
-	<script src="js/Geolocation.js"></script>
-    <script src="js/Map.js"></script>
+    <script src="js/Config.js"></script>
+    <script src="js/Geolocation.js"></script>
+    <script src="js/RoadMap.js"></script>
     <script src="js/Control.OSMGeocoder.js"></script>
-	<script src="js/Stations.js"></script>
-	<script src="js/Views.js"></script>
-	<script src="js/Router.js"></script>
+    <script src="js/Stations.js"></script>
+    <script src="js/Views.js"></script>
+    <script src="js/Router.js"></script>
     <script src="js/app.js"></script>
 </body>
 
