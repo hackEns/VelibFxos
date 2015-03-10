@@ -167,13 +167,13 @@ var MockStationStorage = function() {
     api.stations = [
         {
             address: "RUE DES CHAMPEAUX (PRES DE LA GARE ROUTIERE) - 93170 BAGNOLET",
-            available_bike_stands: 38,
-            available_bikes: 11,
-            bike_stands: 50,
+            availableStands: 38,
+            availableBikes: 11,
+            bikeStands: 50,
             banking: true,
             bonus: true,
-            contract_name: "Paris",
-            last_update: 1425980217000,
+            contractName: "Paris",
+            lastUpdate: 1425980217000,
             name: "31705 - CHAMPEAUX (BAGNOLET)",
             number: 31705,
             position: {
