@@ -23,7 +23,7 @@ var StationStorage = function() {
     };
     
     /**
-     * Returns whether the storage has correctly been loaded
+     * @returns bool whether the storage has correctly been loaded
      */
     api.isLoaded = function() {
         return api.stations !== null;
@@ -38,17 +38,28 @@ var StationStorage = function() {
     };
 
     /**
-     * Return station list
+     * @return station list
      */
     api.getStations = function() {
         return api.stations;
     };
 
     /**
-     * Return starred station list
+     * @return starred station list
      */
     api.getStarredStations = function() {
         return api.starredStations;
+    };
+
+    /**
+     * Get station by its Id
+     * @param id Station id
+     * @return full station object
+     */
+    api.getStationById = function(id) {
+        return $.grep(api.getStations(), function(station) {
+            return station.number == id;
+        });
     };
 
 
@@ -96,6 +107,9 @@ var LocalStationStorage = function() {
         }
         api.stations = JSON.parse(localStorage.getItem('stations'));
         api.starredStations = JSON.parse(localStorage.getItem('starredStations'));
+        if (api.starredStations == null) {
+            api.starredStations = [];
+        }
         callback();
     };
 

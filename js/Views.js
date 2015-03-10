@@ -37,7 +37,7 @@ var Views = (function() {
                 RoadMap.initCircle(Geolocation.getPosition());
                 var stationDetail = $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2);
 
-                var activeStation = Stations.getStationDetails(stationDetail[1]); // get details from the active slide
+                var activeStation = stationStorage.getStationById(stationDetail[1]); // get details from the active slide
                 RoadMap.addMarker(Geolocation.getPosition(), activeStation, viewStruct.view);
             }
         });
@@ -85,14 +85,12 @@ var Views = (function() {
 
     var index = function() {
         currentView = "index";
+        body.update();
 
-        Geolocation.noWaitPosition();
-        Stations.noWaitList();
         // clean by removing stations swiper
         $('.swiper-wrapper, .pagination').empty().attr('style', '');
 
         console.log('Views', "Index", "display page");
-        body.update();
 
     };
 
@@ -103,10 +101,13 @@ var Views = (function() {
 
         Geolocation.waitPosition(function() {
             var coords = Geolocation.getPosition();
-            var stations = Stations.getClosestStations(stationStorage.getStations(), coords, 10, function(item) {
-                return item.availableBikes > 0;
-            });
-            console.log(stations);
+
+            var stations = Stations.filterClosestStations(
+                stationStorage.getStations(),
+                coords,
+                10,
+                function(item) { return item.availableBikes > 0; }
+            );
 
             // Stations slides creation
             var newSlide = '';
@@ -118,7 +119,7 @@ var Views = (function() {
             RoadMap.initCircle(Geolocation.getPosition());
 
             var stationDetail = $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2); // ugly…
-            var activeStation = Stations.getStationDetails(stationDetail[1], coords); // get details for the active slide
+            var activeStation = stationStorage.getStationById(stationDetail[1], coords); // get details for the active slide
             RoadMap.addMarker(Geolocation.getPosition(), activeStation, viewStruct.view);
         });
     };
@@ -131,10 +132,13 @@ var Views = (function() {
 
         Geolocation.waitPosition(function() {
             var coords = Geolocation.getPosition();
-            var stations = Stations.getClosestStations(stationStorage.getStations(), coords, 10, function(item) {
-                return item.availableStands > 0;
-            });
-            console.log(stations);
+
+            var stations = Stations.filterClosestStations(
+                stationStorage.getStations(),
+                coords,
+                10,
+                function(item) { return item.availableStands > 0; }
+            );
 
             // Stations slides creation
             var newSlide = '';
@@ -146,7 +150,7 @@ var Views = (function() {
             RoadMap.initCircle(Geolocation.getPosition());
 
             var stationDetail = $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2);
-            var activeStation = Stations.getStationDetails(stationDetail[1], coords); // get details for the active slide
+            var activeStation = stationStorage.getStationById(stationDetail[1], coords); // get details for the active slide
             RoadMap.addMarker(Geolocation.getPosition(), activeStation, viewStruct.view);
         });
     };
@@ -187,9 +191,12 @@ var Views = (function() {
         Geolocation.waitPosition(function() {
             var coords = Geolocation.getPosition();
             // Allow to get distance between station and current position
-            var stations = Stations.getClosestStations(stationStorage.getStations(), coords);
-
-            var station = Stations.getStationDetails(stationId)[0];
+            var stations = Stations.filterClosestStations(
+                stationStorage.getStations(),
+                coords
+            );
+            
+            var station = stationStorage.getStationById(stationId)[0];
             var stationExist = $.grep(stations, function(v) {
                 return v.number == stationId;
             });
