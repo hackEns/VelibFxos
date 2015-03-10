@@ -206,7 +206,6 @@ var Stations = (function() {
 
     // Star / Unstar a station
     var toggleStarStation = function(stationId) {
-        var maxStarredStations = 10;
         console.log('toggleStarStation', 'starredStations before', starredStations);
         var index = starredStations.indexOf(parseInt(stationId));
 
@@ -218,10 +217,10 @@ var Stations = (function() {
         }
         // Unstar a station from favourites
         else {
-            if (starredStations.length > maxStarredStations) {
+            if (starredStations.length > Config.max_starred_stations) {
                 console.log('Stations.js', 'toggleStarStation', 'too much stations are starred');
                 return false;
-            } else if (starredStations.length <= maxStarredStations) {
+            } else if (starredStations.length <= Config.max_starred_stations) {
                 alert('ANIMATION : station ajoutée');
                 starredStations.push(parseInt(stationId));
             }

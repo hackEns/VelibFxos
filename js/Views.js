@@ -17,26 +17,6 @@ var Views = (function() {
 
 
     var init = function() {
-        swiper = new Swiper('.swiper-container', {
-            // general settings
-            hashNav: false,
-            keyboardControl: true,
-            calculateHeight: true,
-            // pagination settings
-            //loop: true,
-            pagination: '.pagination',
-            paginationClickable: true,
-            createPagination: true,
-            onSlideChangeStart: function(e){
-                body.update(viewStruct);
-                RoadMap.initCircle(Geolocation.getPosition());
-                var stationDetail = $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2);
-
-                var activeStation = Stations.getStationDetails(stationDetail[1]); // get details from the active slide
-                RoadMap.addMarker(Geolocation.getPosition(), activeStation, viewStruct.view);
-            }
-        });
-
         templates['index'] = document.getElementById('index');
         templates['bikes'] = document.getElementById('bikes');
         templates['stands'] = document.getElementById('stands');
@@ -47,6 +27,29 @@ var Views = (function() {
 
         mainSection = document.querySelector('main');
     };
+
+    var initSwiper = function() {
+
+      swiper = new Swiper('.swiper-container', {
+          // general settings
+          hashNav: false,
+          keyboardControl: true,
+          calculateHeight: true,
+          // pagination settings
+          loop: true,
+          pagination: '.pagination',
+          paginationClickable: true,
+          createPagination: true,
+          onSlideChangeStart: function(e){
+              body.update(viewStruct);
+              RoadMap.initCircle(Geolocation.getPosition());
+              var stationDetail = $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2);
+
+              var activeStation = Stations.getStationDetails(stationDetail[1]); // get details from the active slide
+              RoadMap.addMarker(Geolocation.getPosition(), activeStation, viewStruct.view);
+          }
+      });
+    }
 
 
     body = (function() {
@@ -61,7 +64,7 @@ var Views = (function() {
             template = templates[viewStruct.view];
 
             if ('content' in document.createElement('template')) {
-                mainSection.appendChild(document.importNode(template.content, true));
+                mainSection.appendChild(document.importNode(template.content.cloneNode(true), true));
             } else {
                 console.log('Views', 'body', 'template is NOT supported');
                 template = $(template).html();
@@ -144,10 +147,11 @@ var Views = (function() {
         viewStruct.prop = "readonly";
 
         body.update(viewStruct);
+        initSwiper();
 
         if (Geolocation.waitPosition(bikes) && Stations.waitList(bikes)) {
             var stations = Stations.getClosestStations(Geolocation.getPosition(), 10, function(item) {
-                return item.availableBikes > 0;
+                return item.available_bikes > 0;
             });
             console.log(stations);
 
@@ -159,6 +163,8 @@ var Views = (function() {
                 newSlide.append();
             }
             RoadMap.initCircle(Geolocation.getPosition());
+
+            $('.swiper-slide:first').addClass("swiper-slide-active");
 
             var stationDetail = $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2);
             var activeStation = Stations.getStationDetails(stationDetail[1]); // get details for the active slide
@@ -175,6 +181,7 @@ var Views = (function() {
 
         console.log('Views', viewStruct.view, "display page");
         body.update(viewStruct);
+        initSwiper();
 
         if (Geolocation.waitPosition(stands) && Stations.waitList(stands)) {
             var stations = Stations.getClosestStations(Geolocation.getPosition(), 10, function(item) {
@@ -190,6 +197,8 @@ var Views = (function() {
                 newSlide.append();
             }
             RoadMap.initCircle(Geolocation.getPosition());
+
+            $('.swiper-slide:first').addClass("swiper-slide-active");
 
             var stationDetail = $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2);
             var activeStation = Stations.getStationDetails(stationDetail[1]); // get details for the active slide
