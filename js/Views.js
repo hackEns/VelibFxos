@@ -126,7 +126,7 @@ var Views = (function() {
 
             var stationDetail = $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2); // ugly…
             var activeStation = stationStorage.getStationById(stationDetail[1], coords); // get details for the active slide
-            RoadMap.addMarker(Geolocation.getPosition(), activeStation, viewStruct.view);
+            RoadMap.addMarker(Geolocation.getPosition(), activeStation, currentView);
         });
     };
 
@@ -160,7 +160,7 @@ var Views = (function() {
 
             var stationDetail = $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2);
             var activeStation = stationStorage.getStationById(stationDetail[1], coords); // get details for the active slide
-            RoadMap.addMarker(Geolocation.getPosition(), activeStation, viewStruct.view);
+            RoadMap.addMarker(Geolocation.getPosition(), activeStation, currentView);
         });
     };
 
