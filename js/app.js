@@ -14,3 +14,4 @@ $(function() {
 $(window).on('hashchange', function() {
     Router.route();
 });
+

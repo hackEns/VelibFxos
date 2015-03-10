@@ -28,7 +28,7 @@ var Stations = (function() {
         try {
             fullStationList = JSON.parse(localStorage.getItem('stations'));
         } catch (e) {
-            fullStationList = [];
+            fullStationList = null;
         }
 
         try {
@@ -39,18 +39,20 @@ var Stations = (function() {
 
         // Update stations list once per month
         var lastStationsUpdate = localStorage.getItem('lastStationsUpdate');
-        if (lastStationsUpdate === null || lastStationsUpdate < 30 * 24 * 3600 * 1000 || $.isEmptyObject(fullStationList)) {
+        if (lastStationsUpdate === null || lastStationsUpdate < Config.stationListTimeout || fullStationList === null) {
             refresh();
         }
+        console.log(fullStationList[0]);
     };
 
     // Wait for the full list to be populated
     var waitList = function(fun) {
         $('.station-info').html('<p class="center">Récupération de la liste des stations…</p>');
         if (fullStationList === null) {
-            timer = setTimeout(fun, 250);
+            timer = setTimeout(function(){ waitList(fun) }, Config.waitStationsTimeout);
             return false;
         } else {
+            fun(fullStationList);
             return true;
         }
     };
@@ -90,7 +92,7 @@ var Stations = (function() {
     };
 
     // Returns the stations ordered by distance to the position identified by coords
-    var orderByDistance = function(coords) {
+    var sortByDistance = function(coords) {
         orderedStationList = computeDistances(fullStationList, coords);
         orderedStationList.sort(function(a, b) {
             return a.distance - b.distance;
@@ -184,7 +186,7 @@ var Stations = (function() {
             };
         }
 
-        var stations = orderByDistance(coords);
+        var stations = sortByDistance(coords);
         var out = [];
 
         if (limit == -1) {

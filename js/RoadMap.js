@@ -138,25 +138,21 @@ var RoadMap = (function() {
             });
         }
 
-        // 1st marker is the current position
-        L.marker([pos.latitude, pos.longitude], {
-            icon: startIcon,
-            clickable: false,
-            draggable: false,
-            title: "Moi",
-            alt: "Vous êtes ici !"
+        var markers = [];
+        var route = L.Routing.control({
+            waypoints: [
+                L.latLng(pos.latitude, pos.longitude),
+                L.latLng(activeStation[0].position)
+            ],
+            routeWhileDragging: true,
+            fitSelectedRoutes: true,
+            useZoomParameter: true,
+            autoRoute: true
         }).addTo(window.roadMap);
 
-        // 2nd marker is the activeStation
-        L.marker(activeStation[0].position, {
-            icon: endIcon,
-            clickable: true,
-            draggable: false,
-            title: activeStation[0].address,
-            alt: activeStation[0].name,
-            address: activeStation[0].address,
-            number: activeStation[0].number
-        }).addTo(window.roadMap);
+
+        //desable itenary panel
+        $(".leaflet-right").hide();
 
         return true;
     });
