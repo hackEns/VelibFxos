@@ -6,12 +6,16 @@
 
 var Views = (function() {
     var viewStruct = {};
-    var header = {};
-    var body =   {};
-    var footer = {};
-    var swiper = {};
+    var body = {};
     var template = '';
     var defaultMainClass = '';
+
+
+    var swiper = {};
+    var templates = {}
+    var mainSection = '';
+
+
     var init = function() {
         swiper = new Swiper('.swiper-container', {
             // general settings
@@ -26,154 +30,69 @@ var Views = (function() {
             onSlideChangeStart: function(e){
                 body.update(viewStruct);
                 RoadMap.initCircle(Geolocation.getPosition());
-                var station_detail = $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2);
+                var stationDetail = $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2);
 
-                var active_station = Stations.getStationDetails(station_detail[1]); // get details from the active slide
-                RoadMap.addMarker(Geolocation.getPosition(), active_station, viewStruct.view);
+                var activeStation = Stations.getStationDetails(stationDetail[1]); // get details from the active slide
+                RoadMap.addMarker(Geolocation.getPosition(), activeStation, viewStruct.view);
             }
         });
+
+        templates['index'] = document.getElementById('index');
+        templates['bikes'] = document.getElementById('bikes');
+        templates['stands'] = document.getElementById('stands');
+        templates['starred'] = document.getElementById('starred');
+        templates['station'] = document.getElementById('station');
+        templates['search'] = document.getElementById('search');
+        templates['starredItem'] = document.getElementById('starred-item');
+
+        mainSection = document.querySelector('main');
     };
 
-    header = (function() {
-
-        header.update = function(viewStruct) {
-            $('#app-bar').removeClass().addClass(viewStruct.view);
-            $('#app-logo').addClass('hidden');
-            $('#app-bar').addClass(viewStruct.view);
-
-            $('#app-bar h1').html(viewStruct.title);
-            $('#app-bar menu img').attr('src', 'img/' + viewStruct.img + '.svg');
-            console.log('Views', viewStruct.view, 'header updated');
-        };
-
-        header.disableHeaderDisplay = function() {
-            $("#header").addClass("hidden");
-        };
-
-        header.enableHeaderDisplay = function() {
-            $("#header").removeClass("hidden");
-        };
-
-        $('#app-bar a').click(function(e) {
-            e.preventDefault();
-            goBack();
-        });
-
-        var goBack = (function() {
-            console.log('Views', viewStruct.view, 'go back');
-            window.location.hash = '/';
-        });
-
-        return header;
-
-    })();
 
     body = (function() {
-        // mainSection is where the action takes place
-        var mainSection = document.querySelector('main');
-
         // update the body from the views
         body.update = function(viewStruct) {
             var clone = '';
 
             body.clean();
             console.log('Views', viewStruct.view, 'body.update');
-            $('main').removeClass().addClass(viewStruct.view);
+            mainSection.className = viewStruct.view;
+
+            template = templates[viewStruct.view];
 
             if ('content' in document.createElement('template')) {
-                switch(viewStruct.view) {
-                    case "index":
-                        template = document.getElementById('index');
-                        var clone = document.importNode(template.content, true);
-                        mainSection.appendChild(clone);
-                        break;
-                    case "bikes":
-                        template = document.getElementById('available');
-                        var clone = document.importNode(template.content, true);
-                        mainSection.appendChild(clone);
-                        break;
-                    case "stands":
-                        template = document.getElementById('available');
-                        var clone = document.importNode(template.content, true);
-                        mainSection.appendChild(clone);
-                        break;
-                    case "starred":
-                        template = document.getElementById('starred');
-                        clone = document.importNode(template.content, true);
-                        mainSection.appendChild(clone);
-                        initStarredContent();
-                        break;
-                    case "station":
-                        var stationFormatted = Stations.getFormattedStation(viewStruct.station);
-
-                        template = document.getElementById('stationDetail');
-                        template = completeStationDetails(template, stationFormatted);
-
-                        var clone = document.importNode(template.content, true);
-                        mainSection.appendChild(clone);
-
-                        break;
-                    case "search":
-                        template = document.getElementById('search');
-                        var clone = document.importNode(template.content, true);
-                        mainSection.appendChild(clone);
-                        break;
-                }
+                mainSection.appendChild(document.importNode(template.content, true));
             } else {
                 console.log('Views', 'body', 'template is NOT supported');
-                switch (viewStruct.view) {
-                    case "index":
-                        template = $('#index').html();
-                        mainSection.append(template);
-                    case "bikes":
-                        template = $('#bikes').html();
-                        mainSection.append(template);
-                    case "stands":
-                        template = $('#stands').html();
-                        mainSection.append(template);
-                    case "starred":
-                        template = $('#starred').html();
-                        mainSection.append(template);
-                    case "station":
-                        template = $('#stationDetail').html();
-                        mainSection.append(template);
-                    case "search":
-                        template = $('#search').html();
-                        mainSection.append(template);
-                }
+                template = $(template).html();
+                mainSection.append(template);
             }
         };
 
         // Insert in Station template, details from a specific station
         var completeStationDetails = function(template, station) {
-            var avail_bike = template.content.querySelector('.bikes');
-            var avail_stands = template.content.querySelector('.stands');
+            var availableBikes = template.content.querySelector('.bikes');
+            var availableStands = template.content.querySelector('.stands');
             var distance = template.content.querySelector('.distance');
             var position = template.content.querySelector('.position');
-            var last_update = template.content.querySelector('.last_update');
+            var lastUpdate = template.content.querySelector('.last_update');
 
-            avail_bike.textContent = station.available_bikes;
-            avail_stands.textContent = station.available_bike_stands;
+            availableBikes.textContent = station.availableBikes;
+            availableStands.textContent = station.availableStands;
             distance.textContent = station.distance;
             position.textContent = station.position;
-            last_update.textContent = station.last_update;
+            lastUpdate.textContent = station.lastUpdate;
 
             return template;
         };
 
         // init the table with starred stations
-        var initStarredContent = function() {
-            var row = '';
-            template = document.getElementById('starred');
-            row = template.content.querySelector('tbody tr');
+        body.initStarredContent = function() {
+            var starredList = document.getElementById('starred-list');
 
-            // delete first template row
-            var tbody = document.querySelector('tbody');
-            while (tbody.firstChild) {
-                tbody.removeChild(tbody.firstChild);
-            }
+            $(starredList).empty();
 
-            if(Geolocation.waitPosition(initStarredContent) && Stations.waitList(initStarredContent))
+            if(Geolocation.waitPosition(body.initStarredContent) && Stations.waitList(body.initStarredContent))
             {
                 var currentPosition = Geolocation.getPosition();
                 var starredStations = Stations.getStarredStations(currentPosition);
@@ -184,16 +103,14 @@ var Views = (function() {
                     station = Stations.getFormattedStation(station);
 
                     // Construction du DOM
+                    var row = templates['starredItem'].content.cloneNode(true);
                     row.id = station.number;
-                    row.querySelector('td.stations > div').textContent = station.address;
-                    row.querySelector('td.stations > span.dist').textContent = station.distance;
-                    row.querySelector('td.bikes').textContent = station.available_bikes;
-                    row.querySelector('td.stands').textContent = station.available_bike_stands;
-                    document.querySelector('table.starred tbody').appendChild(document.importNode(row, true));
-
-                    $( "#" +  station.number).click(function() {
-                        window.location.hash = "/station/" + station.number;
-                    });
+                    row.querySelector('a').href += station.number
+                    row.querySelector('.name').textContent = station.address;
+                    row.querySelector('.dist').textContent = station.distance;
+                    row.querySelector('.bikes').textContent = station.availableBikes;
+                    row.querySelector('.stands').textContent = station.availableStands;
+                    starredList.appendChild(document.importNode(row, true));
                 });
             }
         };
@@ -208,82 +125,29 @@ var Views = (function() {
 
     })();
 
-    footer = (function() {
-
-        var update = function(data) {
-
-            $("footer").removeClass().addClass(data.view).html('');
-
-            if(data.view == 'search') {
-                //
-            } else if(data.view == 'starred') {
-                $("footer").html('<div>Ajouter</div><input src="img/plus-violet.svg" id="submit" type="image">');
-            } else {
-                $("footer").html("<input class='" + data.view + "' type='text' " + (data.value !== "" ? "value='" + data.value + "'" : "") + data.prop + "/><a href='#'><img class='" + data.view + "' alt='" + data.alt + "' src='img/" + data.src + "'/></a>");
-            }
-        };
-
-        var disableFooterDisplay = function() {
-            $("footer").addClass("hidden");
-        };
-
-        var enableFooterDisplay = function() {
-            $("footer").removeClass("hidden");
-        };
-
-        return {
-            update: update,
-            enableFooterDisplay: enableFooterDisplay,
-            disableFooterDisplay: disableFooterDisplay
-        };
-
-    })();
 
     var index = function() {
         viewStruct.view = "index";
 
         Geolocation.noWaitPosition();
         Stations.noWaitList();
-        // cleaning header
-        $('#app-bar').addClass('hidden');
-        $('#app-logo').removeClass('hidden');
         // clean by removing stations swiper
         $('.swiper-wrapper, .pagination').empty().attr('style', '');
 
-        body.clean();
         console.log('Views', "Index", "display page");
         body.update(viewStruct);
 
-        $('.entry.bikes').click(function() {
-            window.location.hash = "/bikes";
-        });
-        $('.entry.stands').click(function() {
-            window.location.hash = "/stands";
-        });
-        $('.entry.starred').click(function() {
-            window.location.hash = "/starred";
-        });
-        $('.entry.search').click(function() {
-            window.location.hash = "/search";
-        });
     };
 
     var bikes = function() {
         viewStruct.view = "bikes";
-        viewStruct.title = "Vélos disponibles";
-        viewStruct.img = "velib";
-        viewStruct.src = "plus-pink.svg";
-        viewStruct.alt = "plus";
-        viewStruct.value = "Informations";
         viewStruct.prop = "readonly";
 
-        header.update(viewStruct);
         body.update(viewStruct);
-        footer.update(viewStruct);
 
         if (Geolocation.waitPosition(bikes) && Stations.waitList(bikes)) {
-           var stations = Stations.getClosestStations(Geolocation.getPosition(), 10, function(item) {
-                return item.available_bikes > 0;
+            var stations = Stations.getClosestStations(Geolocation.getPosition(), 10, function(item) {
+                return item.availableBikes > 0;
             });
             console.log(stations);
 
@@ -291,38 +155,30 @@ var Views = (function() {
             var newSlide = '';
             for (var i = 0; i < stations.length; i++) {
                 console.log(stations[i].name);
-                newSlide = swiper.createSlide('<div>Station ' + stations[i].name + '<br>Vélos disponibles ' + stations[i].available_bikes + '</div>');
+                newSlide = swiper.createSlide('<div>Station ' + stations[i].name + '<br>Vélos disponibles ' + stations[i].availableBikes + '</div>');
                 newSlide.append();
-                //$('.available-element').text('Vélos disponibles ' + stations[i].available_bikes);
-                //$('.adresse').text('Station ' + stations[i].name);
             }
             RoadMap.initCircle(Geolocation.getPosition());
 
-            var station_detail = $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2);
-            var active_station = Stations.getStationDetails(station_detail[1]); // get details for the active slide
-            RoadMap.addMarker(Geolocation.getPosition(), active_station, viewStruct.view);
+            var stationDetail = $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2);
+            var activeStation = Stations.getStationDetails(stationDetail[1]); // get details for the active slide
+            RoadMap.addMarker(Geolocation.getPosition(), activeStation, viewStruct.view);
         }
-        else
+        else {
             console.log('Views', 'bikes', 'Looking for geolocation');
+        }
     };
 
     var stands = function() {
         viewStruct.view = "stands";
-        viewStruct.title = "Places libres";
-        viewStruct.img = "borne";
-        viewStruct.src = "plus-blue.svg";
-        viewStruct.alt = "plus";
-        viewStruct.value = "Informations";
         viewStruct.prop = "readonly";
 
         console.log('Views', viewStruct.view, "display page");
-        header.update(viewStruct);
         body.update(viewStruct);
-        footer.update(viewStruct);
 
         if (Geolocation.waitPosition(stands) && Stations.waitList(stands)) {
             var stations = Stations.getClosestStations(Geolocation.getPosition(), 10, function(item) {
-                return item.available_bike_stands > 0;
+                return item.availableStands > 0;
             });
             console.log(stations);
 
@@ -330,16 +186,14 @@ var Views = (function() {
             var newSlide = '';
             for (var i = 0; i < stations.length; i++) {
                 console.log(stations[i].name);
-                newSlide = swiper.createSlide('<div>Station ' + stations[i].name + '<br>Bornes disponibles ' + stations[i].available_bikes + '</div>');
+                newSlide = swiper.createSlide('<div>Station ' + stations[i].name + '<br>Bornes disponibles ' + stations[i].availableBikes + '</div>');
                 newSlide.append();
-                //$('.available-element').text('Vélos disponibles ' + stations[i].available_bikes);
-                //$('.adresse').text('Station ' + stations[i].name);
             }
             RoadMap.initCircle(Geolocation.getPosition());
 
-            var station_detail = $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2);
-            var active_station = Stations.getStationDetails(station_detail[1]); // get details for the active slide
-            RoadMap.addMarker(Geolocation.getPosition(), active_station, viewStruct.view);
+            var stationDetail = $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2);
+            var activeStation = Stations.getStationDetails(stationDetail[1]); // get details for the active slide
+            RoadMap.addMarker(Geolocation.getPosition(), activeStation, viewStruct.view);
         }
         else if (!Geolocation.waitPosition(stands)) {
             console.log('Views', 'stands', 'Looking for geolocation');
@@ -348,47 +202,39 @@ var Views = (function() {
 
     var starred = function() {
         viewStruct.view = "starred";
-        viewStruct.title = "Favoris";
-        viewStruct.img = "favori";
-        viewStruct.src = "plus-violet.svg";
-        viewStruct.alt = "plus";
-        viewStruct.value = "Ajouter";
         viewStruct.prop = "readonly";
 
         console.log('Views', viewStruct.view, "display page");
-        header.update(viewStruct);
         body.update(viewStruct);
-        footer.update(viewStruct);
+        body.initStarredContent();
 
         Geolocation.noWaitPosition();
-        if (Geolocation.waitPosition(starred) && Stations.waitList(starred)) {
+        if (Stations.waitList(starred)) {
             console.log(Stations.getClosestStations(Geolocation.getPosition(), 10, function(item) {
                 return item.starred > 0;
             }));
-            $('.station-info').html('');
+            $('.station-info').empty();
         }
     };
 
     var station = function() {
-        var pathArray = window.location.hash.split('/');
-        console.log("pathArray : "+ pathArray);
-        var station_id = pathArray[pathArray.length-1];
-        console.log("station_id : "+station_id);
+        var stationId = window.location.hash.substr(10); // hash = #/station/{stationId}
+        console.log("stationId : " + stationId);
 
         if (Geolocation.waitPosition(station) && Stations.waitList(station)) {
             // Allow to get distance between station and current position
             var stations = Stations.getClosestStations(Geolocation.getPosition());
 
-            viewStruct.station = Stations.getStationDetails(station_id)[0];
+            viewStruct.station = Stations.getStationDetails(stationId)[0];
             console.log("viewStruct.station : "+ viewStruct.station);
-            var station_exist = $.grep(stations, function(v) {
-                return v.number == station_id;
+            var stationExist = $.grep(stations, function(v) {
+                return v.number == stationId;
             });
 
             // If station doesn't exist : redirection
-            if (station_exist.length == 0) {
+            if (stationExist.length == 0) {
                 alert("La station n'existe pas !");
-                console.log("Views.js", "station", "station doesn't exist", station_exist.length);
+                console.log("Views.js", "station", "station doesn't exist", stationExist.length);
                 window.location.hash = "/index";
             } else {
                 viewStruct.view = "station";
@@ -400,15 +246,14 @@ var Views = (function() {
                 viewStruct.prop = "readonly";
 
                 console.log('Views', viewStruct.view, "display page");
-                header.update(viewStruct);
+                var stationFormatted = Stations.getFormattedStation(viewStruct.station);
+                templates['station'] = completeStationDetails(templates['station'], stationFormatted);
                 body.update(viewStruct);
-                footer.update(viewStruct);
 
-                var station_id = parseInt(window.location.hash.substr(2).split("/")[1]);
+                var stationId = parseInt(window.location.hash.substr(2).split("/")[1]);
 
                 $(".vplus").click(function() {
-                    var bReturn = Stations.toggleStarStation(station_id);
-                    alert(bReturn ? "La station " + station_id + " a été ajoutée/retirée." : "Indice invalide");
+                    var returnedStation = Stations.toggleStarStation(stationId);s
                 });
             }
         }
@@ -424,9 +269,7 @@ var Views = (function() {
         viewStruct.prop = "placeHolder='Rechercher'";
 
         console.log('Views', viewStruct.view, "display page");
-        header.update(viewStruct);
         body.update(viewStruct);
-        footer.update(viewStruct);
 
         RoadMap.init();
         RoadMap.addMarkers();
@@ -447,9 +290,7 @@ var Views = (function() {
         stands: stands,
         starred: starred,
         station: station,
-        search: search,
-        header: header,
-        footer: footer
+        search: search
     };
 
 })();

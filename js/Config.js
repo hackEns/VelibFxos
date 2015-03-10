@@ -19,6 +19,6 @@ var Config = (function() {
             enableHighAccuracy: true,
             maximumAge: 10000
         },
-        wait_position_timeout: 250
+        wait_position_timeout: 10000 /* in ms */
     };
 })();

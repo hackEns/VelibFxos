@@ -5,42 +5,41 @@
  ***********/
 
 var Stations = (function() {
-    var full_stations_list = null;
-    var starred_stations = new Array();
-    var ordered_stations_list = null;
-    var starred_stations = new Array();
-    var starred_stations_list = null;
+    var fullStationList = null;
+    var orderedStationList = null;
+    var starredStations = new Array();
+    var starredStationList = null;
     var timer = null;
 
     // Refresh the JSON of the stations at JCDecaux OpenData API and stores it in localStorage.
     var refresh = function() {
         // Reset stations state to null, while loading the ressource
-        full_stations_list = null;
+        fullStationList = null;
         // Update the stations list
         $.getJSON(window.Config['stations_url'], function(data, status, jqXHR) {
-            localStorage.setItem('last_stations_update', Date.now());
+            localStorage.setItem('lastStationsUpdate', Date.now());
             localStorage.setItem('stations', jqXHR.responseText);
-            full_stations_list = data;
+            fullStationList = data;
         });
     };
 
     // Init the full stations list, either from localStorage or by refreshing the list
     var init = function() {
         try {
-            full_stations_list = JSON.parse(localStorage.getItem('stations'));
+            fullStationList = JSON.parse(localStorage.getItem('stations'));
         } catch (e) {
-            full_stations_list = [];
+            fullStationList = [];
         }
 
         try {
-            starred_stations_list = JSON.parse(localStorage.getItem('starred_stations'));
+            starredStationList = JSON.parse(localStorage.getItem('starredStations'));
         } catch (e) {
-            starred_stations_list = [];
+            starredStationList = [];
         }
 
         // Update stations list once per month
-        var last_stations_update = localStorage.getItem('last_stations_update');
-        if (last_stations_update === null || last_stations_update < 30 * 24 * 3600 * 1000 || $.isEmptyObject(full_stations_list)) {
+        var lastStationsUpdate = localStorage.getItem('lastStationsUpdate');
+        if (lastStationsUpdate === null || lastStationsUpdate < 30 * 24 * 3600 * 1000 || $.isEmptyObject(fullStationList)) {
             refresh();
         }
     };
@@ -48,7 +47,7 @@ var Stations = (function() {
     // Wait for the full list to be populated
     var waitList = function(fun) {
         $('.station-info').html('<p class="center">Récupération de la liste des stations…</p>');
-        if (full_stations_list === null) {
+        if (fullStationList === null) {
             timer = setTimeout(fun, 250);
             return false;
         } else {
@@ -92,11 +91,11 @@ var Stations = (function() {
 
     // Returns the stations ordered by distance to the position identified by coords
     var orderByDistance = function(coords) {
-        ordered_stations_list = computeDistances(full_stations_list, coords);
-        ordered_stations_list.sort(function(a, b) {
+        orderedStationList = computeDistances(fullStationList, coords);
+        orderedStationList.sort(function(a, b) {
             return a.distance - b.distance;
         });
-        return ordered_stations_list;
+        return orderedStationList;
     };
 
     // Fetch latest infos for the specified stations
@@ -126,12 +125,12 @@ var Stations = (function() {
         formatted.number = station.number;
 
         // Availables bikes & stands
-        formatted.available_bikes = station.available_bikes;
-        formatted.available_bike_stands = station.available_bike_stands;
+        formatted.availableBikes = station.availableBikes;
+        formatted.availableStands = station.availableStands;
 
         // Last update
-        if(station.last_update != null) {
-            var diff = dateDiff(station.last_update);
+        if(station.lastUpdate != null) {
+            var diff = dateDiff(station.lastUpdate);
             var text = "";
 
             if (diff.day > 1)
@@ -152,7 +151,7 @@ var Stations = (function() {
                 text = diff.day + ' seconde';
             else
                 text = 'un instant';
-            formatted.last_update = text;
+            formatted.lastUpdate = text;
         }
         // distance
         formatted.distance = (parseFloat(station.distance)/1000).toFixed(2) + " km";
@@ -206,58 +205,58 @@ var Stations = (function() {
     };
 
     // Star / Unstar a station
-    var toggleStarStation = function(station_id) {
-        console.log('toggleStarStation', 'starred_stations before', starred_stations);
-        var index = starred_stations.indexOf(parseInt(station_id));
+    var toggleStarStation = function(stationId) {
+        console.log('toggleStarStation', 'starredStations before', starredStations);
+        var index = starredStations.indexOf(parseInt(stationId));
 
         // Star a new station
         if (index != -1) {
             alert('ANIMATION : station retirée');
-            starred_stations = starred_stations.slice(index+1);
+            starredStations = starredStations.slice(index+1);
         }
         // Unstar a station from favourites
         else {
-            if (starred_stations.length > window.Config.max_starred_stations) {
+            if (starredStations.length > window.Config.maxStarredStations) {
                 console.log('Stations.js', 'toggleStarStation', 'too much stations are starred');
                 return false;
-            } else if (starred_stations.length <= window.Config.max_starred_stations) {
+            } else if (starredStations.length <= window.Config.maxStarredStations) {
                 alert('ANIMATION : station ajoutée');
-                starred_stations.push(parseInt(station_id));
+                starredStations.push(parseInt(stationId));
             }
             starred_stations.push(parseInt(station_id));
         }
-        localStorage.setItem('starred_stations', JSON.stringify(starred_stations));
-        console.log('toggleStarStation', 'starred_stations after', starred_stations);
+        localStorage.setItem('starredStations', JSON.stringify(starredStations));
+        console.log('toggleStarStation', 'starredStations after', starredStations);
+
         return true;
     };
 
     // Retrieve the up to date list of starred stations
     var getStarredStations = function(coords) {
-        var full_starred_stations_list = [];
-        starred_stations = (localStorage.getItem('starred_stations') != '' && localStorage.getItem('starred_stations') != null && localStorage.getItem('starred_stations') != 'undefined')  ? JSON.parse(localStorage.getItem('starred_stations')) : new Array();
+        var fullStarredStationList = [];
+        starredStations = (localStorage.getItem('starredStations') != '' && localStorage.getItem('starredStations') != null && localStorage.getItem('starredStations') != 'undefined')  ? JSON.parse(localStorage.getItem('starredStations')) : new Array();
 
-        console.log("Stations", "getStarredStations", "full_stations_list", full_stations_list);
-        console.log("Stations", "getStarredStations", "starred_stations_list", starred_stations);
+        console.log("Stations", "getStarredStations", "fullStationList", fullStationList);
+        console.log("Stations", "getStarredStations", "starredStationList", starredStations);
 
-        full_starred_stations_list = $.grep(full_stations_list, function(item) {
-            return starred_stations.indexOf(item.number) != -1;
+        fullStarredStationList = $.grep(fullStationList, function(item) {
+            return starredStations.indexOf(item.number) != -1;
         });
 
-        console.log("Stations", "getStarredStations", "full_starred_stations_list", full_starred_stations_list);
+        console.log("Stations", "getStarredStations", "fullStarredStationList", fullStarredStationList);
 
-        full_starred_stations_list = computeDistances(full_starred_stations_list, coords);
+        fullStarredStationList = computeDistances(fullStarredStationList, coords);
 
-        console.log("Stations", "getStarredStations", "full_starred_stations_list_v2", full_starred_stations_list);
-
-        return full_starred_stations_list;
+        console.log("Stations", "getStarredStations", "fullStarredStationList_v2", fullStarredStationList);
+        return fullStarredStationList;
     };
 
     // Returns the full list of stations, ordered by distance if available
     var getFullList = function() {
-        if (ordered_stations_list !== null) {
-            return ordered_stations_list;
+        if (orderedStationList !== null) {
+            return orderedStationList;
         } else {
-            return full_stations_list;
+            return fullStationList;
         }
     };
 

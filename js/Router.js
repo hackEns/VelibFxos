@@ -10,8 +10,6 @@
 
 var Router = (function() {
     var route = function() {
-        Views.header.enableHeaderDisplay();
-        Views.footer.enableFooterDisplay();
         var hash = window.location.hash.substr(1);
 
         if (hash.startsWith("/bikes")) {
@@ -25,10 +23,7 @@ var Router = (function() {
         } else if (hash.startsWith("/station")) {
             Views.station();
         } else {
-            // Index view
             Views.index();
-            Views.header.disableHeaderDisplay();
-            Views.footer.disableFooterDisplay();
         }
     };
 
