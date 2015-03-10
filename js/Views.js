@@ -5,7 +5,7 @@
  ********/
 
 var Views = (function() {
-    var viewStruct = {};
+    var currentView = '';
     var body = {};
     var template = '';
     var defaultMainClass = '';
@@ -55,10 +55,10 @@ var Views = (function() {
             var clone = '';
 
             body.clean();
-            console.log('Views', viewStruct.view, 'body.update');
-            mainSection.className = viewStruct.view;
+            console.log('Views', currentView, 'body.update');
+            mainSection.className = currentView;
 
-            template = templates[viewStruct.view];
+            template = templates[currentView];
 
             if ('content' in document.createElement('template')) {
                 mainSection.appendChild(document.importNode(template.content, true));
@@ -125,7 +125,7 @@ var Views = (function() {
 
 
     var index = function() {
-        viewStruct.view = "index";
+        currentView = "index";
 
         Geolocation.noWaitPosition();
         Stations.noWaitList();
@@ -133,12 +133,12 @@ var Views = (function() {
         $('.swiper-wrapper, .pagination').empty().attr('style', '');
 
         console.log('Views', "Index", "display page");
-        body.update(viewStruct);
+        body.update();
 
     };
 
     var bikes = function() {
-        viewStruct.view = "bikes";
+        currentView = "bikes";
         viewStruct.prop = "readonly";
 
         body.update(viewStruct);
@@ -165,7 +165,7 @@ var Views = (function() {
     };
 
     var stands = function() {
-        viewStruct.view = "stands";
+        currentView = "stands";
         viewStruct.prop = "readonly";
 
         console.log('Views', viewStruct.view, "display page");
@@ -193,7 +193,7 @@ var Views = (function() {
     };
 
     var starred = function() {
-        viewStruct.view = "starred";
+        currentView = "starred";
         viewStruct.prop = "readonly";
 
         console.log('Views', viewStruct.view, "display page");
@@ -229,7 +229,7 @@ var Views = (function() {
                 console.log("Views.js", "station", "station doesn't exist", stationExist.length);
                 window.location.hash = "/index";
             } else {
-                viewStruct.view = "station";
+                currentView = "station";
                 viewStruct.title = viewStruct.station.address;
                 viewStruct.img = "favori";
                 viewStruct.src = "plus-dark-blue.svg";
@@ -253,7 +253,7 @@ var Views = (function() {
     };
 
     var search = function() {
-        viewStruct.view = "search";
+        currentView = "search";
         viewStruct.title = "Rechercher";
         viewStruct.img = "loupe";
         viewStruct.src = "search-yellow.svg";

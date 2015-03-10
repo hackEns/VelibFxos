@@ -12,6 +12,7 @@ var StationStorage = function() {
     var api = {};
 
     api.stations = null;
+    api.starredStations = [];
 
     /**
      * Initialy loads stations (to be overwritten)
@@ -41,6 +42,13 @@ var StationStorage = function() {
      */
     api.getStationList = function() {
         return api.stations;
+    };
+
+    /**
+     * Return starred station list
+     */
+    api.getStarredStationList = function() {
+        return api.starredStations;
     };
 
 
@@ -87,6 +95,7 @@ var LocalStationStorage = function() {
             return;
         }
         api.stations = JSON.parse(localStorage.getItem('stations'));
+        api.starredStations = JSON.parse(localStorage.getItem('starredStations'));
         callback();
     };
 
@@ -95,6 +104,7 @@ var LocalStationStorage = function() {
      */
     api.save = function(callback) {
         localStorage.setItem('stations', JSON.stringify(api.stations));
+        localStorage.setItem('starredStations', JSON.stringify(api.starredStations));
         localStorage.setItem('lastStationsUpdate', Date.now());
         callback();
     };
@@ -179,6 +189,15 @@ var StationStorageAdapter = function() {
         recLoadSubstorage(0);
     };
 
+
+    /**
+     * Storage is loaded if there is some available substorage and that this substorage is ready
+     */
+    api.isLoaded = function() {
+        return currentSubstorage !== null and currentSubstorage.isLoaded();
+    };
+
+
     /**
      * Save to each substorage
      */
@@ -189,6 +208,7 @@ var StationStorageAdapter = function() {
                 return;
             }
             substorages[i].stations = currentSubstorage.stations;
+            substorages[i].starredStations = currentSubstorage.starredStations;
             substorages[i].save(function() {
                 recSaveSubstorage(i + 1);
             });
@@ -198,6 +218,10 @@ var StationStorageAdapter = function() {
 
     api.getStationList = function() {
         return currentSubstorage.getStationList();
+    }
+
+    api.getStarredStationList = function() {
+        return currentSubstorage.getStarredStationList();
     }
 
     return api;
