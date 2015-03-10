@@ -5,11 +5,13 @@
  ********/
 
 var RoadMap = (function() {
+    var stationStorage = null;
 
     // Init the roadMap
-    var init = (function() {
+    var init = function(_stationStorage) {
         console.log('RoadMap', 'init', 'RoadMap under construction');
         var selectedLayer = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+        stationStorage = _stationStorage;
 
         window.roadMap = L.map('map', {
             dragging: true,
@@ -32,7 +34,7 @@ var RoadMap = (function() {
         console.log('RoadMap', 'init', 'RoadMap built');
 
         return init;
-    });
+    };
 
     // Init map for bikes and stands view
     var initCircle = (function(pos) {
@@ -61,7 +63,7 @@ var RoadMap = (function() {
     // Add all markers to the Map
     var addMarkers = (function() {
         console.log('RoadMap', 'addMarkers');
-        var stations = Stations.getFullList();
+        var stations = stationStorage.getStations();
         var myIcon = '';
 
         for(var i=0; i < stations.length; i++) {

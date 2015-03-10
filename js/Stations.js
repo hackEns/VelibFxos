@@ -42,7 +42,6 @@ var Stations = (function() {
         if (lastStationsUpdate === null || lastStationsUpdate < Config.stationListTimeout || fullStationList === null) {
             refresh();
         }
-        console.log(fullStationList[0]);
     };
 
     // Wait for the full list to be populated
@@ -91,13 +90,17 @@ var Stations = (function() {
         return list;
     };
 
-    // Returns the stations ordered by distance to the position identified by coords
-    var sortByDistance = function(coords) {
-        orderedStationList = computeDistances(fullStationList, coords);
-        orderedStationList.sort(function(a, b) {
+    /**
+     * Returns the stations ordered by distance to the position identified by coords
+     * @param stations Station list
+     * @param coords Current position
+     */
+    var sortByDistance = function(stations, coords) {
+        orderedStations = computeDistances(stations, coords);
+        orderedStations.sort(function(a, b) {
             return a.distance - b.distance;
         });
-        return orderedStationList;
+        return orderedStations;
     };
 
     // Fetch latest infos for the specified stations
@@ -117,8 +120,12 @@ var Stations = (function() {
         return element;
     };
 
-    // Returns formatted station informations object
-    var getFormattedStation = function(station) {
+    /**
+     * Returns formatted station informations object
+     * @param station Station to format
+     * @param coords Current position (can be omitted if station has a `distance` field)
+     */
+    var format = function(station, coords) {
         var formatted = {};
 
         console.log('Station.js', 'getFormattedStation In', station);
@@ -157,7 +164,8 @@ var Stations = (function() {
             formatted.lastUpdate = text;
         }
         // distance
-        formatted.distance = (parseFloat(station.distance)/1000).toFixed(2) + " km";
+        var dist = station.distance || distance(coords, station);
+        formatted.distance = (dist / 1000.0).toFixed(2) + " km";
 
         // lat - lng
         formatted.position = station.position.lat.toFixed(2) + ' - ' + station.position.lng.toFixed(2);
@@ -168,7 +176,7 @@ var Stations = (function() {
     };
 
     // Returns `limit` closest stations with up to date infos and a matching criterion
-    var getClosestStations = function(coords, limit, filter) {
+    var getClosestStations = function(stations, coords, limit, filter) {
         if (typeof(limit) == 'undefined') {
             limit = -1;
         } else if (typeof(limit) == 'function' && typeof(filter) != 'function') {
@@ -187,7 +195,7 @@ var Stations = (function() {
             };
         }
 
-        var stations = sortByDistance(coords);
+        var stations = sortByDistance(stations, coords);
         var out = [];
 
         if (limit == -1) {
@@ -233,45 +241,14 @@ var Stations = (function() {
         return true;
     };
 
-    // Retrieve the up to date list of starred stations
-    var getStarredStations = function(coords) {
-        var fullStarredStationList = [];
-        starredStations = localStorage.getItem('starredStations');
-
-        console.log("Stations", "getStarredStations", "fullStationList", fullStationList);
-        console.log("Stations", "getStarredStations", "starredStationList", starredStations);
-
-        fullStarredStationList = $.grep(fullStationList, function(item) {
-            return starredStations.indexOf(item.number) != -1;
-        });
-
-        console.log("Stations", "getStarredStations", "fullStarredStationList", fullStarredStationList);
-
-        fullStarredStationList = computeDistances(fullStarredStationList, coords);
-
-        console.log("Stations", "getStarredStations", "fullStarredStationList_v2", fullStarredStationList);
-        return fullStarredStationList;
-    };
-
-    // Returns the full list of stations, ordered by distance if available
-    var getFullList = function() {
-        if (orderedStationList !== null) {
-            return orderedStationList;
-        } else {
-            return fullStationList;
-        }
-    };
-
     return {
         init: init,
         refresh: refresh,
         waitList: waitList,
         noWaitList: noWaitList,
         getStationDetails: getStationDetails,
-        getFormattedStation: getFormattedStation,
+        format: format,
         getClosestStations: getClosestStations,
-        toggleStarStation: toggleStarStation,
-        getStarredStations: getStarredStations,
-        getFullList: getFullList
+        toggleStarStation: toggleStarStation
     };
 })();

@@ -40,14 +40,14 @@ var StationStorage = function() {
     /**
      * Return station list
      */
-    api.getStationList = function() {
+    api.getStations = function() {
         return api.stations;
     };
 
     /**
      * Return starred station list
      */
-    api.getStarredStationList = function() {
+    api.getStarredStations = function() {
         return api.starredStations;
     };
 
@@ -194,7 +194,7 @@ var StationStorageAdapter = function() {
      * Storage is loaded if there is some available substorage and that this substorage is ready
      */
     api.isLoaded = function() {
-        return currentSubstorage !== null and currentSubstorage.isLoaded();
+        return currentSubstorage !== null && currentSubstorage.isLoaded();
     };
 
 
@@ -216,12 +216,12 @@ var StationStorageAdapter = function() {
         recSaveSubstorage(0);
     };
 
-    api.getStationList = function() {
-        return currentSubstorage.getStationList();
+    api.getStations = function() {
+        return currentSubstorage.getStations();
     }
 
-    api.getStarredStationList = function() {
-        return currentSubstorage.getStarredStationList();
+    api.getStarredStations = function() {
+        return currentSubstorage.getStarredStations();
     }
 
     return api;
