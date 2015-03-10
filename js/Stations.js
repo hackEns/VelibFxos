@@ -113,7 +113,6 @@ var Stations = (function() {
         }
     };
 
-
     return {
         format: format,
         filterClosestStations: filterClosestStations

@@ -11,7 +11,7 @@ var Views = (function() {
     var defaultMainClass = '';
 
 
-    var swiper = {};
+    var swiper = null;
     var templates = {}
     var mainSection = '';
 
@@ -22,26 +22,6 @@ var Views = (function() {
         stationStorage = StationStorageAdapter();
         stationStorage.load(noop); /* tmp */
 
-        swiper = new Swiper('.swiper-container', {
-            // general settings
-            hashNav: false,
-            keyboardControl: true,
-            calculateHeight: true,
-            // pagination settings
-            //loop: true,
-            pagination: '.pagination',
-            paginationClickable: true,
-            createPagination: true,
-            onSlideChangeStart: function(e){
-                body.update(viewStruct);
-                RoadMap.initCircle(Geolocation.getPosition());
-                var stationDetail = $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2);
-
-                var activeStation = stationStorage.getStationById(stationDetail[1]); // get details from the active slide
-                RoadMap.addMarker(Geolocation.getPosition(), activeStation, viewStruct.view);
-            }
-        });
-
         templates['index'] = document.getElementById('index');
         templates['bikes'] = document.getElementById('bikes');
         templates['stands'] = document.getElementById('stands');
@@ -49,9 +29,32 @@ var Views = (function() {
         templates['station'] = document.getElementById('station');
         templates['search'] = document.getElementById('search');
         templates['starredItem'] = document.getElementById('starred-item');
-        
+
         mainSection = document.querySelector('main');
     };
+
+    var initSwiper = function() {
+
+      swiper = new Swiper('.swiper-container', {
+          // general settings
+          hashNav: false,
+          keyboardControl: true,
+          calculateHeight: true,
+          // pagination settings
+          loop: true,
+          pagination: '.pagination',
+          paginationClickable: true,
+          createPagination: true,
+          onSlideChangeStart: function(e){
+              body.update(viewStruct);
+              RoadMap.initCircle(Geolocation.getPosition());
+              var stationDetail = $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2);
+
+              var activeStation = Stations.getStationDetails(stationDetail[1]); // get details from the active slide
+              RoadMap.addMarker(Geolocation.getPosition(), activeStation, viewStruct.view);
+          }
+      });
+    }
 
 
     body = (function() {
@@ -64,7 +67,7 @@ var Views = (function() {
             template = templates[currentView];
 
             if ('content' in document.createElement('template')) {
-                mainSection.appendChild(document.importNode(template.content, true));
+                mainSection.appendChild(document.importNode(template.content.cloneNode(true), true));
             } else {
                 console.log('Views', 'body', 'template is NOT supported');
                 template = $(template).html();
@@ -98,6 +101,7 @@ var Views = (function() {
         currentView = "bikes";
 
         body.update();
+        initSwiper();
 
         Geolocation.waitPosition(function() {
             var coords = Geolocation.getPosition();
@@ -118,6 +122,8 @@ var Views = (function() {
             }
             RoadMap.initCircle(Geolocation.getPosition());
 
+            $('.swiper-slide:first').addClass("swiper-slide-active");
+
             var stationDetail = $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2); // ugly…
             var activeStation = stationStorage.getStationById(stationDetail[1], coords); // get details for the active slide
             RoadMap.addMarker(Geolocation.getPosition(), activeStation, viewStruct.view);
@@ -129,6 +135,7 @@ var Views = (function() {
 
         console.log('Views', currentView, "display page");
         body.update();
+        initSwiper();
 
         Geolocation.waitPosition(function() {
             var coords = Geolocation.getPosition();
@@ -148,6 +155,8 @@ var Views = (function() {
                 newSlide.append();
             }
             RoadMap.initCircle(Geolocation.getPosition());
+
+            $('.swiper-slide:first').addClass("swiper-slide-active");
 
             var stationDetail = $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2);
             var activeStation = stationStorage.getStationById(stationDetail[1], coords); // get details for the active slide
@@ -172,7 +181,7 @@ var Views = (function() {
                 station = Stations.format(station, currentPosition);
 
                 // Construction du DOM
-                var row = templates['starredItem'];
+                var row = templates['starredItem'].content.cloneNode(true);
                 row.id = station.number;
                 row.querySelector('a').href += station.number
                 row.querySelector('.name').textContent = station.address;
@@ -185,11 +194,11 @@ var Views = (function() {
     };
 
     var station = function() {
-        var stationId = window.location.hash.substr(10); // hash = #/station/{stationId}
-        console.log("stationId : " + stationId);
-
         Geolocation.waitPosition(function() {
             var coords = Geolocation.getPosition();
+            var stationId = window.location.hash.substr(10); // hash = #/station/{stationId}
+            console.log("stationId : " + stationId);
+
             // Allow to get distance between station and current position
             var stations = Stations.filterClosestStations(
                 stationStorage.getStations(),

@@ -5,7 +5,7 @@
  **********/
 
 $(function() {
-	Views.init();
+		Views.init();
     Geolocation.init();
     Router.route();
 });
