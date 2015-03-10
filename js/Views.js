@@ -87,12 +87,12 @@ var Views = (function() {
         };
 
         // init the table with starred stations
-        var initStarredContent = function() {
+        body.initStarredContent = function() {
             var starredList = document.getElementById('starred-list');
 
             $(starredList).empty();
 
-            if(Geolocation.waitPosition(initStarredContent) && Stations.waitList(initStarredContent))
+            if(Geolocation.waitPosition(body.initStarredContent) && Stations.waitList(body.initStarredContent))
             {
                 var currentPosition = Geolocation.getPosition();
                 var starredStations = Stations.getStarredStations(currentPosition);

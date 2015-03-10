@@ -39,7 +39,7 @@ var Geolocation = (function() {
     var waitPosition = function(fun) {
         $('.station-info').html('<p class="center">Attente de la position…</p>');
         if (coords === null) {
-            timer = setTimeout(fun, Config.wait_position_timeout);
+            timer = setTimeout(fun, Config.waitPositionTimeout);
             return false;
         } else {
             return true;
