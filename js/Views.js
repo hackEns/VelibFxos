@@ -185,7 +185,7 @@ var Views = (function() {
 
         if (Geolocation.waitPosition(stands) && Stations.waitList(stands)) {
             var stations = Stations.getClosestStations(Geolocation.getPosition(), 10, function(item) {
-                return item.availableStands > 0;
+                return item.available_bikes > 0;
             });
             console.log(stations);
 
