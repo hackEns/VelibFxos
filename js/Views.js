@@ -30,10 +30,10 @@ var Views = (function() {
             onSlideChangeStart: function(e){
                 body.update(viewStruct);
                 RoadMap.initCircle(Geolocation.getPosition());
-                var station_detail = $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2);
+                var stationDetail = $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2);
 
-                var active_station = Stations.getStationDetails(station_detail[1]); // get details from the active slide
-                RoadMap.addMarker(Geolocation.getPosition(), active_station, viewStruct.view);
+                var activeStation = Stations.getStationDetails(stationDetail[1]); // get details from the active slide
+                RoadMap.addMarker(Geolocation.getPosition(), activeStation, viewStruct.view);
             }
         });
 
@@ -71,17 +71,17 @@ var Views = (function() {
 
         // Insert in Station template, details from a specific station
         var completeStationDetails = function(template, station) {
-            var avail_bike = template.content.querySelector('.bikes');
-            var avail_stands = template.content.querySelector('.stands');
+            var availableBikes = template.content.querySelector('.bikes');
+            var availableStands = template.content.querySelector('.stands');
             var distance = template.content.querySelector('.distance');
             var position = template.content.querySelector('.position');
-            var last_update = template.content.querySelector('.last_update');
+            var lastUpdate = template.content.querySelector('.last_update');
 
-            avail_bike.textContent = station.available_bikes;
-            avail_stands.textContent = station.available_bike_stands;
+            availableBikes.textContent = station.availableBikes;
+            availableStands.textContent = station.availableStands;
             distance.textContent = station.distance;
             position.textContent = station.position;
-            last_update.textContent = station.last_update;
+            lastUpdate.textContent = station.lastUpdate;
 
             return template;
         };
@@ -107,8 +107,8 @@ var Views = (function() {
                     row.querySelector('a').href += station.number
                     row.querySelector('.name').textContent = station.address;
                     row.querySelector('.dist').textContent = station.distance;
-                    row.querySelector('.bikes').textContent = station.available_bikes;
-                    row.querySelector('.stands').textContent = station.available_bike_stands;
+                    row.querySelector('.bikes').textContent = station.availableBikes;
+                    row.querySelector('.stands').textContent = station.availableStands;
                     starredList.appendChild(document.importNode(row, true));
                 });
             }
@@ -146,7 +146,7 @@ var Views = (function() {
 
         if (Geolocation.waitPosition(bikes) && Stations.waitList(bikes)) {
             var stations = Stations.getClosestStations(Geolocation.getPosition(), 10, function(item) {
-                return item.available_bikes > 0;
+                return item.availableBikes > 0;
             });
             console.log(stations);
 
@@ -154,7 +154,7 @@ var Views = (function() {
             var newSlide = '';
             for (var i = 0; i < stations.length; i++) {
                 console.log(stations[i].name);
-                newSlide = swiper.createSlide('<div>Station ' + stations[i].name + '<br>Vélos disponibles ' + stations[i].available_bikes + '</div>');
+                newSlide = swiper.createSlide('<div>Station ' + stations[i].name + '<br>Vélos disponibles ' + stations[i].availableBikes + '</div>');
                 newSlide.append();
             }
             RoadMap.initCircle(Geolocation.getPosition());
@@ -177,7 +177,7 @@ var Views = (function() {
 
         if (Geolocation.waitPosition(stands) && Stations.waitList(stands)) {
             var stations = Stations.getClosestStations(Geolocation.getPosition(), 10, function(item) {
-                return item.available_bike_stands > 0;
+                return item.availableStands > 0;
             });
             console.log(stations);
 
@@ -185,7 +185,7 @@ var Views = (function() {
             var newSlide = '';
             for (var i = 0; i < stations.length; i++) {
                 console.log(stations[i].name);
-                newSlide = swiper.createSlide('<div>Station ' + stations[i].name + '<br>Bornes disponibles ' + stations[i].available_bikes + '</div>');
+                newSlide = swiper.createSlide('<div>Station ' + stations[i].name + '<br>Bornes disponibles ' + stations[i].availableBikes + '</div>');
                 newSlide.append();
             }
             RoadMap.initCircle(Geolocation.getPosition());
@@ -217,7 +217,7 @@ var Views = (function() {
     };
 
     var station = function() {
-        var stationId = window.hash.substr(9); // hash = /station/{stationId}
+        var stationId = window.location.hash.substr(10); // hash = #/station/{stationId}
         console.log("stationId : " + stationId);
 
         if (Geolocation.waitPosition(station) && Stations.waitList(station)) {
@@ -226,14 +226,14 @@ var Views = (function() {
 
             viewStruct.station = Stations.getStationDetails(stationId)[0];
             console.log("viewStruct.station : "+ viewStruct.station);
-            var station_exist = $.grep(stations, function(v) {
+            var stationExist = $.grep(stations, function(v) {
                 return v.number == stationId;
             });
 
             // If station doesn't exist : redirection
-            if (station_exist.length == 0) {
+            if (stationExist.length == 0) {
                 alert("La station n'existe pas !");
-                console.log("Views.js", "station", "station doesn't exist", station_exist.length);
+                console.log("Views.js", "station", "station doesn't exist", stationExist.length);
                 window.location.hash = "/index";
             } else {
                 viewStruct.view = "station";
