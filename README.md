@@ -10,7 +10,7 @@ VelibFxos is a Firefox OS app (and webapp) for the Velib bike sharing system in 
 
 ### Online website
 
-_There is no website yet... Soon._
+An hosted version is available at [https://velib.phyks.me/](https://velib.phyks.me/).
 
 ### How to use
 + [User guide](https://github.com/Phyks/VelibFxos/wiki/User-guide#welcome-to-the-user-guide) (*draft*).
