@@ -92,8 +92,7 @@ var Views = (function() {
 
             $(starredList).empty();
 
-            if(Geolocation.waitPosition(body.initStarredContent) && Stations.waitList(body.initStarredContent))
-            {
+            Geolocation.waitPosition(function() {
                 var currentPosition = Geolocation.getPosition();
                 var starredStations = Stations.getStarredStations(currentPosition);
                 console.log('IDE', starredStations);
@@ -111,7 +110,7 @@ var Views = (function() {
                     row.querySelector('.stands').textContent = station.availableStands;
                     starredList.appendChild(document.importNode(row, true));
                 });
-            }
+            });
         };
 
         body.clean = function() {
@@ -144,7 +143,7 @@ var Views = (function() {
 
         body.update(viewStruct);
 
-        if (Geolocation.waitPosition(bikes) && Stations.waitList(bikes)) {
+        Geolocation.waitPosition(function() {
             var stations = Stations.getClosestStations(Geolocation.getPosition(), 10, function(item) {
                 return item.availableBikes > 0;
             });
@@ -162,10 +161,7 @@ var Views = (function() {
             var stationDetail = $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2);
             var activeStation = Stations.getStationDetails(stationDetail[1]); // get details for the active slide
             RoadMap.addMarker(Geolocation.getPosition(), activeStation, viewStruct.view);
-        }
-        else {
-            console.log('Views', 'bikes', 'Looking for geolocation');
-        }
+        });
     };
 
     var stands = function() {
@@ -175,7 +171,7 @@ var Views = (function() {
         console.log('Views', viewStruct.view, "display page");
         body.update(viewStruct);
 
-        if (Geolocation.waitPosition(stands) && Stations.waitList(stands)) {
+        Geolocation.waitPosition(function() {
             var stations = Stations.getClosestStations(Geolocation.getPosition(), 10, function(item) {
                 return item.availableStands > 0;
             });
@@ -193,10 +189,7 @@ var Views = (function() {
             var stationDetail = $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2);
             var activeStation = Stations.getStationDetails(stationDetail[1]); // get details for the active slide
             RoadMap.addMarker(Geolocation.getPosition(), activeStation, viewStruct.view);
-        }
-        else if (!Geolocation.waitPosition(stands)) {
-            console.log('Views', 'stands', 'Looking for geolocation');
-        }
+        });
     };
 
     var starred = function() {
@@ -208,19 +201,19 @@ var Views = (function() {
         body.initStarredContent();
 
         Geolocation.noWaitPosition();
-        if (Stations.waitList(starred)) {
+        Stations.waitList(function() {
             console.log(Stations.getClosestStations(Geolocation.getPosition(), 10, function(item) {
                 return item.starred > 0;
             }));
             $('.station-info').empty();
-        }
+        });
     };
 
     var station = function() {
         var stationId = window.location.hash.substr(10); // hash = #/station/{stationId}
         console.log("stationId : " + stationId);
 
-        if (Geolocation.waitPosition(station) && Stations.waitList(station)) {
+        Geolocation.waitPosition(function() {
             // Allow to get distance between station and current position
             var stations = Stations.getClosestStations(Geolocation.getPosition());
 
@@ -256,7 +249,7 @@ var Views = (function() {
                     var returnedStation = Stations.toggleStarStation(stationId);
                 });
             }
-        }
+        });
     };
 
     var search = function() {
@@ -274,10 +267,10 @@ var Views = (function() {
         RoadMap.init();
         RoadMap.addMarkers();
 
-        if(Geolocation.waitPosition(search)) {
+        Geolocation.waitPosition(function() {
             var pos = Geolocation.getPosition();
             RoadMap.addMarkerPosition(pos);
-        }
+        });
 
         $('.station-info, .info').addClass('hidden');
 
