@@ -12,7 +12,7 @@ var Views = (function() {
 
 
     var swiper = null;
-    var templates = {}
+    var templates = {};
     var mainSection = '';
 
     var stationStorage = null;
@@ -54,9 +54,8 @@ var Views = (function() {
             pagination: '.pagination',
             paginationClickable: true,
             createPagination: true
-});
-    }
-
+        });
+    };
 
     body = (function() {
         // update the body from the views
@@ -90,12 +89,7 @@ var Views = (function() {
     var index = function() {
         currentView = "index";
         body.update();
-
-        // clean by removing stations swiper
-        $('.swiper-wrapper, .pagination').empty().attr('style', '');
-
         console.log('Views', "Index", "display page");
-
     };
 
     var bikes = function() {
@@ -198,7 +192,7 @@ var Views = (function() {
                 // Construction du DOM
                 var row = templates['starredItem'].content.cloneNode(true);
                 row.id = station.number;
-                row.querySelector('a').href += station.number
+                row.querySelector('a').href += station.number;
                 row.querySelector('.name').textContent = station.address;
                 row.querySelector('.dist').textContent = station.distance;
                 row.querySelector('.bikes').textContent = station.availableBikes;
@@ -215,10 +209,7 @@ var Views = (function() {
             console.log("stationId : " + stationId);
 
             // Allow to get distance between station and current position
-            var stations = Stations.filterClosestStations(
-                stationStorage.getStations(),
-                coords
-            );
+            var stations = Stations.filterClosestStations(stationStorage.getStations(), coords);
 
             var station = stationStorage.getStationById(stationId)[0];
             var stationExist = $.grep(stations, function(v) {
@@ -226,7 +217,7 @@ var Views = (function() {
             });
 
             // If station doesn't exist : redirection
-            if (stationExist.length == 0) {
+            if (stationExist.length === 0) {
                 alert("La station n'existe pas !");
                 console.log("Views.js", "station", "station doesn't exist", stationExist.length);
                 window.location.hash = "/index";
