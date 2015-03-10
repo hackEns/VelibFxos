@@ -5,9 +5,8 @@
  **********/
 
 $(function() {
-	Views.init();
+		Views.init();
     Geolocation.init();
-    Stations.init();
     Router.route();
 });
 

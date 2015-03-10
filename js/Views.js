@@ -5,37 +5,22 @@
  ********/
 
 var Views = (function() {
-    var viewStruct = {};
+    var currentView = '';
     var body = {};
     var template = '';
     var defaultMainClass = '';
 
 
-    var swiper = {};
+    var swiper = null;
     var templates = {}
     var mainSection = '';
 
+    var stationStorage = null;
+
 
     var init = function() {
-        swiper = new Swiper('.swiper-container', {
-            // general settings
-            hashNav: false,
-            keyboardControl: true,
-            calculateHeight: true,
-            // pagination settings
-            //loop: true,
-            pagination: '.pagination',
-            paginationClickable: true,
-            createPagination: true,
-            onSlideChangeStart: function(e){
-                body.update(viewStruct);
-                RoadMap.initCircle(Geolocation.getPosition());
-                var stationDetail = $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2);
-
-                var activeStation = Stations.getStationDetails(stationDetail[1]); // get details from the active slide
-                RoadMap.addMarker(Geolocation.getPosition(), activeStation, viewStruct.view);
-            }
-        });
+        stationStorage = StationStorageAdapter();
+        stationStorage.load(noop); /* tmp */
 
         templates['index'] = document.getElementById('index');
         templates['bikes'] = document.getElementById('bikes');
@@ -44,73 +29,50 @@ var Views = (function() {
         templates['station'] = document.getElementById('station');
         templates['search'] = document.getElementById('search');
         templates['starredItem'] = document.getElementById('starred-item');
-        
+
         mainSection = document.querySelector('main');
     };
+
+    var initSwiper = function() {
+
+      swiper = new Swiper('.swiper-container', {
+          // general settings
+          hashNav: false,
+          keyboardControl: true,
+          calculateHeight: true,
+          // pagination settings
+          loop: true,
+          pagination: '.pagination',
+          paginationClickable: true,
+          createPagination: true,
+          onSlideChangeStart: function(e){
+              body.update(viewStruct);
+              RoadMap.initCircle(Geolocation.getPosition());
+              var stationDetail = $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2);
+
+              var activeStation = Stations.getStationDetails(stationDetail[1]); // get details from the active slide
+              RoadMap.addMarker(Geolocation.getPosition(), activeStation, viewStruct.view);
+          }
+      });
+    }
 
 
     body = (function() {
         // update the body from the views
         body.update = function(viewStruct) {
-            var clone = '';
-
             body.clean();
-            console.log('Views', viewStruct.view, 'body.update');
-            mainSection.className = viewStruct.view;
+            console.log('Views', currentView, 'body.update');
+            mainSection.className = currentView;
 
-            template = templates[viewStruct.view];
+            template = templates[currentView];
 
             if ('content' in document.createElement('template')) {
-                mainSection.appendChild(document.importNode(template.content, true));
+                mainSection.appendChild(document.importNode(template.content.cloneNode(true), true));
             } else {
                 console.log('Views', 'body', 'template is NOT supported');
                 template = $(template).html();
                 mainSection.append(template);
             }
-        };
-
-        // Insert in Station template, details from a specific station
-        var completeStationDetails = function(template, station) {
-            var availableBikes = template.content.querySelector('.bikes');
-            var availableStands = template.content.querySelector('.stands');
-            var distance = template.content.querySelector('.distance');
-            var position = template.content.querySelector('.position');
-            var lastUpdate = template.content.querySelector('.last_update');
-
-            availableBikes.textContent = station.availableBikes;
-            availableStands.textContent = station.availableStands;
-            distance.textContent = station.distance;
-            position.textContent = station.position;
-            lastUpdate.textContent = station.lastUpdate;
-
-            return template;
-        };
-
-        // init the table with starred stations
-        body.initStarredContent = function() {
-            var starredList = document.getElementById('starred-list');
-
-            $(starredList).empty();
-
-            Geolocation.waitPosition(function() {
-                var currentPosition = Geolocation.getPosition();
-                var starredStations = Stations.getStarredStations(currentPosition);
-                console.log('IDE', starredStations);
-
-                $.each(starredStations, function(id, station) {
-                    station = Stations.getFormattedStation(station);
-
-                    // Construction du DOM
-                    var row = templates['starredItem'];
-                    row.id = station.number;
-                    row.querySelector('a').href += station.number
-                    row.querySelector('.name').textContent = station.address;
-                    row.querySelector('.dist').textContent = station.distance;
-                    row.querySelector('.bikes').textContent = station.availableBikes;
-                    row.querySelector('.stands').textContent = station.availableStands;
-                    starredList.appendChild(document.importNode(row, true));
-                });
-            });
         };
 
         body.clean = function() {
@@ -125,29 +87,31 @@ var Views = (function() {
 
 
     var index = function() {
-        viewStruct.view = "index";
+        currentView = "index";
+        body.update();
 
-        Geolocation.noWaitPosition();
-        Stations.noWaitList();
         // clean by removing stations swiper
         $('.swiper-wrapper, .pagination').empty().attr('style', '');
 
         console.log('Views', "Index", "display page");
-        body.update(viewStruct);
 
     };
 
     var bikes = function() {
-        viewStruct.view = "bikes";
-        viewStruct.prop = "readonly";
+        currentView = "bikes";
 
-        body.update(viewStruct);
+        body.update();
+        initSwiper();
 
         Geolocation.waitPosition(function() {
-            var stations = Stations.getClosestStations(Geolocation.getPosition(), 10, function(item) {
-                return item.availableBikes > 0;
-            });
-            console.log(stations);
+            var coords = Geolocation.getPosition();
+
+            var stations = Stations.filterClosestStations(
+                stationStorage.getStations(),
+                coords,
+                10,
+                function(item) { return item.availableBikes > 0; }
+            );
 
             // Stations slides creation
             var newSlide = '';
@@ -158,24 +122,30 @@ var Views = (function() {
             }
             RoadMap.initCircle(Geolocation.getPosition());
 
-            var stationDetail = $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2);
-            var activeStation = Stations.getStationDetails(stationDetail[1]); // get details for the active slide
-            RoadMap.addMarker(Geolocation.getPosition(), activeStation, viewStruct.view);
+            $('.swiper-slide:first').addClass("swiper-slide-active");
+
+            var stationDetail = $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2); // ugly…
+            var activeStation = stationStorage.getStationById(stationDetail[1], coords); // get details for the active slide
+            RoadMap.addMarker(Geolocation.getPosition(), activeStation, currentView);
         });
     };
 
     var stands = function() {
-        viewStruct.view = "stands";
-        viewStruct.prop = "readonly";
+        currentView = "stands";
 
-        console.log('Views', viewStruct.view, "display page");
-        body.update(viewStruct);
+        console.log('Views', currentView, "display page");
+        body.update();
+        initSwiper();
 
         Geolocation.waitPosition(function() {
-            var stations = Stations.getClosestStations(Geolocation.getPosition(), 10, function(item) {
-                return item.availableStands > 0;
-            });
-            console.log(stations);
+            var coords = Geolocation.getPosition();
+
+            var stations = Stations.filterClosestStations(
+                stationStorage.getStations(),
+                coords,
+                10,
+                function(item) { return item.availableStands > 0; }
+            );
 
             // Stations slides creation
             var newSlide = '';
@@ -186,39 +156,56 @@ var Views = (function() {
             }
             RoadMap.initCircle(Geolocation.getPosition());
 
+            $('.swiper-slide:first').addClass("swiper-slide-active");
+
             var stationDetail = $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2);
-            var activeStation = Stations.getStationDetails(stationDetail[1]); // get details for the active slide
-            RoadMap.addMarker(Geolocation.getPosition(), activeStation, viewStruct.view);
+            var activeStation = stationStorage.getStationById(stationDetail[1], coords); // get details for the active slide
+            RoadMap.addMarker(Geolocation.getPosition(), activeStation, currentView);
         });
     };
 
     var starred = function() {
-        viewStruct.view = "starred";
-        viewStruct.prop = "readonly";
+        currentView = "starred";
+        console.log('Views', currentView, "display page");
+        body.update();
+        
+        var starredList = document.getElementById('starred-list');
+        $(starredList).empty();
 
-        console.log('Views', viewStruct.view, "display page");
-        body.update(viewStruct);
-        body.initStarredContent();
+        Geolocation.waitPosition(function() {
+            var currentPosition = Geolocation.getPosition();
+            var starredStations = stationStorage.getStarredStations();
+            console.log('IDE', starredStations);
 
-        Geolocation.noWaitPosition();
-        Stations.waitList(function() {
-            console.log(Stations.getClosestStations(Geolocation.getPosition(), 10, function(item) {
-                return item.starred > 0;
-            }));
-            $('.station-info').empty();
+            $.each(starredStations, function(id, station) {
+                station = Stations.format(station, currentPosition);
+
+                // Construction du DOM
+                var row = templates['starredItem'].content.cloneNode(true);
+                row.id = station.number;
+                row.querySelector('a').href += station.number
+                row.querySelector('.name').textContent = station.address;
+                row.querySelector('.dist').textContent = station.distance;
+                row.querySelector('.bikes').textContent = station.availableBikes;
+                row.querySelector('.stands').textContent = station.availableStands;
+                starredList.appendChild(document.importNode(row, true));
+            });
         });
     };
 
     var station = function() {
-        var stationId = window.location.hash.substr(10); // hash = #/station/{stationId}
-        console.log("stationId : " + stationId);
-
         Geolocation.waitPosition(function() {
-            // Allow to get distance between station and current position
-            var stations = Stations.getClosestStations(Geolocation.getPosition());
+            var coords = Geolocation.getPosition();
+            var stationId = window.location.hash.substr(10); // hash = #/station/{stationId}
+            console.log("stationId : " + stationId);
 
-            viewStruct.station = Stations.getStationDetails(stationId)[0];
-            console.log("viewStruct.station : "+ viewStruct.station);
+            // Allow to get distance between station and current position
+            var stations = Stations.filterClosestStations(
+                stationStorage.getStations(),
+                coords
+            );
+            
+            var station = stationStorage.getStationById(stationId)[0];
             var stationExist = $.grep(stations, function(v) {
                 return v.number == stationId;
             });
@@ -229,42 +216,35 @@ var Views = (function() {
                 console.log("Views.js", "station", "station doesn't exist", stationExist.length);
                 window.location.hash = "/index";
             } else {
-                viewStruct.view = "station";
-                viewStruct.title = viewStruct.station.address;
-                viewStruct.img = "favori";
-                viewStruct.src = "plus-dark-blue.svg";
-                viewStruct.alt = "plus";
-                viewStruct.value = "Ajouter aux favoris";
-                viewStruct.prop = "readonly";
+                currentView = "station";
 
                 console.log('Views', viewStruct.view, "display page");
-                var stationFormatted = Stations.getFormattedStation(viewStruct.station);
-                templates['station'] = completeStationDetails(templates['station'], stationFormatted);
-                body.update(viewStruct);
+                var stationFormatted = Stations.getFormattedStation(station, coords);
+                
+                var availableBikes = templates['station'].content.querySelector('.bikes');
+                var availableStands = templates['station'].content.querySelector('.stands');
+                var distance = templates['station'].content.querySelector('.distance');
+                var position = templates['station'].content.querySelector('.position');
+                var lastUpdate = templates['station'].content.querySelector('.last_update');
 
-                var stationId = window.location.hash.substr(2).split("/")[1];
+                availableBikes.textContent = stationFormatted.availableBikes;
+                availableStands.textContent = stationFormatted.availableStands;
+                distance.textContent = stationFormatted.distance;
+                position.textContent = stationFormatted.position;
+                lastUpdate.textContent = stationFormatted.lastUpdate;
 
-                // click to starred the station
-                $(".vplus").click(function() {
-                    var returnedStation = Stations.toggleStarStation(stationId);
-                });
+                body.update();
             }
         });
     };
 
     var search = function() {
-        viewStruct.view = "search";
-        viewStruct.title = "Rechercher";
-        viewStruct.img = "loupe";
-        viewStruct.src = "search-yellow.svg";
-        viewStruct.alt = "loupe";
-        viewStruct.value = "";
-        viewStruct.prop = "placeHolder='Rechercher'";
+        currentView = "search";
+        
+        console.log('Views', currentView, "display page");
+        body.update();
 
-        console.log('Views', viewStruct.view, "display page");
-        body.update(viewStruct);
-
-        RoadMap.init();
+        RoadMap.init(stationStorage);
         RoadMap.addMarkers();
 
         Geolocation.waitPosition(function() {

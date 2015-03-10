@@ -5,11 +5,13 @@
  ********/
 
 var RoadMap = (function() {
+    var stationStorage = null;
 
     // Init the roadMap
-    var init = (function() {
+    var init = function(_stationStorage) {
         console.log('RoadMap', 'init', 'RoadMap under construction');
         var selectedLayer = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+        stationStorage = _stationStorage;
 
         window.roadMap = L.map('map', {
             dragging: true,
@@ -32,7 +34,7 @@ var RoadMap = (function() {
         console.log('RoadMap', 'init', 'RoadMap built');
 
         return init;
-    });
+    };
 
     // Init map for bikes and stands view
     var initCircle = (function(pos) {
@@ -61,7 +63,7 @@ var RoadMap = (function() {
     // Add all markers to the Map
     var addMarkers = (function() {
         console.log('RoadMap', 'addMarkers');
-        var stations = Stations.getFullList();
+        var stations = stationStorage.getStations();
         var myIcon = '';
 
         for(var i=0; i < stations.length; i++) {
@@ -138,25 +140,21 @@ var RoadMap = (function() {
             });
         }
 
-        // 1st marker is the current position
-        L.marker([pos.latitude, pos.longitude], {
-            icon: startIcon,
-            clickable: false,
-            draggable: false,
-            title: "Moi",
-            alt: "Vous êtes ici !"
+        var markers = [];
+        var route = L.Routing.control({
+            waypoints: [
+                L.latLng(pos.latitude, pos.longitude),
+                L.latLng(activeStation[0].position)
+            ],
+            routeWhileDragging: true,
+            fitSelectedRoutes: true,
+            useZoomParameter: true,
+            autoRoute: true
         }).addTo(window.roadMap);
 
-        // 2nd marker is the activeStation
-        L.marker(activeStation[0].position, {
-            icon: endIcon,
-            clickable: true,
-            draggable: false,
-            title: activeStation[0].address,
-            alt: activeStation[0].name,
-            address: activeStation[0].address,
-            number: activeStation[0].number
-        }).addTo(window.roadMap);
+
+        //desable itenary panel
+        $(".leaflet-right").hide();
 
         return true;
     });

@@ -12,6 +12,7 @@ var StationStorage = function() {
     var api = {};
 
     api.stations = null;
+    api.starredStations = [];
 
     /**
      * Initialy loads stations (to be overwritten)
@@ -22,7 +23,7 @@ var StationStorage = function() {
     };
     
     /**
-     * Returns whether the storage has correctly been loaded
+     * @returns bool whether the storage has correctly been loaded
      */
     api.isLoaded = function() {
         return api.stations !== null;
@@ -37,10 +38,28 @@ var StationStorage = function() {
     };
 
     /**
-     * Return station list
+     * @return station list
      */
-    api.getStationList = function() {
+    api.getStations = function() {
         return api.stations;
+    };
+
+    /**
+     * @return starred station list
+     */
+    api.getStarredStations = function() {
+        return api.starredStations;
+    };
+
+    /**
+     * Get station by its Id
+     * @param id Station id
+     * @return full station object
+     */
+    api.getStationById = function(id) {
+        return $.grep(api.getStations(), function(station) {
+            return station.number == id;
+        });
     };
 
 
@@ -57,11 +76,38 @@ var AutorityStationStorage = function() {
     var api = StationStorage();
 
     /**
+     * Adapt OpenData API's format to internal station representation.
+     * It is important not to be dependant of the API representation in the rest of
+     * the code since it can change at any time. Furthermore, it enable an easy
+     * adaptation to other systems.
+     * It is also a reference to know which fields are available in station object.
+     */
+    var stationContract = function(raw_station) {
+        return {
+            address:         raw_station.address,
+            availableStands: raw_station.available_bike_stands,
+            availableBikes:  raw_station.available_bikes,
+            bikeStands:      raw_station.bike_stands,
+            banking:         raw_station.banking,
+            bonus:           raw_station.bonus,
+            contractName:    raw_station.contract_name,
+            lastUpdate:      raw_station.last_update,
+            name:            raw_station.name,
+            number:          raw_station.number,
+            position: {
+                lat:         raw_station.position.lat,
+                lng:         raw_station.position.lng
+            },
+            status:          raw_station.status
+        };
+    };
+
+    /**
      * Initialize storage by loading stations from OpenData API
      */
     api.load = function(callback) {
         $.getJSON(window.Config['stations_url'], function(data, status, jqXHR) {
-            api.stations = data;
+            api.stations = data.map(stationContract);
             callback();
         });
     };
@@ -87,6 +133,10 @@ var LocalStationStorage = function() {
             return;
         }
         api.stations = JSON.parse(localStorage.getItem('stations'));
+        api.starredStations = JSON.parse(localStorage.getItem('starredStations'));
+        if (api.starredStations == null) {
+            api.starredStations = [];
+        }
         callback();
     };
 
@@ -95,6 +145,7 @@ var LocalStationStorage = function() {
      */
     api.save = function(callback) {
         localStorage.setItem('stations', JSON.stringify(api.stations));
+        localStorage.setItem('starredStations', JSON.stringify(api.starredStations));
         localStorage.setItem('lastStationsUpdate', Date.now());
         callback();
     };
@@ -179,6 +230,15 @@ var StationStorageAdapter = function() {
         recLoadSubstorage(0);
     };
 
+
+    /**
+     * Storage is loaded if there is some available substorage and that this substorage is ready
+     */
+    api.isLoaded = function() {
+        return currentSubstorage !== null && currentSubstorage.isLoaded();
+    };
+
+
     /**
      * Save to each substorage
      */
@@ -189,6 +249,7 @@ var StationStorageAdapter = function() {
                 return;
             }
             substorages[i].stations = currentSubstorage.stations;
+            substorages[i].starredStations = currentSubstorage.starredStations;
             substorages[i].save(function() {
                 recSaveSubstorage(i + 1);
             });
@@ -196,8 +257,12 @@ var StationStorageAdapter = function() {
         recSaveSubstorage(0);
     };
 
-    api.getStationList = function() {
-        return currentSubstorage.getStationList();
+    api.getStations = function() {
+        return currentSubstorage.getStations();
+    }
+
+    api.getStarredStations = function() {
+        return currentSubstorage.getStarredStations();
     }
 
     return api;
