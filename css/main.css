@@ -304,6 +304,8 @@ main.index {
     height: calc(100vw - 5rem);
     border-radius: 50%;
     background-color: #DDD;
+    max-height: 50rem;
+    max-width: 50rem;
 }
 
 .station-map--name,
@@ -592,7 +594,7 @@ footer aside .icon-plus-violet {
     background-image: url("../img/plus-violet.svg");
 }
 
-footer form input[type="text"] {
+footer form input[type="search"] {
     width: calc(100% - 6rem);
     border: medium none;
     padding-left: 1rem;

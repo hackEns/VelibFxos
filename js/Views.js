@@ -34,32 +34,33 @@ var Views = (function() {
     };
 
     var initSwiper = function() {
+        template = document.getElementById('swiper');
 
-      swiper = new Swiper('.swiper-container', {
-          // general settings
-          hashNav: false,
-          keyboardControl: true,
-          calculateHeight: true,
-          // pagination settings
-          loop: true,
-          pagination: '.pagination',
-          paginationClickable: true,
-          createPagination: true,
-          onSlideChangeStart: function(e){
-              body.update(viewStruct);
-              RoadMap.initCircle(Geolocation.getPosition());
-              var stationDetail = $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2);
+        if ('content' in document.createElement('template')) {
+            mainSection.appendChild(document.importNode(template.content.cloneNode(true), true));
+        } else {
+            console.log('Views', 'body', 'template is NOT supported');
+            template = $(template).html();
+            mainSection.append(template);
+        }
 
-              var activeStation = Stations.getStationDetails(stationDetail[1]); // get details from the active slide
-              RoadMap.addMarker(Geolocation.getPosition(), activeStation, viewStruct.view);
-          }
-      });
+        swiper = new Swiper('.swiper-container', {
+            // general settings
+            hashNav: false,
+            keyboardControl: true,
+            calculateHeight: true,
+            // pagination settings
+            loop: true,
+            pagination: '.pagination',
+            paginationClickable: true,
+            createPagination: true
+});
     }
 
 
     body = (function() {
         // update the body from the views
-        body.update = function(viewStruct) {
+        body.update = function() {
             body.clean();
             console.log('Views', currentView, 'body.update');
             mainSection.className = currentView;
@@ -126,6 +127,13 @@ var Views = (function() {
 
             var stationDetail = $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2); // ugly…
             var activeStation = stationStorage.getStationById(stationDetail[1], coords); // get details for the active slide
+
+            $('footer a').click(function (e) {
+                e.preventDefault();
+                // todo
+                window.location.hash = "/station/" + $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2)[1];
+            });
+
             RoadMap.addMarker(Geolocation.getPosition(), activeStation, currentView);
         });
     };
@@ -168,7 +176,7 @@ var Views = (function() {
         currentView = "starred";
         console.log('Views', currentView, "display page");
         body.update();
-        
+
         var starredList = document.getElementById('starred-list');
         $(starredList).empty();
 
@@ -204,7 +212,7 @@ var Views = (function() {
                 stationStorage.getStations(),
                 coords
             );
-            
+
             var station = stationStorage.getStationById(stationId)[0];
             var stationExist = $.grep(stations, function(v) {
                 return v.number == stationId;
@@ -218,20 +226,20 @@ var Views = (function() {
             } else {
                 currentView = "station";
 
-                console.log('Views', viewStruct.view, "display page");
-                var stationFormatted = Stations.getFormattedStation(station, coords);
-                
+                console.log('Views', currentView, "display page");
+                //var stationFormatted = Stations.getFormattedStation(station, coords);
+
                 var availableBikes = templates['station'].content.querySelector('.bikes');
                 var availableStands = templates['station'].content.querySelector('.stands');
                 var distance = templates['station'].content.querySelector('.distance');
                 var position = templates['station'].content.querySelector('.position');
                 var lastUpdate = templates['station'].content.querySelector('.last_update');
 
-                availableBikes.textContent = stationFormatted.availableBikes;
-                availableStands.textContent = stationFormatted.availableStands;
-                distance.textContent = stationFormatted.distance;
-                position.textContent = stationFormatted.position;
-                lastUpdate.textContent = stationFormatted.lastUpdate;
+                availableBikes.textContent = 0;//stationFormatted.availableBikes;
+                availableStands.textContent = 0;//stationFormatted.availableStands;
+                distance.textContent = 0;//stationFormatted.distance;
+                position.textContent = 0;//stationFormatted.position;
+                lastUpdate.textContent = 0;//stationFormatted.lastUpdate;
 
                 body.update();
             }
@@ -240,7 +248,7 @@ var Views = (function() {
 
     var search = function() {
         currentView = "search";
-        
+
         console.log('Views', currentView, "display page");
         body.update();
 
