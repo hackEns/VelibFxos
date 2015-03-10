@@ -5,7 +5,7 @@
  **********/
 
 $(function() {
-		Views.init();
+	Views.init();
     Geolocation.init();
     Router.route();
 });
@@ -13,4 +13,3 @@ $(function() {
 $(window).on('hashchange', function() {
     Router.route();
 });
-
