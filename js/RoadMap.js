@@ -106,7 +106,7 @@ var RoadMap = (function() {
     // Add a marker for any search
     var addMarkerSearch = (function(position) {
         console.log('RoadMap', 'addMarkers');
-        var stations = Stations.getFullList();
+        var stations = StationStorage;
         var myIcon = '';
 
         L.marker([position._initialCenter.lat, position._initialCenter.lng], {
