@@ -129,8 +129,8 @@ var Views = (function() {
             var activeStation = stationStorage.getStationById(stationDetail[1], coords); // get details for the active slide
 
             $('footer a').click(function (e) {
+                // tmp
                 e.preventDefault();
-                // todo
                 window.location.hash = "/station/" + $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2)[1];
             });
 
@@ -168,6 +168,13 @@ var Views = (function() {
 
             var stationDetail = $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2);
             var activeStation = stationStorage.getStationById(stationDetail[1], coords); // get details for the active slide
+
+            $('footer a').click(function (e) {
+                // tmp
+                e.preventDefault();
+                window.location.hash = "/station/" + $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2)[1];
+            });
+
             RoadMap.addMarker(Geolocation.getPosition(), activeStation, currentView);
         });
     };
