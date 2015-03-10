@@ -11,7 +11,7 @@ var Views = (function() {
     var defaultMainClass = '';
 
 
-    var swiper = {};
+    var swiper = null;
     var templates = {}
     var mainSection = '';
 

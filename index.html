@@ -22,10 +22,6 @@
 
 <body>
 
-
-
-
-
     <!-- Action takes place here -->
     <main></main>
 
@@ -86,12 +82,6 @@
                 </section>
             </article>
 
-            <!-- swiper element -->
-            <div class="swiper-container">
-                <div class="swiper-wrapper"></div>
-                <div class="pagination"></div>
-            </div>
-
             <footer>
                 <a href="#/station/foo">
                     <aside class="pack-end">
@@ -134,12 +124,6 @@
                     <div class="station-map--map-circle" id="map"></div>
                 </section>
             </article>
-
-            <!-- swiper element -->
-            <div class="swiper-container">
-                <div class="swiper-wrapper"></div>
-                <div class="pagination"></div>
-            </div>
 
             <footer>
                 <a href="#/station/foo">
@@ -277,16 +261,24 @@
         </section>
     </template>
 
+    <!-- swiper element -->
+    <div class="swiper-container">
+        <div class="swiper-wrapper"></div>
+        <div class="pagination"></div>
+    </div>
+
     <script src="js/jquery.min.js"></script>
     <script src="js/idangerous.swiper.min.js"></script>
     <script src="js/idangerous.swiper.hashnav.min.js"></script>
     <script src="js/leaflet.min.js"></script>
 
+    <script src="js/polyfills.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/Config.js"></script>
     <script src="js/Geolocation.js"></script>
     <script src="js/RoadMap.js"></script>
     <script src="js/Control.OSMGeocoder.js"></script>
+    <script src="js/StationStorage.js"></script>
     <script src="js/Stations.js"></script>
     <script src="js/Views.js"></script>
     <script src="js/Router.js"></script>
