@@ -253,7 +253,7 @@ var Views = (function() {
                 var stationId = parseInt(window.location.hash.substr(2).split("/")[1]);
 
                 $(".vplus").click(function() {
-                    var returnedStation = Stations.toggleStarStation(stationId);s
+                    var returnedStation = Stations.toggleStarStation(stationId);
                 });
             }
         }

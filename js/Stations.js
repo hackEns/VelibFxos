@@ -206,24 +206,25 @@ var Stations = (function() {
 
     // Star / Unstar a station
     var toggleStarStation = function(stationId) {
+        var maxStarredStations = 10;
         console.log('toggleStarStation', 'starredStations before', starredStations);
         var index = starredStations.indexOf(parseInt(stationId));
 
         // Star a new station
         if (index != -1) {
+          console.log("Station à retirer...");
             alert('ANIMATION : station retirée');
-            starredStations = starredStations.slice(index+1);
+            starredStations.splice(index, 1);
         }
         // Unstar a station from favourites
         else {
-            if (starredStations.length > window.Config.maxStarredStations) {
+            if (starredStations.length > maxStarredStations) {
                 console.log('Stations.js', 'toggleStarStation', 'too much stations are starred');
                 return false;
-            } else if (starredStations.length <= window.Config.maxStarredStations) {
+            } else if (starredStations.length <= maxStarredStations) {
                 alert('ANIMATION : station ajoutée');
                 starredStations.push(parseInt(stationId));
             }
-            starred_stations.push(parseInt(station_id));
         }
         localStorage.setItem('starredStations', JSON.stringify(starredStations));
         console.log('toggleStarStation', 'starredStations after', starredStations);
