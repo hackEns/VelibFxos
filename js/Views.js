@@ -70,7 +70,7 @@ var Views = (function() {
         };
 
         // Insert in Station template, details from a specific station
-        var completeStationDetails = function(template, station) {
+        body.completeStationDetails = function(template, station) {
             var availableBikes = template.content.querySelector('.bikes');
             var availableStands = template.content.querySelector('.stands');
             var distance = template.content.querySelector('.distance');
@@ -247,7 +247,7 @@ var Views = (function() {
 
                 console.log('Views', viewStruct.view, "display page");
                 var stationFormatted = Stations.getFormattedStation(viewStruct.station);
-                templates['station'] = completeStationDetails(templates['station'], stationFormatted);
+                templates['station'] = body.completeStationDetails(templates['station'], stationFormatted);
                 body.update(viewStruct);
 
                 var stationId = parseInt(window.location.hash.substr(2).split("/")[1]);
