@@ -31,9 +31,11 @@ General information:
 Come to chat on Freenode <code>#VelibFxOS</code> channel, [Webchat.freenode.net](http://webchat.freenode.net/).
 
 
-# Contributos
+# Contributors
 ---
 
-Special thanks for the following contributors which helped us greatly in developping this app:
+Special thanks for the following [contributors](https://github.com/Phyks/VelibFxos/graphs/contributors) which helped us greatly in developping this app:
 
-* **TODO**
++ [Edouard Alves Camilo](https://github.com/EdouardAlvesCamilo)
++ [Luis Braga](https://github.com/BragaLuis)
++ [Indy De Deken](https://github.com/indydedeken)
