@@ -70,7 +70,7 @@ var RoadMap = (function() {
             // Set icon for each stations
             myIcon = L.divIcon({
                 className: 'mapIcon',
-                html: '<div class="avail_bikes">' + stations[i].available_bikes + '</div>' + '<div class="avail_bike_stands">' + stations[i].available_bike_stands + '</div>'
+                html: '<div class="available-bikes">' + stations[i].availableBikes + '</div>' + '<div class="available-stands">' + stations[i].availableStands + '</div>'
             });
 
             // Set markers for each stations
