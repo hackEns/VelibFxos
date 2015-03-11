@@ -40,7 +40,7 @@ L.Control.OSMGeocoder = L.Control.extend({
 		var form = this._form = L.DomUtil.create('form', className + '-form');
 
 		var input = this._input = document.createElement('input');
-		input.type = "text";
+		input.type = "search";
 		input.placeholder = "Rechercher";
 
 		var submit = document.createElement('input');

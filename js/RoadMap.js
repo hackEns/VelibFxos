@@ -116,7 +116,7 @@ var RoadMap = (function() {
     // Add a marker for any search
     var addMarkerSearch = (function(position) {
         console.log('RoadMap', 'addMarkers');
-        var stations = Stations.getFullList();
+        var stations = StationStorage;
         var myIcon = '';
 
         L.marker([position._initialCenter.lat, position._initialCenter.lng], {
@@ -137,14 +137,16 @@ var RoadMap = (function() {
             iconSize: [40, 45]
         });
 
+        var endIcon = '';
+
         // icon is customized according to the view
         if(view == 'bikes') {
-            var endIcon = L.icon({
+            endIcon = L.icon({
                 iconUrl: 'js/images/map-available-bike.svg',
                 iconSize: [40, 45]
             });
         } else {
-            var endIcon = L.icon({
+            endIcon = L.icon({
                 iconUrl: 'js/images/map-available-stand.svg',
                 iconSize: [40, 45]
             });
