@@ -6,6 +6,7 @@
 
 var RoadMap = (function() {
     var stationStorage = null;
+    var positionMarker = null;
 
     // Init the roadMap
     var init = function(_stationStorage) {
@@ -91,17 +92,26 @@ var RoadMap = (function() {
         return true;
     });
 
-    // Add a marker for the current position
-    var addMarkerPosition = (function(pos) {
-        L.marker([pos.latitude, pos.longitude], {
-            clickable: false,
-            draggable: false,
-            title: "Moi",
-            alt: "Vous êtes ici !"
-        }).addTo(window.roadMap);
+    // Add or move the marker for the current position
+    var setPositionMarker = function(position) {
+        var latlng = [position.latitude, position.longitude];
 
-        window.roadMap.panTo([pos.latitude, pos.longitude]);
-    });
+        if (positionMarker === null) {
+            positionMarker = L.marker(latlng, {
+                clickable: false,
+                draggable: false,
+                title: "Moi",
+                alt: "Vous êtes ici !"
+            })
+        } else {
+            positionMarker.setLatLng(latlng);
+        }
+
+        positionMarker.addTo(window.roadMap);
+
+        window.roadMap.panTo(latlng);
+    };
+
 
     // Add a marker for any search
     var addMarkerSearch = (function(position) {
@@ -165,6 +175,6 @@ var RoadMap = (function() {
         addMarkers: addMarkers,
         addMarker: addMarker,
         addMarkerSearch: addMarkerSearch,
-        addMarkerPosition: addMarkerPosition
+        setPositionMarker: setPositionMarker
     };
 })();

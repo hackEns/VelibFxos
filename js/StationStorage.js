@@ -106,7 +106,7 @@ var AutorityStationStorage = function() {
      * Initialize storage by loading stations from OpenData API
      */
     api.load = function(callback) {
-        $.getJSON(window.Config['stations_url'], function(data, status, jqXHR) {
+        $.getJSON(Config.stationsUrl, function(data, status, jqXHR) {
             api.stations = data.map(stationContract);
             callback();
         });

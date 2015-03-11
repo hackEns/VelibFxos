@@ -247,9 +247,9 @@ var Views = (function() {
         RoadMap.init(stationStorage);
         RoadMap.addMarkers();
 
-        Geolocation.waitPosition(function() {
+        Geolocation.watchPosition(function() {
             var pos = Geolocation.getPosition();
-            RoadMap.addMarkerPosition(pos);
+            RoadMap.setPositionMarker(pos);
         });
 
         $('.station-info, .info').addClass('hidden');
