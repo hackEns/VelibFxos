@@ -21,7 +21,7 @@ var StationStorage = function() {
     api.load = function(callback) {
         callback();
     };
-    
+
     /**
      * @returns bool whether the storage has correctly been loaded
      */
@@ -61,7 +61,6 @@ var StationStorage = function() {
             return station.number == id;
         });
     };
-
 
     return api;
 };
@@ -127,14 +126,14 @@ var LocalStationStorage = function() {
      * Load station list from local storage
      */
     api.load = function(callback) {
-        if (Date.now() - parseInt(localStorage.getItem('lastStationsUpdate')) > Config.localStationStorageTimeout) {
+        if (Date.now() - parseInt(localStorage.getItem('lastStationsUpdate'), 10) > Config.localStationStorageTimeout) {
             // Return now because local storage is considered as obsolated
             callback();
             return;
         }
         api.stations = JSON.parse(localStorage.getItem('stations'));
         api.starredStations = JSON.parse(localStorage.getItem('starredStations'));
-        if (api.starredStations == null) {
+        if (api.starredStations === null) {
             api.starredStations = [];
         }
         callback();
@@ -149,7 +148,6 @@ var LocalStationStorage = function() {
         localStorage.setItem('lastStationsUpdate', Date.now());
         callback();
     };
-
 
     return api;
 };
@@ -206,7 +204,7 @@ var StationStorageAdapter = function() {
     var currentSubstorage = null;
 
 
-    
+
     /**
      * Reccursively loads storages until one of them is ok
      */
@@ -267,5 +265,3 @@ var StationStorageAdapter = function() {
 
     return api;
 };
-
-
