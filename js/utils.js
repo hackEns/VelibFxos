@@ -34,7 +34,7 @@ var deg2rad = function(angle) {
 
 /**
  * Computes the distance between two points identified by latitude / longitude
- * @param coords1 Position object with fields `lat` and `lng`
+ * @param coords1 Position object with fields `latitude` and `longitude`
  * @param coords2 idem
  * @return distance between them on earth surface (following earth curve)
  */

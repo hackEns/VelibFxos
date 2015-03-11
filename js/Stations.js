@@ -15,8 +15,7 @@ var Stations = (function() {
      */
     var computeDistances = function(stations, coords) {
         return stations.map(function(station) {
-            var stationCoords = { latitude: station.position.lat, longitude: station.position.lng };
-            station.distance = distance(coords, stationCoords);
+            station.distance = distance(coords, station.position);
             return station;
         });
     };
@@ -78,18 +77,17 @@ var Stations = (function() {
             formatted.lastUpdate = text;
         }
         // distance
-        station.position.latitude = station.position.lat;
-        station.position.longitude = station.position.lng;
         var dist = station.distance || distance(coords, station.position);
         formatted.distance = (dist / 1000.0).toFixed(2) + " km";
 
-        // lat - lng
-        formatted.position = station.position.lat.toFixed(2) + ' - ' + station.position.lng.toFixed(2);
+        // latitude - longitude
+        formatted.position = station.position.latitude.toFixed(2) + ' - ' + station.position.longitude.toFixed(2);
 
         console.log('Station.js', 'getFormattedStation Out', formatted);
 
         return formatted;
     };
+
 
     /**
      * Sort and filter station list until a given limit.

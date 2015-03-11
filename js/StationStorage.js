@@ -95,8 +95,8 @@ var AutorityStationStorage = function() {
             name:            raw_station.name,
             number:          raw_station.number,
             position: {
-                lat:         raw_station.position.lat,
-                lng:         raw_station.position.lng
+                latitude:    raw_station.position.lat,
+                longitude:   raw_station.position.lng
             },
             status:          raw_station.status
         };
@@ -177,8 +177,8 @@ var MockStationStorage = function() {
             name: "31705 - CHAMPEAUX (BAGNOLET)",
             number: 31705,
             position: {
-                lat: 48.8645278209514,
-                lng: 2.416170724425901
+                latitude: 48.8645278209514,
+                longitude: 2.416170724425901
             },
             status: "OPEN"
         }
@@ -259,11 +259,11 @@ var StationStorageAdapter = function() {
 
     api.getStations = function() {
         return currentSubstorage.getStations();
-    }
+    };
 
     api.getStarredStations = function() {
         return currentSubstorage.getStarredStations();
-    }
+    };
 
     return api;
 };

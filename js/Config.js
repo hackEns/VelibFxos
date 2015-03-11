@@ -19,8 +19,8 @@ var Config = (function() {
             enableHighAccuracy: true,
             maximumAge: 10000
         },
-        waitPositionTimeout: 10 * 1000, /* in ms */
-        waitStationsTimeout: 10 * 1000, /* in ms */
+        waitPositionTimeout: 1000, /* in ms */
+        waitStationsTimeout: 1000, /* in ms */
         localStationStorageTimeout: 30 * 24 * 3600 * 1000 /* in ms */
     };
 })();
