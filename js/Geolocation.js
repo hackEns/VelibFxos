@@ -8,11 +8,40 @@ var Geolocation = (function() {
     var coords = null;
     var timer = null;
 
+    /**
+     * List of callbacks waiting for a position information.
+     */
+    var waitPositionCallbacks = [];
+
+    /**
+     * List of callbacks watching for a position information.
+     * The difference with waiting callbacks is that they are called at each position change
+     */
+    var watchPositionCallbacks = [];
+
+    /**
+     * Called whenever the position has succesfully changed
+     */
     var successFunction = function(position) {
         coords = position.coords;
         $('.info--content').html(parseFloat(coords.latitude).toFixed(3) + ' - ' + parseFloat(coords.longitude).toFixed(3));
+
+        // Call waiting functions
+        var oldWaitPositionCallbacks = waitPositionCallbacks; // avoid loops if callbacks call waitPosition again
+        waitPositionCallbacks = [];
+        oldWaitPositionCallbacks.forEach(function(callback) {
+            callback(coords);
+        });
+
+        // Call watching functions
+        watchPositionCallbacks.forEach(function(callback) {
+            callback(coords);
+        });
     };
 
+    /**
+     * Called whenever the position watcher failed
+     */
     var errorFunction = function(error) {
         coords = null;
         switch (error.code) {
@@ -35,26 +64,43 @@ var Geolocation = (function() {
         }
     };
 
-    // Wait for the position to be obtained
-    var waitPosition = function(fun) {
+    /**
+     * Wait for the position to be obtained.
+     * @param callback Callback called as soon as the position is available
+     * and takes the current coordinates as first argument.
+     */
+    var waitPosition = function(callback) {
         $('.station-info').html('<p class="center">Attente de la position…</p>');
         if (coords === null) {
-            timer = setTimeout(function(){ waitPosition(fun) }, Config.waitPositionTimeout);
-            return false;
+            waitPositionCallbacks.push(callback);
         } else {
-            fun();
-            return true;
+            callback(coords);
         }
     };
 
-    // Disable wait for the position to be obtained
-    var noWaitPosition = function() {
-        if (timer !== null) {
-            clearTimeout(timer);
+    /**
+     * Watch for the position to be obtained.
+     * @param callback Callback called as soon as the position is changed
+     * and takes the current coordinates as first argument.
+     */
+    var watchPosition = function(callback) {
+        if (coords === null) {
+            watchPositionCallbacks.push(callback);
+        } else {
+            callback(coords);
         }
     };
 
-    // Returns the current position
+    /**
+     * Clear the list functions watching for position
+     */
+    var noWatchPosition = function() {
+        watchPositionCallbacks = [];
+    };
+
+    /**
+     * Returns the last recorded position
+     */
     var getPosition = function() {
         return coords;
     };
@@ -62,7 +108,8 @@ var Geolocation = (function() {
     return {
         init: init,
         waitPosition: waitPosition,
-        noWaitPosition: noWaitPosition,
+        watchPosition: watchPosition,
+        noWatchPosition: noWatchPosition,
         getPosition: getPosition
     };
 })();
