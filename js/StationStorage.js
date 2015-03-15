@@ -127,6 +127,10 @@ var LocalStationStorage = function() {
      * Load station list from local storage
      */
     api.load = function(callback) {
+        if (!localStorage) {
+            // Local storage not available, fall back to other methods (Autority API)
+            return;
+        }
         if (Date.now() - parseInt(localStorage.getItem('lastStationsUpdate')) > Config.localStationStorageTimeout) {
             // Return now because local storage is considered as obsolated
             callback();
