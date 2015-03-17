@@ -7,6 +7,7 @@
 var RoadMap = (function() {
     var stationStorage = null;
     var positionMarker = null;
+    var requestedPosition = null;
 
     // Init the roadMap
     var init = function(_stationStorage) {
@@ -62,47 +63,53 @@ var RoadMap = (function() {
     });
 
     // Add all markers to the Map
-    var addMarkers = (function() {
-        console.log('RoadMap', 'addMarkers');
-        var stations = stationStorage.getStations();
-        var myIcon = '';
+    var addMarkers = (function(_stationStorage) {
+        console.log('RoadMap', 'addMarkers()');
+        stationStorage = _stationStorage;
 
-        for(var i=0; i < stations.length; i++) {
+        var myIcon = '';
+        var markersList = [];
+
+        // build Markers
+        for(var i=0; i < stationStorage.length; i++) {
             // Set icon for each stations
             myIcon = L.divIcon({
-                className: 'mapIcon',
-                html: '<div class="available-bikes">' + stations[i].availableBikes + '</div>' + '<div class="available-stands">' + stations[i].availableStands + '</div>'
+                className:  'mapIcon',
+                html:       '<div class="available-bikes">' + stationStorage[i].availableBikes + '</div>' +
+                            '<div class="available-stands">' + stationStorage[i].availableStands + '</div>'
             });
-
-            // Set markers for each stations
-            L.marker( stations[i].position, {
-                icon: myIcon,
-                clickable: true,
-                draggable: false,
-                title: stations[i].address,
-                alt: stations[i].name,
-                address: stations[i].address,
-                number: stations[i].number
-            }).addTo(window.roadMap).on('click', function (e) {
-                // Click on marker for more details about the station
-                window.location.hash = "/station/" + e.target.options.number;
+            // Set markers in markersList
+            markersList[i] = L.marker( [stationStorage[i].position.latitude, stationStorage[i].position.longitude], {
+                                icon: myIcon,
+                                clickable: true,
+                                draggable: false,
+                                title: stationStorage[i].address,
+                                alt: stationStorage[i].name,
+                                address: stationStorage[i].address,
+                                number: stationStorage[i].number
             });
         }
 
-        return true;
+        // insert Markers on the roadMap
+        $.map( markersList, function(station) {
+            station.addTo(window.roadMap);
+        });
+
     });
 
     // Add or move the marker for the current position
     var setPositionMarker = function(position) {
+        console.log('RoadMap', 'setPositionMarker', position);
         var latlng = [position.latitude, position.longitude];
 
         if (positionMarker === null) {
+            console.log('null', positionMarker);
             positionMarker = L.marker(latlng, {
                 clickable: false,
                 draggable: false,
                 title: "Moi",
                 alt: "Vous êtes ici !"
-            })
+            });
         } else {
             positionMarker.setLatLng(latlng);
         }
@@ -114,19 +121,26 @@ var RoadMap = (function() {
 
 
     // Add a marker for any search
-    var addMarkerSearch = (function(position) {
-        console.log('RoadMap', 'addMarkers');
-        var stations = Stations.getFullList();
-        var myIcon = '';
+    var setRequestedPositionMarker = (function(position) {
+        console.log('RoadMap', 'setRequestedPositionMarker');
+        stationStorage = StationStorageAdapter();
+        var latlng = [position._initialCenter.lat, position._initialCenter.lng];
 
-        L.marker([position._initialCenter.lat, position._initialCenter.lng], {
-            clickable: false,
-            draggable: false,
-            title: "Station recherchée",
-            alt: "Je veux aller ici"
-        }).addTo(window.roadMap);
+        if(requestedPosition === null) {
+            requestedPosition = L.marker(latlng, {
+                clickable: false,
+                draggable: false,
+                title: "Station recherchée",
+                alt: "Je veux aller ici"
+            });
+        } else {
+            requestedPosition.setLatLng(latlng);
+        }
 
-        return true;
+        requestedPosition.addTo(window.roadMap);
+
+        window.roadMap.panTo(latlng);
+
     });
 
     // Add markers from position to a station
@@ -174,7 +188,7 @@ var RoadMap = (function() {
         initCircle: initCircle,
         addMarkers: addMarkers,
         addMarker: addMarker,
-        addMarkerSearch: addMarkerSearch,
-        setPositionMarker: setPositionMarker
+        setPositionMarker: setPositionMarker,
+        setRequestedPositionMarker: setRequestedPositionMarker
     };
 })();
