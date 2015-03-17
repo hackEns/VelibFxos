@@ -471,6 +471,15 @@ input[type="search"]::-webkit-search-decoration {
 }
 
 /*
+ * Remove linear gradient background inside text input in FxOS 2.0
+ */
+
+ input[type="search"],
+ input[type="text"] {
+    background-color: #fff;
+}
+
+/*
  * Removes inner padding and border in Firefox 3+.
  */
 

@@ -12,7 +12,7 @@ var Views = (function() {
 
 
     var swiper = null;
-    var templates = {}
+    var templates = {};
     var mainSection = '';
 
     var stationStorage = null;
@@ -168,7 +168,7 @@ var Views = (function() {
         currentView = "starred";
         console.log('Views', currentView, "display page");
         body.update();
-        
+
         var starredList = document.getElementById('starred-list');
         $(starredList).empty();
 
@@ -204,7 +204,7 @@ var Views = (function() {
                 stationStorage.getStations(),
                 coords
             );
-            
+
             var station = stationStorage.getStationById(stationId)[0];
             var stationExist = $.grep(stations, function(v) {
                 return v.number == stationId;
@@ -220,7 +220,7 @@ var Views = (function() {
 
                 console.log('Views', viewStruct.view, "display page");
                 var stationFormatted = Stations.getFormattedStation(station, coords);
-                
+
                 var availableBikes = templates['station'].content.querySelector('.bikes');
                 var availableStands = templates['station'].content.querySelector('.stands');
                 var distance = templates['station'].content.querySelector('.distance');
@@ -240,7 +240,7 @@ var Views = (function() {
 
     var search = function() {
         currentView = "search";
-        
+
         console.log('Views', currentView, "display page");
         body.update();
 

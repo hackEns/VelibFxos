@@ -21,7 +21,7 @@ var StationStorage = function() {
     api.load = function(callback) {
         callback();
     };
-    
+
     /**
      * @returns bool whether the storage has correctly been loaded
      */
@@ -131,7 +131,7 @@ var LocalStationStorage = function() {
             // Local storage not available, fall back to other methods (Autority API)
             return;
         }
-        if (Date.now() - parseInt(localStorage.getItem('lastStationsUpdate')) > Config.localStationStorageTimeout) {
+        if (Date.now() - parseInt(localStorage.getItem('lastStationsUpdate'),10) > Config.localStationStorageTimeout) {
             // Return now because local storage is considered as obsolated
             callback();
             return;
@@ -210,7 +210,7 @@ var StationStorageAdapter = function() {
     var currentSubstorage = null;
 
 
-    
+
     /**
      * Reccursively loads storages until one of them is ok
      */
@@ -271,5 +271,3 @@ var StationStorageAdapter = function() {
 
     return api;
 };
-
-
