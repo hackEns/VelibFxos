@@ -123,7 +123,6 @@ var RoadMap = (function() {
     // Add a marker for any search
     var setRequestedPositionMarker = (function(position) {
         console.log('RoadMap', 'setRequestedPositionMarker');
-        stationStorage = StationStorageAdapter();
         var latlng = [position._initialCenter.lat, position._initialCenter.lng];
 
         if(requestedPosition === null) {
