@@ -238,22 +238,31 @@ var Views = (function() {
         });
     };
 
+    /**
+     * This is the "Search" view.
+     * It displays a map that allows users to looking for a station in the Parisian neighborhoods.
+     */
     var search = function() {
         currentView = "search";
+        stationStorage = StationStorageAdapter();
 
         console.log('Views', currentView, "display page");
         body.update();
 
-        RoadMap.init(stationStorage);
-        RoadMap.addMarkers();
+        stationStorage.load(function() {
+            // when stationStorage object is ready
+            stationStorage = stationStorage.getStations();
 
-        Geolocation.watchPosition(function() {
-            var pos = Geolocation.getPosition();
-            RoadMap.setPositionMarker(pos);
+            RoadMap.init(stationStorage);
+            RoadMap.addMarkers(stationStorage);
+
+            // SetPositionMarker after roadMap initiated
+            Geolocation.watchPosition(function() {
+                // when Geolocation is ready
+                var pos = Geolocation.getPosition();
+                RoadMap.setPositionMarker(pos);
+            });
         });
-
-        $('.station-info, .info').addClass('hidden');
-
     };
 
     return {

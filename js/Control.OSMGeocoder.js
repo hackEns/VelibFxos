@@ -19,7 +19,7 @@ L.Control.OSMGeocoder = L.Control.extend({
 			this._map.fitBounds(bounds);
 
 			// IDE - Map have the power to draw a marker
-			RoadMap.addMarkerSearch(this._map.fitBounds(bounds));
+			RoadMap.setRequestedPositionMarker(this._map.fitBounds(bounds));
 		}
 	},
 
