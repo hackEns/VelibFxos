@@ -253,7 +253,7 @@ var Views = (function() {
             // when stationStorage object is ready
             stationStorage = stationStorage.getStations();
 
-            RoadMap.init(stationStorage);
+            RoadMap.init();
             RoadMap.addMarkers(stationStorage);
 
             // SetPositionMarker after roadMap initiated
@@ -262,7 +262,7 @@ var Views = (function() {
                 var pos = Geolocation.getPosition();
                 RoadMap.setPositionMarker(pos);
             });
-        
+
         });
     };
 

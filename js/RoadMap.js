@@ -10,10 +10,9 @@ var RoadMap = (function() {
     var requestedPosition = null;
 
     // Init the roadMap
-    var init = function(_stationStorage) {
+    var init = function() {
         console.log('RoadMap', 'init', 'RoadMap under construction');
         var selectedLayer = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-        stations = _stationStorage;
 
         window.roadMap = L.map('map', {
             dragging: true,
