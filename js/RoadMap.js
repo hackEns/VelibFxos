@@ -62,9 +62,9 @@ var RoadMap = (function() {
     });
 
     // Add all markers to the Map
-    var addMarkers = (function(_stationStorage) {
+    var addMarkers = (function(_stations) {
         console.log('RoadMap', 'addMarkers()');
-        stations = _stationStorage;
+        stations = _stations;
 
         var myIcon = '';
         var markersList = [];

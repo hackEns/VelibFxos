@@ -15,30 +15,42 @@ var Log = (function() {
     api.info    = function(msg) {};
     api.debug  = function(msg) {};
 
+    function argumentsToArray(args) {
+        return Array.prototype.slice.call(args);
+    }
+
     if (VERBOSE_LEVEL > 0) {
-        api.error = function(msg) {
-            console.log("  ERROR: ", msg);
+        api.error = function() {
+            var args = argumentsToArray(arguments);
+            args.unshift("  ERROR: ");
+            console.log.apply(console, args);
         };
         console.log("Log: error messages enabled");
     }
 
     if (VERBOSE_LEVEL > 1) {
-        api.warning = function(msg) {
-            console.log("WARNING: ", msg);
+        api.warning = function() {
+            var args = argumentsToArray(arguments);
+            args.unshift("WARNING: ");
+            console.log.apply(console, args);
         }
         console.log("Log: warning messages enabled");
     }
 
     if (VERBOSE_LEVEL > 2) {
-        api.info = function(msg) {
-            console.log("   INFO: ", msg);
+        api.info = function() {
+            var args = argumentsToArray(arguments);
+            args.unshift("   INFO: ");
+            console.log.apply(console, args);
         }
         console.log("Log: info messages enabled");
     }
 
     if (VERBOSE_LEVEL > 3) {
-        api.debug = function(msg) {
-            console.log("  DEBUG: ", msg);
+        api.debug = function() {
+            var args = argumentsToArray(arguments);
+            args.unshift("  DEBUG: ");
+            console.log.apply(console, args);
         }
         console.log("Log: debug messages enabled");
     }

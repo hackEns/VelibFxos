@@ -21,8 +21,20 @@ var StationStorage = function() {
      * @param onsuccess callback Called without argument on success
      * @param onerror Callback called with an error message if loading failed
      */
-    api.load = function(onsuccess, onerror) {
-        onsuccess();
+    api.load = function() {
+        return new Promise(function(resolve, reject) {
+            resolve();
+        })
+    };
+
+    api.ensureLoaded = function(){
+        return new Promise(function(resolve, reject) {
+            if (api.isLoaded) {
+                resolve();
+            } else {
+                return api.load();
+            }
+        });
     };
 
     /**
@@ -41,66 +53,48 @@ var StationStorage = function() {
     };
 
     /**
-     * @param onsuccess callback provided with station list if the query succeeded
-     * @param onerror callback provided with on error message if the query failed
+     * @return promise
      */
-    api.getStations = function(onsuccess, onerror) {
-        onsuccess = onsuccess || function() {};
-        onerror = onerror || function() {};
-
-        if (!api.isLoaded()) {
-            return api.load(
-            function() { // on success
-                api.getStations(onsuccess, onerror);
-            }, onerror);
-        }
-
-        return onsuccess(api.stations);
+    api.getStations = function() {
+        return new Promise(function(resolve, reject) {
+            return api.ensureLoaded()
+            .then(function() {
+                resolve(api.stations);
+            });
+        });
     };
 
     /**
-     * @param onsuccess callback provided with starred station list if the query succeeded
-     * @param onerror callback provided with on error message if the query failed
+     * @return promise
      */
-    api.getStarredStations = function(onsuccess, onerror) {
-        onsuccess = onsuccess || function() {};
-        onerror = onerror || function() {};
-
-        if (!api.isLoaded()) {
-            return api.load(
-            function() { // on success
-                api.getStarredStations(onsuccess, onerror);
-            }, onerror);
-        }
-
-        return onsuccess(api.starredStations);
+    api.getStarredStations = function() {
+        return new Promise(function(resolve, reject) {
+            return api.ensureLoaded()
+            .then(function() {
+                resolve(api.starredStations);
+            });
+        });
     };
 
     /**
      * Get station by its Id
      * @param id Station id
-     * @param onsuccess callback provided with a full station object if the query succeeded
-     * @param onerror callback provided with on error message if the query failed
+     * @return promise
      */
-    api.getStationById = function(id, onsuccess, onerror) {
-        onsuccess = onsuccess || function() {};
-        onerror = onerror || function() {};
-
-        if (!api.isLoaded()) {
-            return api.load(
-            function() { // on success
-                api.getStationById(onsuccess, onerror);
-            }, onerror);
-        }
-
-        var station = $.grep(api.getStations(), function(station) {
-            return station.number == id;
+    api.getStationById = function(id) {
+        return new Promise(function(resolve, reject) {
+            return api.ensureLoaded()
+            .then(function() {
+                var stations = $.grep(api.getStations(), function(station) {
+                    return station.number == id;
+                });
+                if (station.length > 0) {
+                    resolve(stations[0]);
+                } else {
+                    reject("Station not found wth id " + id);
+                }
+            });
         });
-        if (station.length != 0) {
-            onsuccess(station);
-        } else {
-            onerror("Station not found wth id " + id);
-        }
     };
 
 
@@ -145,15 +139,15 @@ var AutorityStationStorage = function() {
 
     /**
      * Initialize storage by loading stations from OpenData API
+     * @retrn promise
      */
-    api.load = function(onsuccess, onerror) {
-        onsuccess = onsuccess || function() {};
-        onerror = onerror || function() {};
-
-        $.getJSON(Config.stationsUrl, function(data, status, jqXHR) {
-            // TODO: look at status
-            api.stations = data.map(stationContract);
-            onsuccess();
+    api.load = function() {
+        return new Promise(function(resolve, reject) {
+            $.getJSON(Config.stationsUrl, function(data, status, jqXHR) {
+                // TODO: look at status
+                api.stations = data.map(stationContract);
+                onsuccess();
+            });
         });
     };
 
@@ -171,24 +165,21 @@ var LocalStationStorage = function() {
     /**
      * Load station list from local storage
      */
-    api.load = function(onsuccess, onerror) {
-        onsuccess = onsuccess || function() {};
-        onerror = onerror || function() {};
-
-        if (!localStorage) {
-            // Local storage not available, fall back to other methods (Autority API)
-            return;
-        }
-        if (Date.now() - parseInt(localStorage.getItem('lastStationsUpdate'),10) > Config.localStationStorageTimeout) {
-            onerror("Local storage data is considered as obsolated (Config.localStationStorageTimeout = " + Config.localStationStorageTimeout + ")");
-            return;
-        }
-        api.stations = JSON.parse(localStorage.getItem('stations'));
-        api.starredStations = JSON.parse(localStorage.getItem('starredStations'));
-        if (api.starredStations == null) {
-            api.starredStations = [];
-        }
-        onsuccess();
+    api.load = function() {
+        return new Promise(function(resolve, reject) {
+            if (!localStorage) {
+                return reject("Local storage not available");
+            }
+            if (Date.now() - parseInt(localStorage.getItem('lastStationsUpdate'),10) > Config.localStationStorageTimeout) {
+                return reject("Local storage data is considered as obsolated (Config.localStationStorageTimeout = " + Config.localStationStorageTimeout + ")");
+            }
+            api.stations = JSON.parse(localStorage.getItem('stations'));
+            api.starredStations = JSON.parse(localStorage.getItem('starredStations'));
+            if (api.starredStations == null) {
+                api.starredStations = [];
+            }
+            resolve();
+        });
     };
 
     /**
@@ -280,28 +271,26 @@ var StationStorageAdapter = function() {
     /**
      * Reccursively loads storages until one of them is ok
      */
-    api.load = function(onsuccess, onerror) {
-        onsuccess = onsuccess || function() {};
-        onerror = onerror || function() {};
-
-        var recLoadSubstorage = function(i) {
-            if (!substorages[i]) {
-                onerror("No storage available");
-                return;
-            }
-            substorages[i].load(
-                function() {
+    api.load = function() {
+        return new Promise(function(resolve, reject) {
+            var recLoadSubstorage = function(i) {
+                if (!substorages[i]) {
+                    return reject("No storage available");
+                }
+                substorages[i].load()
+                .then(function() {
                     // If successfully loaded, return
                     currentSubstorage = substorages[i];
-                    onsuccess();
-                }, function(err) {
+                    resolve();
+                })
+                .catch(function(err) {
                     Log.warning("Could not load storage #" + i + ": " + err);
                     // Else, try the next substorage
                     recLoadSubstorage(i + 1);
-                }
-            );
-        };
-        recLoadSubstorage(0);
+                });
+            };
+            recLoadSubstorage(0);
+        });
     };
 
 
@@ -331,12 +320,12 @@ var StationStorageAdapter = function() {
         recSaveSubstorage(0);
     };
 
-    api.getStations = function(onsuccess, onerror) {
-        currentSubstorage.getStations(onsuccess, onerror);
+    api.getStations = function() {
+        return currentSubstorage.getStations();
     };
 
-    api.getStarredStations = function(onsuccess, onerror) {
-        currentSubstorage.getStarredStations(onsuccess, onerror);
+    api.getStarredStations = function() {
+        return currentSubstorage.getStarredStations();
     };
 
     return api;
