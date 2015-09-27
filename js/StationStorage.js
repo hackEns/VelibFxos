@@ -6,7 +6,9 @@
 
 
 /**
- * StationStorage is a basic station storage box
+ * StationStorage is a basic station storage box.
+ * Several boxes inherit from this one and StationStorageAdapter
+ * is then used to access all of them depending on their availability.
  */
 var StationStorage = function() {
     var api = {};
@@ -16,10 +18,11 @@ var StationStorage = function() {
 
     /**
      * Initialy loads stations (to be overwritten)
-     * @param callback Called without argument
+     * @param onsuccess callback Called without argument on success
+     * @param onerror Callback called with an error message if loading failed
      */
-    api.load = function(callback) {
-        callback();
+    api.load = function(onsuccess, onerror) {
+        onsuccess();
     };
 
     /**
@@ -38,28 +41,57 @@ var StationStorage = function() {
     };
 
     /**
-     * @return station list
+     * @param onsuccess callback provided with station list if the query succeeded
+     * @param onerror callback provided with on error message if the query failed
      */
-    api.getStations = function() {
-        return api.stations;
+    api.getStations = function(onsuccess, onerror) {
+        if (!api.isLoaded()) {
+            return api.load(
+            function() { // on success
+                api.getStations(onsuccess, onerror);
+            }, onerror);
+        }
+
+        return onsuccess(api.stations);
     };
 
     /**
-     * @return starred station list
+     * @param onsuccess callback provided with starred station list if the query succeeded
+     * @param onerror callback provided with on error message if the query failed
      */
-    api.getStarredStations = function() {
-        return api.starredStations;
+    api.getStarredStations = function(onsuccess, onerror) {
+        if (!api.isLoaded()) {
+            return api.load(
+            function() { // on success
+                api.getStarredStations(onsuccess, onerror);
+            }, onerror);
+        }
+
+        return onsuccess(api.starredStations);
     };
 
     /**
      * Get station by its Id
      * @param id Station id
-     * @return full station object
+     * @param onsuccess callback provided with a full station object if the query succeeded
+     * @param onerror callback provided with on error message if the query failed
      */
-    api.getStationById = function(id) {
-        return $.grep(api.getStations(), function(station) {
+    api.getStationById = function(id, onsuccess, onerror) {
+        if (!api.isLoaded()) {
+            return api.load(
+            function() { // on success
+                api.getStationById(onsuccess, onerror);
+            }, onerror);
+        }
+
+        var station = $.grep(api.getStations(), function(station) {
             return station.number == id;
         });
+        if (station.length != 0) {
+            onsuccess(station);
+        } else {
+            onerror("Station not found wth id " + id);
+        }
     };
 
 
@@ -105,10 +137,11 @@ var AutorityStationStorage = function() {
     /**
      * Initialize storage by loading stations from OpenData API
      */
-    api.load = function(callback) {
+    api.load = function(onsuccess, onerror) {
         $.getJSON(Config.stationsUrl, function(data, status, jqXHR) {
+            // TODO: look at status
             api.stations = data.map(stationContract);
-            callback();
+            onsuccess();
         });
     };
 
@@ -126,14 +159,13 @@ var LocalStationStorage = function() {
     /**
      * Load station list from local storage
      */
-    api.load = function(callback) {
+    api.load = function(onsuccess, onerror) {
         if (!localStorage) {
             // Local storage not available, fall back to other methods (Autority API)
             return;
         }
         if (Date.now() - parseInt(localStorage.getItem('lastStationsUpdate'),10) > Config.localStationStorageTimeout) {
-            // Return now because local storage is considered as obsolated
-            callback();
+            onerror("Local storage data is considered as obsolated (Config.localStationStorageTimeout = " + Config.localStationStorageTimeout + ")");
             return;
         }
         api.stations = JSON.parse(localStorage.getItem('stations'));
@@ -141,7 +173,7 @@ var LocalStationStorage = function() {
         if (api.starredStations == null) {
             api.starredStations = [];
         }
-        callback();
+        onsuccess();
     };
 
     /**
@@ -185,10 +217,29 @@ var MockStationStorage = function() {
                 longitude: 2.416170724425901
             },
             status: "OPEN"
+        },
+        {
+            address: "RUE ERASME",
+            availableStands: 23,
+            availableBikes: 2,
+            bikeStands: 25,
+            banking: true,
+            bonus: true,
+            contractName: "Paris",
+            lastUpdate: 1425980217000,
+            name: "RUE ERASME",
+            number: 31705,
+            position: {
+                latitude: 48.8643278209514,
+                longitude: 2.416170724425901
+            },
+            status: "OPEN"
         }
     ];
 
-    api.stations = null; // Disables mock storage
+    api.starredStations = api.stations;
+
+    //api.stations = null; // Disables mock storage
 
     return api;
 };
@@ -214,22 +265,23 @@ var StationStorageAdapter = function() {
     /**
      * Reccursively loads storages until one of them is ok
      */
-    api.load = function(callback) {
+    api.load = function(onsuccess, onerror) {
         var recLoadSubstorage = function(i) {
             if (!substorages[i]) {
-                callback();
+                onerror("No storage available");
                 return;
             }
-            substorages[i].load(function() {
-                if (substorages[i].isLoaded()) {
+            substorages[i].load(
+                function() {
                     // If successfully loaded, return
                     currentSubstorage = substorages[i];
-                    callback();
-                } else {
+                    onsuccess();
+                }, function(err) {
+                    Log.warning("Could not load storage #" + i + ": " + err);
                     // Else, try the next substorage
                     recLoadSubstorage(i + 1);
                 }
-            });
+            );
         };
         recLoadSubstorage(0);
     };
@@ -261,12 +313,12 @@ var StationStorageAdapter = function() {
         recSaveSubstorage(0);
     };
 
-    api.getStations = function() {
-        return currentSubstorage.getStations();
+    api.getStations = function(onsuccess, onerror) {
+        currentSubstorage.getStations(onsuccess, onerror);
     };
 
-    api.getStarredStations = function() {
-        return currentSubstorage.getStarredStations();
+    api.getStarredStations = function(onsuccess, onerror) {
+        currentSubstorage.getStarredStations(onsuccess, onerror);
     };
 
     return api;

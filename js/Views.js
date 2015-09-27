@@ -20,7 +20,15 @@ var Views = (function() {
 
     var init = function() {
         stationStorage = StationStorageAdapter();
-        stationStorage.load(noop); /* tmp */
+        Log.detail("Loading…");
+        stationStorage.load(
+            function() { // on success
+                Log.info("StationStorage loaded successfully");
+            },
+            function(err) { // on error
+                Log.error("Unable to load station storage: " + err);
+            }
+        );
 
         templates['index'] = document.getElementById('index');
         templates['bikes'] = document.getElementById('bikes');
@@ -172,37 +180,37 @@ var Views = (function() {
         var starredList = document.getElementById('starred-list');
         $(starredList).empty();
 
-        var starredStations = stationStorage.getStarredStations();
-        console.log('IDE', starredStations);
-
         var currentPosition = null;
 
-        starredStations.forEach(function(station) {
-            var fstation = Stations.format(station, currentPosition);
+        stationStorage.getStarredStations(function(starredStations) {
+            console.log('IDE', starredStations);
+            starredStations.forEach(function(station) {
+                var fstation = Stations.format(station, currentPosition);
 
-            // Construction du DOM
-            var row = templates['starredItem'].content.cloneNode(true);
-            row.id = station.number;
-            row.querySelector('.link').href += fstation.number
-            row.querySelector('.name').textContent = fstation.address;
-            row.querySelector('.bikes').textContent = fstation.availableBikes;
-            row.querySelector('.dist').textContent = 'Chargement…';
-            row.querySelector('.stands').textContent = fstation.availableStands;
-            console.log('-------');
-            console.log(row);
-            starredList.appendChild(row);
-            console.log('-------');
-            console.log(row);
-            console.log('-------');
-            starredList.appendChild(row);
+                // Construction du DOM
+                var row = templates['starredItem'].content.cloneNode(true);
+                row.id = station.number;
+                row.querySelector('.link').href += fstation.number
+                row.querySelector('.name').textContent = fstation.address;
+                row.querySelector('.bikes').textContent = fstation.availableBikes;
+                row.querySelector('.dist').textContent = 'Chargement…';
+                row.querySelector('.stands').textContent = fstation.availableStands;
+                console.log('-------');
+                console.log(row);
+                starredList.appendChild(row);
+                console.log('-------');
+                console.log(row);
+                console.log('-------');
+                starredList.appendChild(row);
 
-            Geolocation.waitPosition(function() {
-                currentPosition = Geolocation.getPosition();
-                fstation = Stations.format(station, currentPosition);
-                console.log(domRow.firstElementChild);
-                domRow.querySelector('.dist').textContent = fstation.distance;
+                Geolocation.waitPosition(function() {
+                    currentPosition = Geolocation.getPosition();
+                    fstation = Stations.format(station, currentPosition);
+                    console.log(domRow.firstElementChild);
+                    domRow.querySelector('.dist').textContent = fstation.distance;
+                });
+
             });
-
         });
     };
 
