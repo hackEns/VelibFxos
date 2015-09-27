@@ -321,11 +321,24 @@ var StationStorageAdapter = function() {
     };
 
     api.getStations = function() {
-        return currentSubstorage.getStations();
+        return api.ensureLoaded()
+        .then(function() {
+            return currentSubstorage.getStations();
+        });
     };
 
     api.getStarredStations = function() {
-        return currentSubstorage.getStarredStations();
+        return api.ensureLoaded()
+        .then(function() {
+            return currentSubstorage.getStarredStations();
+        });
+    };
+
+    api.getStationById = function(id) {
+        return api.ensureLoaded()
+        .then(function() {
+            return currentSubstorage.getStationById(id);
+        });
     };
 
     return api;
