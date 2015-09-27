@@ -118,7 +118,7 @@ var Views = (function() {
                     10,
                     function(item) { return item.availableBikes > 0; }
                 );
-            
+
                 // Stations slides creation
                 var newSlide = '';
                 for (var i = 0; i < stations.length; i++) {

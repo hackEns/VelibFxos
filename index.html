@@ -52,7 +52,7 @@
 
     <!-- bikes template -->
     <template id="bikes">
-        <section role="region" class="skin-bikes">
+        <section role="region" class="skin-bikes swiper-container">
             <header id="app-bar" class="fixed">
                 <a href="#/">
                     <span class="icon icon-back">back</span>
@@ -65,8 +65,8 @@
                 <h1>Vélos disponibles</h1>
             </header>
 
-            <article class="content scrollable header footer">
-                <section class="station-map">
+            <article class="content scrollable header footer swiper-wrapper">
+                <section class="station-map swiper-slide">
                     <div class="station-map--availability counter">
                         <p class="counter--value">5</p>
                         <p class="counter--legend">vélos<br/>disponibles</p>
@@ -82,6 +82,8 @@
                 </section>
             </article>
 
+            <div class="swiper-pagination pagination"></div>
+
             <footer>
                 <a href="#/station/foo">
                     <aside class="pack-end">
@@ -95,7 +97,7 @@
 
     <!-- stands template -->
     <template id="stands">
-        <section role="region" class="skin-stands">
+        <section role="region" class="skin-stands swiper-container">
             <header id="app-bar" class="fixed">
                 <a href="#/">
                     <span class="icon icon-back">back</span>
@@ -108,8 +110,8 @@
                 <h1>Places libres</h1>
             </header>
 
-            <article class="content scrollable header footer">
-                <section class="station-map">
+            <article class="content scrollable header footer swiper-wrapper">
+                <section class="station-map swiper-slide">
                     <div class="station-map--availability counter">
                         <p class="counter--value">5</p>
                         <p class="counter--legend">places<br/>libres</p>
@@ -124,6 +126,8 @@
                     <div class="station-map--map-circle" id="map"></div>
                 </section>
             </article>
+
+            <div class="swiper-pagination pagination"></div>
 
             <footer>
                 <a href="#/station/foo">
@@ -260,12 +264,6 @@
             </article>
         </section>
     </template>
-
-    <!-- swiper element -->
-    <div class="swiper-container">
-        <div class="swiper-wrapper"></div>
-        <div class="pagination"></div>
-    </div>
 
     <script src="js/jquery.min.js"></script>
     <script src="js/idangerous.swiper.min.js"></script>
