@@ -172,24 +172,37 @@ var Views = (function() {
         var starredList = document.getElementById('starred-list');
         $(starredList).empty();
 
-        Geolocation.waitPosition(function() {
-            var currentPosition = Geolocation.getPosition();
-            var starredStations = stationStorage.getStarredStations();
-            console.log('IDE', starredStations);
+        var starredStations = stationStorage.getStarredStations();
+        console.log('IDE', starredStations);
 
-            $.each(starredStations, function(id, station) {
-                station = Stations.format(station, currentPosition);
+        var currentPosition = null;
 
-                // Construction du DOM
-                var row = templates['starredItem'].content.cloneNode(true);
-                row.id = station.number;
-                row.querySelector('a').href += station.number
-                row.querySelector('.name').textContent = station.address;
-                row.querySelector('.dist').textContent = station.distance;
-                row.querySelector('.bikes').textContent = station.availableBikes;
-                row.querySelector('.stands').textContent = station.availableStands;
-                starredList.appendChild(document.importNode(row, true));
+        starredStations.forEach(function(station) {
+            var fstation = Stations.format(station, currentPosition);
+
+            // Construction du DOM
+            var row = templates['starredItem'].content.cloneNode(true);
+            row.id = station.number;
+            row.querySelector('.link').href += fstation.number
+            row.querySelector('.name').textContent = fstation.address;
+            row.querySelector('.bikes').textContent = fstation.availableBikes;
+            row.querySelector('.dist').textContent = 'Chargement…';
+            row.querySelector('.stands').textContent = fstation.availableStands;
+            console.log('-------');
+            console.log(row);
+            starredList.appendChild(row);
+            console.log('-------');
+            console.log(row);
+            console.log('-------');
+            starredList.appendChild(row);
+
+            Geolocation.waitPosition(function() {
+                currentPosition = Geolocation.getPosition();
+                fstation = Stations.format(station, currentPosition);
+                console.log(domRow.firstElementChild);
+                domRow.querySelector('.dist').textContent = fstation.distance;
             });
+
         });
     };
 

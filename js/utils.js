@@ -39,6 +39,9 @@ var deg2rad = function(angle) {
  * @return distance between them on earth surface (following earth curve)
  */
 var distance = function(coords1, coords2) {
+    if (coords1 === null || coords2 === null) {
+        return NaN;
+    }
     var latitude1 = deg2rad(coords1.latitude);
     var longitude1 = deg2rad(coords1.longitude);
     var latitude2 = deg2rad(coords2.latitude);
