@@ -85,10 +85,13 @@ var StationStorage = function() {
         return new Promise(function(resolve, reject) {
             return api.ensureLoaded()
             .then(function() {
-                var stations = $.grep(api.getStations(), function(station) {
+                return api.getStations()
+            })
+            .then(function(allStations) {
+                var stations = $.grep(allStations, function(station) {
                     return station.number == id;
                 });
-                if (station.length > 0) {
+                if (stations.length > 0) {
                     resolve(stations[0]);
                 } else {
                     reject("Station not found wth id " + id);
