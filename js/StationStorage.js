@@ -45,6 +45,9 @@ var StationStorage = function() {
      * @param onerror callback provided with on error message if the query failed
      */
     api.getStations = function(onsuccess, onerror) {
+        onsuccess = onsuccess || function() {};
+        onerror = onerror || function() {};
+
         if (!api.isLoaded()) {
             return api.load(
             function() { // on success
@@ -60,6 +63,9 @@ var StationStorage = function() {
      * @param onerror callback provided with on error message if the query failed
      */
     api.getStarredStations = function(onsuccess, onerror) {
+        onsuccess = onsuccess || function() {};
+        onerror = onerror || function() {};
+
         if (!api.isLoaded()) {
             return api.load(
             function() { // on success
@@ -77,6 +83,9 @@ var StationStorage = function() {
      * @param onerror callback provided with on error message if the query failed
      */
     api.getStationById = function(id, onsuccess, onerror) {
+        onsuccess = onsuccess || function() {};
+        onerror = onerror || function() {};
+
         if (!api.isLoaded()) {
             return api.load(
             function() { // on success
@@ -138,6 +147,9 @@ var AutorityStationStorage = function() {
      * Initialize storage by loading stations from OpenData API
      */
     api.load = function(onsuccess, onerror) {
+        onsuccess = onsuccess || function() {};
+        onerror = onerror || function() {};
+
         $.getJSON(Config.stationsUrl, function(data, status, jqXHR) {
             // TODO: look at status
             api.stations = data.map(stationContract);
@@ -160,6 +172,9 @@ var LocalStationStorage = function() {
      * Load station list from local storage
      */
     api.load = function(onsuccess, onerror) {
+        onsuccess = onsuccess || function() {};
+        onerror = onerror || function() {};
+
         if (!localStorage) {
             // Local storage not available, fall back to other methods (Autority API)
             return;
@@ -266,6 +281,9 @@ var StationStorageAdapter = function() {
      * Reccursively loads storages until one of them is ok
      */
     api.load = function(onsuccess, onerror) {
+        onsuccess = onsuccess || function() {};
+        onerror = onerror || function() {};
+
         var recLoadSubstorage = function(i) {
             if (!substorages[i]) {
                 onerror("No storage available");
