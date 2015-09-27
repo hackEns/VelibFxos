@@ -146,19 +146,19 @@ var RoadMap = (function() {
     var addMarker = (function(pos, activeStation, view) {
 
         var startIcon = L.icon({
-            iconUrl: 'js/images/map-my-position.svg',
+            iconUrl: 'img/leaflet/map-my-position.svg',
             iconSize: [40, 45]
         });
 
         // icon is customized according to the view
         if(view == 'bikes') {
             var endIcon = L.icon({
-                iconUrl: 'js/images/map-available-bike.svg',
+                iconUrl: 'img/leaflet/map-available-bike.svg',
                 iconSize: [40, 45]
             });
         } else {
             var endIcon = L.icon({
-                iconUrl: 'js/images/map-available-stand.svg',
+                iconUrl: 'img/leaflet/map-available-stand.svg',
                 iconSize: [40, 45]
             });
         }
