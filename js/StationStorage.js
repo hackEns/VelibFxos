@@ -228,7 +228,7 @@ var MockStationStorage = function() {
             contractName: "Paris",
             lastUpdate: 1425980217000,
             name: "RUE ERASME",
-            number: 31705,
+            number: 101,
             position: {
                 latitude: 48.8643278209514,
                 longitude: 2.416170724425901

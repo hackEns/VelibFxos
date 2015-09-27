@@ -20,7 +20,6 @@ var Views = (function() {
 
     var init = function() {
         stationStorage = StationStorageAdapter();
-        Log.detail("Loading…");
         stationStorage.load(
             function() { // on success
                 Log.info("StationStorage loaded successfully");
@@ -65,11 +64,12 @@ var Views = (function() {
     }
 
 
-    body = (function() {
+    body = {
         // update the body from the views
-        body.update = function(viewStruct) {
+        update: function() {
             body.clean();
-            console.log('Views', currentView, 'body.update');
+            Log.info('Refresh view: ' + currentView);
+
             mainSection.className = currentView;
 
             template = templates[currentView];
@@ -77,21 +77,18 @@ var Views = (function() {
             if ('content' in document.createElement('template')) {
                 mainSection.appendChild(document.importNode(template.content.cloneNode(true), true));
             } else {
-                console.log('Views', 'body', 'template is NOT supported');
+                Log.warning('template is NOT supported');
                 template = $(template).html();
                 mainSection.append(template);
             }
-        };
+        },
 
-        body.clean = function() {
+        clean: function() {
             // cleaning the content
-            console.log('Views', 'body', 'empty');
+            Log.debug("Cleaning view");
             $(mainSection).empty();
-        };
-
-        return body;
-
-    })();
+        }
+    };
 
 
     var index = function() {
@@ -107,8 +104,8 @@ var Views = (function() {
 
     var bikes = function() {
         currentView = "bikes";
-
         body.update();
+
         initSwiper();
 
         Geolocation.waitPosition(function() {
@@ -189,25 +186,20 @@ var Views = (function() {
 
                 // Construction du DOM
                 var row = templates['starredItem'].content.cloneNode(true);
-                row.id = station.number;
-                row.querySelector('.link').href += fstation.number
+                row.querySelector('.starred-station').id = "starred-station-" + station.number;
+                row.querySelector('.link').href += fstation.number;
                 row.querySelector('.name').textContent = fstation.address;
                 row.querySelector('.bikes').textContent = fstation.availableBikes;
                 row.querySelector('.dist').textContent = 'Chargement…';
                 row.querySelector('.stands').textContent = fstation.availableStands;
-                console.log('-------');
-                console.log(row);
-                starredList.appendChild(row);
-                console.log('-------');
-                console.log(row);
-                console.log('-------');
                 starredList.appendChild(row);
 
                 Geolocation.waitPosition(function() {
                     currentPosition = Geolocation.getPosition();
                     fstation = Stations.format(station, currentPosition);
-                    console.log(domRow.firstElementChild);
-                    domRow.querySelector('.dist').textContent = fstation.distance;
+                    Log.debug(starredList)
+                    Log.debug(station.number);
+                    starredList.querySelector("#starred-station-" + station.number + " .dist").textContent = fstation.distance;
                 });
 
             });
