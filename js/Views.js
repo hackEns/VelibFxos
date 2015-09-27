@@ -218,22 +218,18 @@ var Views = (function() {
     };
 
     var station = function() {
-        Geolocation.waitPosition(function() {
-            var coords = Geolocation.getPosition();
-            var stationId = window.location.hash.substr(10); // hash = #/station/{stationId}
-            Log.debug("stationId : " + stationId);
+        var stationId = window.location.hash.substr(10); // hash = #/station/{stationId}
+        Log.debug("stationId : " + stationId);
 
-            stationStorage.getStationById(stationId)
-            .catch(function(err) {
-                alert("La station n'existe pas !");
-                Log.error("Views, station, station doesn't exist " + stationId);
-                window.location.hash = "/index";
-            })
-            .then(function(station) {
-                currentView = 'station';
+        stationStorage.getStationById(stationId)
+        .then(function(station) {
+            currentView = 'station';
 
-                Log.debug('Views', 'station', 'display page');
-                var stationFormatted = Stations.getFormattedStation(station, coords);
+            Log.debug('Views', 'station', 'display page');
+            Geolocation.waitPosition(function() {
+                var coords = Geolocation.getPosition();
+                
+                var stationFormatted = Stations.format(station, coords);
 
                 var availableBikes = templates['station'].content.querySelector('.bikes');
                 var availableStands = templates['station'].content.querySelector('.stands');
@@ -248,7 +244,13 @@ var Views = (function() {
                 lastUpdate.textContent = stationFormatted.lastUpdate;
 
                 body.update();
+
             });
+        })
+        .catch(function(err) {
+            alert("La station n'existe pas !");
+            Log.error("Views, station, station doesn't exist " + stationId);
+            window.location.hash = "/index";
         });
     };
 
