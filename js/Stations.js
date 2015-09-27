@@ -77,13 +77,17 @@ var Stations = (function() {
             formatted.lastUpdate = text;
         }
         // distance
-        var dist = station.distance || distance(coords, station.position);
-        formatted.distance = (dist / 1000.0).toFixed(2) + " km";
+        if (station.distance || coords !== undefined) {
+            var dist = station.distance || distance(coords, station.position);
+            formatted.distance = (dist / 1000.0).toFixed(2) + " km";
+        } else {
+            formatted.distance = "Chargement...";
+        }
 
         // latitude - longitude
         formatted.position = station.position.latitude.toFixed(2) + ' - ' + station.position.longitude.toFixed(2);
 
-        console.log('Station.js', 'getFormattedStation Out', formatted);
+        Log.debug('Station.js', 'getFormattedStation Out', formatted);
 
         return formatted;
     };

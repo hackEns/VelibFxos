@@ -212,7 +212,6 @@ var Views = (function() {
                     Log.debug(station.number);
                     starredList.querySelector("#starred-station-" + station.number + " .dist").textContent = fstation.distance;
                 });
-
             });
         });
     };
@@ -226,25 +225,28 @@ var Views = (function() {
             currentView = 'station';
 
             Log.debug('Views', 'station', 'display page');
+
+            var stationFormatted = Stations.format(station);
+
+            var dom = templates['station'].content
+            var availableBikes = dom.querySelector('.bikes');
+            var availableStands = dom.querySelector('.stands');
+            var distance = dom.querySelector('.distance');
+            var position = dom.querySelector('.position');
+            var lastUpdate = dom.querySelector('.last_update');
+
+            availableBikes.textContent = stationFormatted.availableBikes;
+            availableStands.textContent = stationFormatted.availableStands;
+            distance.textContent = stationFormatted.distance;
+            position.textContent = stationFormatted.position;
+            lastUpdate.textContent = stationFormatted.lastUpdate;
+
+            body.update();
+
             Geolocation.waitPosition(function() {
-                var coords = Geolocation.getPosition();
-                
-                var stationFormatted = Stations.format(station, coords);
-
-                var availableBikes = templates['station'].content.querySelector('.bikes');
-                var availableStands = templates['station'].content.querySelector('.stands');
-                var distance = templates['station'].content.querySelector('.distance');
-                var position = templates['station'].content.querySelector('.position');
-                var lastUpdate = templates['station'].content.querySelector('.last_update');
-
-                availableBikes.textContent = stationFormatted.availableBikes;
-                availableStands.textContent = stationFormatted.availableStands;
-                distance.textContent = stationFormatted.distance;
-                position.textContent = stationFormatted.position;
-                lastUpdate.textContent = stationFormatted.lastUpdate;
-
-                body.update();
-
+                var currentPosition = Geolocation.getPosition();
+                var stationFormatted = Stations.format(station, currentPosition);
+                mainSection.querySelector(" .distance").textContent = stationFormatted.distance;
             });
         })
         .catch(function(err) {
