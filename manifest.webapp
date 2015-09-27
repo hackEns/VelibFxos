@@ -14,6 +14,8 @@
     "url": "http://phyks.me"
   },
   "icons": {
+    "16": "/img/icons/icon_16.png",
+    "48": "/img/icons/icon_48.png",
     "60": "/img/icons/icon_60.png",
     "128": "/img/icons/icon_128.png",
     "256": "/img/icons/icon_256.png"

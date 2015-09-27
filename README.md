@@ -1,10 +1,11 @@
 VelibFxos
 =========
 
+![Application Icon](https://raw.githubusercontent.com/eliemichel/fxos-AlphaRemote/master/img/icons/icon_256.png)
+
 VelibFxos is a Firefox OS app (and webapp) for the Velib bike sharing system in Paris. It can also be used as a webapp on any other mobile device, and will be packaged soon for other devices.
 
 # Getting started
----
 
 ##Resources for users
 
@@ -26,13 +27,11 @@ General information:
 + [Coding guidelines](https://github.com/Phyks/VelibFxos/wiki/Coding-Guidelines).
 
 # Additional resources
----
 
 Come to chat on Freenode <code>#VelibFxOS</code> channel, [Webchat.freenode.net](http://webchat.freenode.net/).
 
 
 # Contributors
----
 
 Special thanks for the following [contributors](https://github.com/Phyks/VelibFxos/graphs/contributors) which helped us greatly in developping this app:
 
