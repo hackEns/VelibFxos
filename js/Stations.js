@@ -43,9 +43,10 @@ var Stations = (function() {
 
         Log.debug(station);
 
-        // Station address and number
+        // Unchqnged fields
         formatted.address = station.address;
         formatted.number = station.number;
+        formatted.bonus = station.bonus;
 
         // Availables bikes & stands
         formatted.availableBikes = station.availableBikes;

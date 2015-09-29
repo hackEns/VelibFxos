@@ -198,6 +198,7 @@ var Views = (function() {
                     tile.querySelector('.name').textContent = fstation.address;
                     tile.querySelector('.stands').textContent = fstation.availableStands;
                     tile.querySelector('.dist').textContent = fstation.distance;
+                    tile.querySelector('.vplus').style.visibility = fstation.bonus ? 'visible' : 'hidden';
                     tile.querySelector('.legend').innerHTML = 'places<br/>libres';
 
                     // Activate first slide

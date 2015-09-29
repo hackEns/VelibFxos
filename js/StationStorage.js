@@ -216,7 +216,7 @@ var MockStationStorage = function() {
             availableBikes: 11,
             bikeStands: 50,
             banking: true,
-            bonus: true,
+            bonus: false,
             contractName: "Paris",
             lastUpdate: 1425980217000,
             name: "31705 - CHAMPEAUX (BAGNOLET)",
