@@ -296,14 +296,32 @@ main.index {
  * StationMap
  */
 
+.swiper-wrapper {
+    left: 0.5rem; /* that is an unexplained but working hack */
+}
+
+.content .station-map {
+    margin: -1.5rem;
+}
+
 .station-map {
-    padding: 1rem;
+    padding: 1.5rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.station-map--frame {
+    width: 100%;
+    padding: 0.5rem;
+    box-sizing: border-box;
 }
 
 .station-map--map-circle {
-    height: calc(100vw - 5rem);
+    height: calc(100vw - 4.5rem);
+    width: calc(100vw - 4.5rem);
     border-radius: 50%;
     background-color: #DDD;
+    box-sizing: border-box;
 }
 
 .station-map--name,
@@ -333,7 +351,7 @@ main.index {
 
 /* (context dependencies) */
 
-.bikes .station-map {
+.bikes .station-map--frame {
     border: 2px solid #DC1681;
 }
 
@@ -341,7 +359,7 @@ main.index {
     color: #DC1681;
 }
 
-.stands .station-map {
+.stands .station-map--frame {
     border: 2px solid #009BB7;
 }
 

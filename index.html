@@ -52,7 +52,7 @@
 
     <!-- bikes template -->
     <template id="bikes">
-        <section role="region" class="skin-bikes swiper-container">
+        <section role="region" class="skin-bikes">
             <header id="app-bar" class="fixed">
                 <a href="#/">
                     <span class="icon icon-back">back</span>
@@ -65,21 +65,10 @@
                 <h1>Vélos disponibles</h1>
             </header>
 
-            <article class="content scrollable header footer swiper-wrapper">
-                <section class="station-map swiper-slide">
-                    <div class="station-map--availability counter">
-                        <p class="counter--value">5</p>
-                        <p class="counter--legend">vélos<br/>disponibles</p>
-                    </div>
-                    <div class="station-map--info">
-                        <p class="station-map--name">Rue Érasme</p>
-                        <p class="station-map--distance">2.8 km</p>
-                    </div>
-                    <div>
-                        <!-- img starrified -->
-                    </div>
-                    <div class="station-map--map-circle" id="map"></div>
-                </section>
+            <article class="content scrollable header footer swiper-container">
+                <div id="stations-list" class="swiper-wrapper">
+                    <!-- Include station tiles here -->
+                </div>
             </article>
 
             <div class="swiper-pagination pagination"></div>
@@ -93,6 +82,27 @@
                 </a>
             </footer>
         </section>
+    </template>
+
+    <template id="station-tile">
+        <div class="swiper-slide">
+            <section class="station-map station">
+                <div class="station-map--frame">
+                    <div class="station-map--availability counter">
+                        <p class="counter--value bikes stands">5</p>
+                        <p class="counter--legend">vélos<br/>disponibles</p>
+                    </div>
+                    <div class="station-map--info">
+                        <p class="station-map--name name">Rue Érasme</p>
+                        <p class="station-map--distance dist">2.8 km</p>
+                    </div>
+                    <div>
+                        <!-- img starrified -->
+                    </div>
+                    <div class="station-map--map-circle circle"></div>
+                </div>
+            </section>
+        </div>
     </template>
 
     <!-- stands template -->

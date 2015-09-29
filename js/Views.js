@@ -28,13 +28,17 @@ var Views = (function() {
             Log.error("Unable to load station storage: " + err);
         });
 
+        // Main templates
         templates['index'] = document.getElementById('index');
         templates['bikes'] = document.getElementById('bikes');
         templates['stands'] = document.getElementById('stands');
         templates['starred'] = document.getElementById('starred');
         templates['station'] = document.getElementById('station');
         templates['search'] = document.getElementById('search');
+
+        // Sub-template (items to be repeated)
         templates['starredItem'] = document.getElementById('starred-item');
+        templates['stationTile'] = document.getElementById('station-tile');
 
         mainSection = document.querySelector('main');
     };
@@ -51,13 +55,14 @@ var Views = (function() {
           pagination: '.pagination',
           paginationClickable: true,
           createPagination: true,
-          onSlideChangeStart: function(e){
-              body.update(viewStruct);
-              RoadMap.initCircle(Geolocation.getPosition());
-              var stationDetail = $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2);
+          onSlideChangeStart: function(swiper){
+              //body.update();
+              //RoadMap.initCircle(Geolocation.getPosition());
+              var stationId = $(swiper.activeSlide()).find('.station').attr('id').substr("station-".length);
+              Log.debug(stationId);
 
-              var activeStation = Stations.getStationDetails(stationDetail[1]); // get details from the active slide
-              RoadMap.addMarker(Geolocation.getPosition(), activeStation, viewStruct.view);
+              //var activeStation = Stations.getStationDetails(stationId); // get details from the active slide
+              //RoadMap.addMarker(Geolocation.getPosition(), activeStation, currentView);
           }
       });
     }
@@ -105,37 +110,57 @@ var Views = (function() {
         currentView = "bikes";
         body.update();
 
-        initSwiper();
-
         Geolocation.waitPosition(function() {
-            var coords = Geolocation.getPosition();
+            var currentPosition = Geolocation.getPosition();
 
             stationStorage.getStations()
             .then(function(allStations) {
+                Log.debug("fill view");
+
                 var stations = Stations.filterClosestStations(
                     allStations,
-                    coords,
+                    currentPosition,
                     10,
                     function(item) { return item.availableBikes > 0; }
                 );
 
-                // Stations slides creation
-                var newSlide = '';
-                for (var i = 0; i < stations.length; i++) {
-                    console.log(stations[i].name);
-                    newSlide = swiper.createSlide('<div>Station ' + stations[i].name + '<br>Vélos disponibles ' + stations[i].availableBikes + '</div>');
-                    newSlide.append();
-                }
-                RoadMap.initCircle(Geolocation.getPosition());
+                stations = allStations; // Debug
 
-                $('.swiper-slide:first').addClass("swiper-slide-active");
+                var stationsList = document.getElementById('stations-list');
+                $(stationsList).empty();
 
-                var stationDetail = $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2); // ugly…
+                var first = true;
 
-                stationStorage.getStationById(stationDetail[1])
-                .then(function(activeStation) {
-                    RoadMap.addMarker(Geolocation.getPosition(), activeStation, currentView);
+                stations.forEach(function(station){
+                    var fstation = Stations.format(station, currentPosition);
+
+                    // Construction du DOM
+                    var tile = templates['stationTile'].content.cloneNode(true);
+                    tile.querySelector('.station').id = "station-" + station.number;
+                    //tile.querySelector('.link').href += fstation.number;
+                    tile.querySelector('.name').textContent = fstation.address;
+                    tile.querySelector('.bikes').textContent = fstation.availableBikes;
+                    tile.querySelector('.dist').textContent = fstation.distance;
+
+                    // Activate first slide
+                    if (first) {
+                        tile.querySelector('.swiper-slide').className += " swiper-slide-active";
+
+                        tile.querySelector('.circle').id = 'map';
+                    }
+
+                    stationsList.appendChild(tile);
+
+                    // This requires the tile to be added to the DOM
+                    //RoadMap.initCircle(station.position);
+
+                    if (first) {
+                        //RoadMap.addMarker(Geolocation.getPosition(), station, currentView);
+                        first = false;
+                    }
                 });
+
+                initSwiper();
             });
         });
     };

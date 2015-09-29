@@ -167,7 +167,7 @@ var RoadMap = (function() {
         var route = L.Routing.control({
             waypoints: [
                 L.latLng(pos.latitude, pos.longitude),
-                L.latLng(activeStation[0].position)
+                L.latLng(activeStation.position.latitude, activeStation.position.longitude)
             ],
             routeWhileDragging: true,
             fitSelectedRoutes: true,

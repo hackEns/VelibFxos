@@ -36,12 +36,12 @@ var Stations = (function() {
     /**
      * Returns formatted station informations object
      * @param station Station to format
-     * @param coords Current position (can be omitted if station has a `distance` field)
+     * @param coords Current position (can be omitted or replace by station's `distance` field)
      */
     var format = function(station, coords) {
         var formatted = {};
 
-        console.log('Station.js', 'getFormattedStation In', station);
+        Log.debug(station);
 
         // Station address and number
         formatted.address = station.address;
@@ -86,8 +86,6 @@ var Stations = (function() {
 
         // latitude - longitude
         formatted.position = station.position.latitude.toFixed(2) + ' - ' + station.position.longitude.toFixed(2);
-
-        Log.debug('Station.js', 'getFormattedStation Out', formatted);
 
         return formatted;
     };
