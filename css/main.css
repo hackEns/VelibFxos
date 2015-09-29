@@ -213,33 +213,58 @@ table.starred td.stands {
 table.starred tr:hover {
     cursor: pointer;
 }
-table.station tr td p {
-    margin: 0;
+
+/*
+ * Station details
+ */
+
+.station-details {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-item: center;
 }
-table.station img.vplus {
-    margin-top: 5px;
+.station-details .station-details--item {
+    min-width: 15rem;
 }
-table.station img.vplus:hover {
-    cursor: pointer;
+.station-details .station-details--pair {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-item: center;
 }
-table.station tr td p.title {
-    padding-top: 40px;
-}
-table.station td {
-    text-align: center;
-}
-table.station p.title {
+
+.detail .detail--title {
+    text-transform: uppercase;
+    padding-top: 5rem;
     color: grey;
 }
-table.station p.bikes,
-table.station p.stands {
+
+.detail img.vplus {
+    margin-top: 5px;
+}
+.detail img.vplus:hover {
+    cursor: pointer;
+}
+.detail {
+    text-align: center;
+}
+.detail p {
+    margin: 0;
+    font-size: 1.5em;
+}
+.detail p.bikes,
+.detail p.stands {
     font-weight: bold;
     font-size: 25px;
 }
-table.station p.bikes {
+.detail p.bikes {
     color: #dc1681;
 }
-table.station p.stands {
+.detail p.stands {
     color: #006FB3;
 }
 

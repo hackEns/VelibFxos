@@ -239,33 +239,32 @@
             </header>
 
             <article class="content scrollable header full-width">
-                <table class="station">
-                    <tbody>
-                        <tr>
-                            <td><p class="uppercase title">Vélos disponibles</p></td>
-                            <td><p class="uppercase title">Places Libres</p></td></tr>
-                        <tr>
-                            <td><p class="bikes">0</p></td>
-                            <td><p class="stands">0</p></td>
-                        </tr>
-                        <tr>
-                            <td><p class="uppercase title">Station V+</p></td>
-                            <td><p class="uppercase title">Distance</p></td>
-                        </tr>
-                        <tr>
-                            <td><img class="entry--logo vplus" alt="" src="img/v-plus.svg" /></td>
-                            <td><p class="distance">0 km</p></td>
-                        </tr>
-                        <tr>
-                            <td><p class="uppercase title">Position</p></td>
-                            <td><p class="uppercase title">Mise à jour</p></td>
-                        </tr>
-                        <tr>
-                            <td><p class="position">00.00</p></td>
-                            <td><p>Il y a <span class="last_update"></span></p></td>
-                        </tr>
-                    </tbody>
-                </table>
+                <section class="station-details">
+                    <div class="station-details--item detail">
+                        <p class="detail--title">Vélos disponibles</p>
+                        <p class="bikes">0</p>
+                    </div>
+                    <div class="station-details--item detail">
+                        <p class="detail--title">Places Libres</p>
+                        <p class="stands">0</p>
+                    </div>
+                    <div class="station-details--item detail">
+                        <p class="detail--title">Station V+</p>
+                        <img class="entry--logo vplus" alt="" src="img/v-plus.svg" />
+                    </div>
+                    <div class="station-details--item detail">
+                        <p class="detail--title">Distance</p>
+                        <p class="distance">0 km</p>
+                    </div>
+                    <div class="station-details--item detail">
+                        <p class="detail--title">Position</p>
+                        <p class="position">00.00</p>
+                    </div>
+                    <div class="station-details--item detail">
+                        <p class="detail--title">Mise à jour</p>
+                        <p>Il y a <span class="last_update"></span></p>
+                    </div>
+                </section>
             </article>
         </section>
     </template>
