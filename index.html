@@ -65,13 +65,17 @@
                 <h1>Vélos disponibles</h1>
             </header>
 
-            <article class="content scrollable header footer swiper-container">
-                <div id="stations-list" class="swiper-wrapper">
-                    <!-- Include station tiles here -->
+            <article class="content no-scrollable header footer">
+                <div class="swiper-container-container">
+                    <div class="swiper-container">
+                        <div id="stations-list" class="swiper-wrapper">
+                            <!-- Include station tiles here -->
+                        </div>
+                    </div>
+
+                    <div class="swiper-pagination pagination"></div>
                 </div>
             </article>
-
-            <div class="swiper-pagination pagination"></div>
 
             <footer>
                 <a href="#/station/foo">
@@ -90,7 +94,7 @@
                 <div class="station-map--frame">
                     <div class="station-map--availability counter">
                         <p class="counter--value bikes stands">5</p>
-                        <p class="counter--legend">vélos<br/>disponibles</p>
+                        <p class="counter--legend legend"></p>
                     </div>
                     <div class="station-map--info">
                         <p class="station-map--name name">Rue Érasme</p>
@@ -107,7 +111,7 @@
 
     <!-- stands template -->
     <template id="stands">
-        <section role="region" class="skin-stands swiper-container">
+        <section role="region" class="skin-stands">
             <header id="app-bar" class="fixed">
                 <a href="#/">
                     <span class="icon icon-back">back</span>
@@ -120,24 +124,17 @@
                 <h1>Places libres</h1>
             </header>
 
-            <article class="content scrollable header footer swiper-wrapper">
-                <section class="station-map swiper-slide">
-                    <div class="station-map--availability counter">
-                        <p class="counter--value">5</p>
-                        <p class="counter--legend">places<br/>libres</p>
+            <article class="content no-scrollable header footer">
+                <div class="swiper-container-container">
+                    <div class="swiper-container">
+                        <div id="stations-list" class="swiper-wrapper">
+                            <!-- Include station tiles here -->
+                        </div>
                     </div>
-                    <div class="station-map--info">
-                        <p class="station-map--name">Rue Érasme</p>
-                        <p class="station-map--distance">2.8 km</p>
-                    </div>
-                    <div>
-                        <!-- img starrified -->
-                    </div>
-                    <div class="station-map--map-circle" id="map"></div>
-                </section>
-            </article>
 
-            <div class="swiper-pagination pagination"></div>
+                    <div class="swiper-pagination pagination"></div>
+                </div>
+            </article>
 
             <footer>
                 <a href="#/station/foo">

@@ -124,8 +124,6 @@ var Views = (function() {
                     function(item) { return item.availableBikes > 0; }
                 );
 
-                stations = allStations; // Debug
-
                 var stationsList = document.getElementById('stations-list');
                 $(stationsList).empty();
 
@@ -141,6 +139,7 @@ var Views = (function() {
                     tile.querySelector('.name').textContent = fstation.address;
                     tile.querySelector('.bikes').textContent = fstation.availableBikes;
                     tile.querySelector('.dist').textContent = fstation.distance;
+                    tile.querySelector('.legend').innerHTML = 'vélos<br/>disponibles';
 
                     // Activate first slide
                     if (first) {
@@ -168,38 +167,58 @@ var Views = (function() {
     var stands = function() {
         currentView = "stands";
 
-        console.log('Views', currentView, "display page");
         body.update();
-        initSwiper();
 
         Geolocation.waitPosition(function() {
-            var coords = Geolocation.getPosition();
+            var currentPosition = Geolocation.getPosition();
 
             stationStorage.getStations()
             .then(function(allStations) {
+                Log.debug("fill view");
+
                 var stations = Stations.filterClosestStations(
                     allStations,
-                    coords,
+                    currentPosition,
                     10,
-                    function(item) { return item.availableStands > 0; }
+                    function(item) { return item.availableBikes > 0; }
                 );
 
-                // Stations slides creation
-                var newSlide = '';
-                for (var i = 0; i < stations.length; i++) {
-                    console.log(stations[i].name);
-                    newSlide = swiper.createSlide('<div>Station ' + stations[i].name + '<br>Bornes disponibles ' + stations[i].availableBikes + '</div>');
-                    newSlide.append();
-                }
-                RoadMap.initCircle(Geolocation.getPosition());
+                var stationsList = document.getElementById('stations-list');
+                $(stationsList).empty();
 
-                $('.swiper-slide:first').addClass("swiper-slide-active");
+                var first = true;
 
-                var stationDetail = $('.swiper-slide-active')[0].firstChild.childNodes[0].nodeValue.split(' ',2);
-                stationStorage.getStationById(stationDetail[1])
-                .then(function(activeStation) {
-                    RoadMap.addMarker(Geolocation.getPosition(), activeStation, currentView);
+                stations.forEach(function(station){
+                    var fstation = Stations.format(station, currentPosition);
+
+                    // Construction du DOM
+                    var tile = templates['stationTile'].content.cloneNode(true);
+                    tile.querySelector('.station').id = "station-" + station.number;
+                    //tile.querySelector('.link').href += fstation.number;
+                    tile.querySelector('.name').textContent = fstation.address;
+                    tile.querySelector('.stands').textContent = fstation.availableStands;
+                    tile.querySelector('.dist').textContent = fstation.distance;
+                    tile.querySelector('.legend').innerHTML = 'places<br/>libres';
+
+                    // Activate first slide
+                    if (first) {
+                        tile.querySelector('.swiper-slide').className += " swiper-slide-active";
+
+                        tile.querySelector('.circle').id = 'map';
+                    }
+
+                    stationsList.appendChild(tile);
+
+                    // This requires the tile to be added to the DOM
+                    //RoadMap.initCircle(station.position);
+
+                    if (first) {
+                        //RoadMap.addMarker(Geolocation.getPosition(), station, currentView);
+                        first = false;
+                    }
                 });
+
+                initSwiper();
             });
         });
     };

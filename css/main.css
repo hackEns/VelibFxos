@@ -287,8 +287,7 @@ main.index {
 }
 
 .pagination {
-  margin-top: 30px;
-  margin-bottom: 30px;
+  margin: 1.5rem auto;
 }
 
 
@@ -296,12 +295,8 @@ main.index {
  * StationMap
  */
 
-.swiper-wrapper {
-    left: 0.5rem; /* that is an unexplained but working hack */
-}
-
-.content .station-map {
-    margin: -1.5rem;
+.swiper-container-container {
+    margin: 0 -1.5rem;
 }
 
 .station-map {
