@@ -271,30 +271,27 @@ var Views = (function() {
 
             Log.debug('Views', 'station', 'display page');
 
-            var stationFormatted = Stations.format(station);
+            var fstation = Stations.format(station);
 
             var dom = templates['station'].content
-            var availableBikes = dom.querySelector('.bikes');
-            var availableStands = dom.querySelector('.stands');
-            var distance = dom.querySelector('.distance');
-            var position = dom.querySelector('.position');
-            var lastUpdate = dom.querySelector('.last_update');
+            dom.querySelector('.bikes').textContent = fstation.availableBikes;
+            dom.querySelector('.stands').textContent = fstation.availableStands;
+            dom.querySelector('.distance').textContent = fstation.distance;
+            dom.querySelector('.position').textContent = fstation.position;
+            dom.querySelector('.last_update').textContent = fstation.lastUpdate;
+            dom.querySelector('.link').href = '#/search/id/' + fstation.number;
 
-            availableBikes.textContent = stationFormatted.availableBikes;
-            availableStands.textContent = stationFormatted.availableStands;
-            distance.textContent = stationFormatted.distance;
-            position.textContent = stationFormatted.position;
-            lastUpdate.textContent = stationFormatted.lastUpdate;
 
             body.update();
 
             Geolocation.waitPosition(function() {
                 var currentPosition = Geolocation.getPosition();
-                var stationFormatted = Stations.format(station, currentPosition);
-                mainSection.querySelector(" .distance").textContent = stationFormatted.distance;
+                var fstation = Stations.format(station, currentPosition);
+                mainSection.querySelector(" .distance").textContent = fstation.distance;
             });
         })
         .catch(function(err) {
+            console.log(err);
             alert("La station n'existe pas !");
             Log.error("Views, station, station doesn't exist " + stationId);
             window.location.hash = "/index";
