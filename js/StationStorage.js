@@ -239,8 +239,8 @@ var MockStationStorage = function() {
             name: "RUE ERASME",
             number: 101,
             position: {
-                latitude: 48.8643278209514,
-                longitude: 2.416170724425901
+                latitude: 48.842206,
+                longitude: 2.345169
             },
             status: "OPEN"
         }

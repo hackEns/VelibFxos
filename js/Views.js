@@ -5,6 +5,8 @@
  ********/
 
 var Views = (function() {
+    var api = {};
+
     var currentView = '';
     var body = {};
     var template = '';
@@ -18,7 +20,10 @@ var Views = (function() {
     var stationStorage = null;
 
 
-    var init = function() {
+    /**
+     * Initialize view system
+     */
+    api.init = function() {
         stationStorage = StationStorageAdapter();
         stationStorage.load()
         .then(function() { // on success
@@ -43,8 +48,11 @@ var Views = (function() {
         mainSection = document.querySelector('main');
     };
 
-    var initSwiper = function() {
 
+    /**
+     * Initialize swiper (private method)
+     */
+    var initSwiper = function() {
       swiper = new Swiper('.swiper-container', {
           // general settings
           hashNav: false,
@@ -68,6 +76,7 @@ var Views = (function() {
     }
 
 
+    // TODO: clear that
     body = {
         // update the body from the views
         update: function() {
@@ -95,7 +104,11 @@ var Views = (function() {
     };
 
 
-    var index = function() {
+    /**
+     * Enable index view
+     * The index is a menu listing other main views
+     */
+    api.index = function() {
         currentView = "index";
         body.update();
 
@@ -106,7 +119,12 @@ var Views = (function() {
 
     };
 
-    var bikes = function() {
+
+    /**
+     * Enable bikes view
+     * Show a set of stations with bikes available around the current position
+     */
+    api.bikes = function() {
         currentView = "bikes";
         body.update();
 
@@ -164,7 +182,13 @@ var Views = (function() {
         });
     };
 
-    var stands = function() {
+
+    // TODO: Factorize bikes and stands commons
+    /**
+     * Enable stands view
+     * Show a set of stations with stands available around the current position
+     */
+    api.stands = function() {
         currentView = "stands";
 
         body.update();
@@ -224,7 +248,12 @@ var Views = (function() {
         });
     };
 
-    var starred = function() {
+
+    /**
+     * Enable starred view
+     * Show the list of user's starred stations and their availability
+     */    
+    api.starred = function() {
         currentView = "starred";
         console.log('Views', currentView, "display page");
         body.update();
@@ -261,6 +290,11 @@ var Views = (function() {
         });
     };
 
+
+    /**
+     * Enable station view
+     * Gives details about a given station
+     */
     var station = function() {
         var stationId = window.location.hash.substr(10); // hash = #/station/{stationId}
         Log.debug("stationId : " + stationId);
@@ -298,25 +332,25 @@ var Views = (function() {
         });
     };
 
+
     /**
-     * This is the "Search" view.
+     * Enable search view
      * It displays a map that allows users to looking for a station in the Parisian neighborhoods.
      */
-    var search = function() {
-        currentView = "search";
-        stationStorage = StationStorageAdapter();
-
-        console.log('Views', currentView, "display page");
+    api.search = function() {
+        currentView = 'search';
         body.update();
+
+        Log.info('Views', 'search', "display page");
+
+        RoadMap.init();
 
         stationStorage.getStations()
         .then(function(stations) {
-            RoadMap.init();
             RoadMap.addMarkers(stations);
 
             // SetPositionMarker after roadMap initiated
             Geolocation.watchPosition(function() {
-                // when Geolocation is ready
                 var pos = Geolocation.getPosition();
                 RoadMap.setPositionMarker(pos);
             });
@@ -324,14 +358,6 @@ var Views = (function() {
         });
     };
 
-    return {
-        init: init,
-        index: index,
-        bikes: bikes,
-        stands: stands,
-        starred: starred,
-        station: station,
-        search: search
-    };
+    return api;
 
 })();

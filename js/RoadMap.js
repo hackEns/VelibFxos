@@ -5,104 +5,120 @@
  ********/
 
 var RoadMap = (function() {
+    var api = {};
+    var map = null;
+
     var stations = null;
+
+    // Uniq markers
     var positionMarker = null;
-    var requestedPosition = null;
+    var researchMarker = null;
 
-    // Init the roadMap
-    var init = function() {
-        console.log('RoadMap', 'init', 'RoadMap under construction');
-        var selectedLayer = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 
-        window.roadMap = L.map('map', {
-            dragging: true,
-            touchZoom: true,
-            doubleClickZoom: true,
-            scrollWheelZoom: true,
-            boxZoom: true,
-            keyboard: true,
-            zoomControl: false,
-            zoom: 16
-        }).setView([48.842206, 2.345169], 16); // default position if there is no geolocation
+    /**
+     * Init the global map
+     */
+    api.init = function() {
+        Log.info('RoadMap', 'init', 'RoadMap under construction');
+
+        // (Please document overwritten fields of leafletConfig in Config.js)
+        var opts = Config.leafletConfig;
+        opts.zoomControl = false;
+
+        map = L.map('map', opts).setView(Config.defaultPosition, 16);
 
         // search plugin
-        console.log('RoadMap', 'init', 'Search plugin is available');
+        Log.info('RoadMap', 'init', 'Search plugin is available');
         var osmGeocoder = new L.Control.OSMGeocoder();
-        roadMap.addControl(osmGeocoder);
+        map.addControl(osmGeocoder);
 
-        L.tileLayer(selectedLayer).addTo(window.roadMap);
+        L.tileLayer(Config.tileProvider).addTo(map);
 
-        console.log('RoadMap', 'init', 'RoadMap built');
+        Log.info('RoadMap', 'init', 'RoadMap built');
 
-        return init;
+        return api;
     };
 
-    // Init map for bikes and stands view
-    var initCircle = (function(pos) {
-        console.log('RoadMap', 'init_circl', 'RoadMap under construction');
-        var selectedLayer = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 
-        window.roadMap = L.map('map', {
-            dragging: true,
-            touchZoom: true,
-            doubleClickZoom: false,
-            scrollWheelZoom: true,
-            boxZoom: true,
-            keyboard: false,
-            zoomControl: true,
-            zoom: 16
-        }).setView([pos.latitude, pos.longitude], 16);
+    /**
+     * Init map for bikes and stands view
+     * @param position where to center the circle view
+     */
+    api.initCircle = function(position) {
+        Log.info('RoadMap', 'init_circl', 'RoadMap under construction');
 
-        //window.roadMap.panTo([pos.latitude, pos.longitude]);
-        L.tileLayer(selectedLayer).addTo(window.roadMap);
+        // (Please document overwritten fields of leafletConfig in Config.js)
+        var opts = Config.leafletConfig;
+        opts.zoomControl = true;
+         
+        map = L.map('map', opts).setView([position.latitude, position.longitude], 16);
 
-        console.log('RoadMap', 'init_circl', 'RoadMap built');
+        L.tileLayer(Config.tileProvider).addTo(map);
 
-        return initCircle;
-    });
+        Log.info('RoadMap', 'init_circl', 'RoadMap built');
 
-    // Add all markers to the Map
-    var addMarkers = (function(_stations) {
-        console.log('RoadMap', 'addMarkers()');
+        return api;
+    };
+
+
+    /**
+     * Add station markers markers to the Map
+     * @param _stations list of all stations to display
+     */
+    api.addMarkers = function(_stations) {
+        Log.info('RoadMap', 'addMarkers');
+
         stations = _stations;
 
-        var myIcon = '';
-        var markersList = [];
+        var markers = [];
 
         // build Markers
-        for(var i=0; i < stations.length; i++) {
-            // Set icon for each stations
-            myIcon = L.divIcon({
+        stations.forEach(function(station) {
+            // Set custom station icon
+            var myIcon = L.divIcon({
                 className:  'mapIcon',
-                html:       '<div class="available-bikes">' + stations[i].availableBikes + '</div>' +
-                            '<div class="available-stands">' + stations[i].availableStands + '</div>'
+                html:       '<div class="available-bikes">' + station.availableBikes + '</div>' +
+                            '<div class="available-stands">' + station.availableStands + '</div>'
             });
-            // Set markers in markersList
-            markersList[i] = L.marker( [stations[i].position.latitude, stations[i].position.longitude], {
-                                icon: myIcon,
-                                clickable: true,
-                                draggable: false,
-                                title: stations[i].address,
-                                alt: stations[i].name,
-                                address: stations[i].address,
-                                number: stations[i].number
-            });
-        }
 
-        // insert Markers on the roadMap
-        $.map( markersList, function(station) {
-            station.addTo(window.roadMap);
+            // Create marker
+            var marker = L.marker(
+                [station.position.latitude, station.position.longitude],
+                {
+                    icon: myIcon,
+                    clickable: true,
+                    draggable: false,
+                    title: station.address,
+                    alt: station.name,
+                    address: station.address,
+                    number: station.number
+                }
+            );
+
+            marker.bindPopup('<a href="#/' + station.number + '">' + station.name + '</a>');
+
+            markers.push(marker);
         });
 
-    });
+        // insert all markers at once
+        markers.forEach(function(marker) {
+            marker.addTo(map);
+        });
 
-    // Add or move the marker for the current position
-    var setPositionMarker = function(position) {
-        console.log('RoadMap', 'setPositionMarker', position);
+        return api;
+    };
+
+
+    /**
+     * Add or move the position marker
+     * @param position where to place the position marker
+     */
+    api.setPositionMarker = function(position) {
+        Log.info('RoadMap', 'setPositionMarker', position);
+
         var latlng = [position.latitude, position.longitude];
 
-        if (positionMarker === null) {
-            console.log('null', positionMarker);
+        if (!positionMarker) {
             positionMarker = L.marker(latlng, {
                 clickable: false,
                 draggable: false,
@@ -113,37 +129,48 @@ var RoadMap = (function() {
             positionMarker.setLatLng(latlng);
         }
 
-        positionMarker.addTo(window.roadMap);
+        positionMarker.addTo(map);
 
-        window.roadMap.panTo(latlng);
+        map.panTo(latlng);
+
+        return api;
     };
 
 
-    // Add a marker for any search
-    var setRequestedPositionMarker = (function(position) {
-        console.log('RoadMap', 'setRequestedPositionMarker');
+    /**
+     * Add or move the researched position marker
+     * @param position where to place the research marker
+     */
+    api.setResearchMarker = function(position) {
+        Log.info('RoadMap', 'setResearchMarker', position);
 
-        var latlng = [position._initialCenter.lat, position._initialCenter.lng];
+        var latlng = [position.lat, position.lng];
 
-        if(requestedPosition === null) {
-            requestedPosition = L.marker(latlng, {
+        if(!researchMarker) {
+            researchMarker = L.marker(latlng, {
                 clickable: false,
                 draggable: false,
                 title: "Station recherchée",
                 alt: "Je veux aller ici"
             });
         } else {
-            requestedPosition.setLatLng(latlng);
+            researchMarker.setLatLng(latlng);
         }
 
-        requestedPosition.addTo(window.roadMap);
+        researchMarker.addTo(map);
 
-        window.roadMap.panTo(latlng);
+        map.panTo(latlng);
 
-    });
+        return api;
+    };
 
-    // Add markers from position to a station
-    var addMarker = (function(pos, activeStation, view) {
+
+    /**
+     * Add path from position to a station
+     * @param position source position
+     * @param station destination station
+     */
+    api.addMarker = function(position, station, view) {
 
         var startIcon = L.icon({
             iconUrl: 'img/leaflet/map-my-position.svg',
@@ -173,21 +200,14 @@ var RoadMap = (function() {
             fitSelectedRoutes: true,
             useZoomParameter: true,
             autoRoute: true
-        }).addTo(window.roadMap);
+        }).addTo(map);
 
 
         //desable itenary panel
         $(".leaflet-right").hide();
 
         return true;
-    });
-
-    return {
-        init: init,
-        initCircle: initCircle,
-        addMarkers: addMarkers,
-        addMarker: addMarker,
-        setPositionMarker: setPositionMarker,
-        setRequestedPositionMarker: setRequestedPositionMarker
     };
+
+    return api;
 })();
