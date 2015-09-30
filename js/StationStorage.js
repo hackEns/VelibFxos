@@ -13,6 +13,8 @@
 var StationStorage = function() {
     var api = {};
 
+    api.name = 'StationStorage';
+
     api.stations = null;
     api.starredStations = [];
 
@@ -22,14 +24,20 @@ var StationStorage = function() {
      * @param onerror Callback called with an error message if loading failed
      */
     api.load = function() {
+        Log.debug("load", api.name);
         return new Promise(function(resolve, reject) {
-            resolve();
+            if (api.isLoaded()) {
+                resolve();
+            } else {
+                reject('No station found');
+            }
         })
     };
 
     api.ensureLoaded = function(){
+        Log.debug("ensureLoaded", api.name);
         return new Promise(function(resolve, reject) {
-            if (api.isLoaded) {
+            if (api.isLoaded()) {
                 resolve();
             } else {
                 return api.load();
@@ -41,6 +49,7 @@ var StationStorage = function() {
      * @returns bool whether the storage has correctly been loaded
      */
     api.isLoaded = function() {
+        Log.debug("isLoaded", api.name);
         return api.stations !== null;
     };
 
@@ -107,11 +116,13 @@ var StationStorage = function() {
 
 
 /**
- * AutorityStationStorage is a read-only station storage implementation that
+ * AuthorityStationStorage is a read-only station storage implementation that
  * get information from JCDecaux OpenData API.
  */
-var AutorityStationStorage = function() {
+var AuthorityStationStorage = function() {
     var api = StationStorage();
+
+    api.name = 'AuthorityStationStorage';
 
     /**
      * Adapt OpenData API's format to internal station representation.
@@ -149,7 +160,7 @@ var AutorityStationStorage = function() {
             $.getJSON(Config.stationsUrl, function(data, status, jqXHR) {
                 // TODO: look at status
                 api.stations = data.map(stationContract);
-                onsuccess();
+                resolve();
             });
         });
     };
@@ -165,6 +176,8 @@ var AutorityStationStorage = function() {
 var LocalStationStorage = function() {
     var api = StationStorage();
 
+    api.name = 'LocalStationStorage';
+
     /**
      * Load station list from local storage
      */
@@ -173,7 +186,11 @@ var LocalStationStorage = function() {
             if (!localStorage) {
                 return reject("Local storage not available");
             }
-            if (Date.now() - parseInt(localStorage.getItem('lastStationsUpdate'),10) > Config.localStationStorageTimeout) {
+            var lastUpdate = localStorage.getItem('lastStationsUpdate');
+            if (!lastUpdate) {
+                return reject("Local storage data has not been initialized");
+            }
+            if (Date.now() - parseInt(lastUpdate, 10) > Config.localStationStorageTimeout) {
                 return reject("Local storage data is considered as obsolated (Config.localStationStorageTimeout = " + Config.localStationStorageTimeout + ")");
             }
             api.stations = JSON.parse(localStorage.getItem('stations'));
@@ -208,6 +225,8 @@ var LocalStationStorage = function() {
  */
 var MockStationStorage = function() {
     var api = StationStorage();
+
+    api.name = 'MockStationStorage';
 
     api.stations = [
         {
@@ -246,9 +265,9 @@ var MockStationStorage = function() {
         }
     ];
 
-    api.starredStations = api.stations;
+    //api.starredStations = api.stations;
 
-    //api.stations = null; // Disables mock storage
+    api.stations = null; // Disables mock storage
 
     return api;
 };
@@ -263,37 +282,76 @@ var MockStationStorage = function() {
 var StationStorageAdapter = function() {
     var api = StationStorage();
 
+    api.name = 'StationStorageAdapter';
+
     /**
      * List of available storage boxes tu use.
      */
-    var substorages = [MockStationStorage(), LocalStationStorage(), AutorityStationStorage()];
+    var substorages = [MockStationStorage(), LocalStationStorage(), AuthorityStationStorage()];
     var currentSubstorage = null;
 
+    var waitLoadCallbacks = [];
+    var startedLoading = false;  // lock while loading (avoid multiple calls to load)
 
+
+    api.ensureLoaded = function() {
+        return new Promise(function(resolve, reject) {
+            if (api.isLoaded()) {
+                resolve();
+            } else {
+                waitLoadCallbacks.push(function() {
+                    Log.debug("playing callback");
+                    resolve();
+                });
+            }
+        });
+    }
 
     /**
      * Reccursively loads storages until one of them is ok
      */
     api.load = function() {
-        return new Promise(function(resolve, reject) {
+        Log.debug("load", api.name);
+        var p = new Promise(function(resolve, reject) {
+            if (api.isLoaded()) {
+                resolve();
+                return;
+            }
+
+            if (startedLoading) {
+                Log.error("should not append")
+                return;
+            }
+
+            startedLoading = true;
             var recLoadSubstorage = function(i) {
                 if (!substorages[i]) {
                     return reject("No storage available");
                 }
                 substorages[i].load()
-                .then(function() {
-                    // If successfully loaded, return
+                .then(function() {  // If successfully loaded, return
                     currentSubstorage = substorages[i];
+                    Log.info("Use storage " + currentSubstorage.name);
                     resolve();
                 })
-                .catch(function(err) {
+                .catch(function(err) {  // Else, try the next substorage
                     Log.warning("Could not load storage #" + i + ": " + err);
-                    // Else, try the next substorage
                     recLoadSubstorage(i + 1);
                 });
             };
             recLoadSubstorage(0);
         });
+
+        return p
+        .then(function() {
+            var oldWaitLoadCallbacks = waitLoadCallbacks; // avoid loops if callbacks call waitPosition again
+            waitLoadCallbacks = [];
+            oldWaitLoadCallbacks.forEach(function(callback) {
+                callback();
+            });
+
+            api.save();
+        })
     };
 
 
@@ -301,14 +359,18 @@ var StationStorageAdapter = function() {
      * Storage is loaded if there is some available substorage and that this substorage is ready
      */
     api.isLoaded = function() {
+        Log.debug("isLoaded", api.name, currentSubstorage);
         return currentSubstorage !== null && currentSubstorage.isLoaded();
     };
 
 
+    // TODO: use Promise
     /**
      * Save to each substorage
      */
     api.save = function(callback) {
+        callback = callback || function() {};
+
         var recSaveSubstorage = function(i) {
             if (!substorages[i]) {
                 callback();
@@ -324,10 +386,11 @@ var StationStorageAdapter = function() {
     };
 
     api.getStations = function() {
+        Log.debug("getStations");
         return api.ensureLoaded()
         .then(function() {
             return currentSubstorage.getStations();
-        });
+        })
     };
 
     api.getStarredStations = function() {
