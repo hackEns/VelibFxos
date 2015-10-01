@@ -192,6 +192,8 @@ var LocalStationStorage = function() {
      * Load station list from local storage
      */
     api.load = function() {
+        return Promise.reject('Local storage disabled (See issue #80)')
+
         return new Promise(function(resolve, reject) {
             if (!localStorage) {
                 return reject("Local storage not available");
@@ -204,7 +206,19 @@ var LocalStationStorage = function() {
                 return reject("Local storage data is considered as obsolated (Config.localStationStorageTimeout = " + Config.localStationStorageTimeout + ")");
             }
             api.stations = JSON.parse(localStorage.getItem('stations'));
-            api.starredStations = JSON.parse(localStorage.getItem('starredStations'));
+            var starredStationsIds = JSON.parse(localStorage.getItem('starredStationsIds'));
+
+            api.starredStations = starredStationsIds.map(function(id) {
+                var matches = $.grep(api.stations, function(station) {
+                    return station.number == id;
+                });
+                if (matches.length > 0) {
+                    return matches[0];
+                } else {
+                    reject("Local storage not consistent (Starred Station not found wth id " + id+ ")");
+                }
+            })
+
             if (api.starredStations == null) {
                 api.starredStations = [];
             }
@@ -217,8 +231,20 @@ var LocalStationStorage = function() {
      * Serialize station list and save it back to local storage
      */
     api.save = function() {
+        // Remove not cachable information
+        api.stations.forEach(function(station) {
+            station.availableStands = -1;
+            station.availableBikes  = -1;
+        });
+
+        // Save only IDs (avoid data replication on persistent storage)
+        var starredStationsIds = api.starredStations.map(function(station) {
+            return station.number;
+        });
+        
+
         localStorage.setItem('stations', JSON.stringify(api.stations));
-        localStorage.setItem('starredStations', JSON.stringify(api.starredStations));
+        localStorage.setItem('starredStationsIds', JSON.stringify(starredStationsIds));
         localStorage.setItem('lastStationsUpdate', Date.now());
 
         return Promise.resolve();
@@ -277,9 +303,12 @@ var MockStationStorage = function() {
         }
     ];
 
-    //api.starredStations = api.stations;
+    api.starredStations = api.stations;
 
-    api.stations = null; // Disables mock storage
+    api.load = function() {
+        return Promise.reject("Mock stations disabled");
+    };
+
 
     return api;
 };

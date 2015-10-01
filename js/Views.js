@@ -28,9 +28,6 @@ var Views = (function() {
         stationStorage.load()
         .then(function() { // on success
             Log.info("StationStorage loaded successfully");
-        })
-        .catch(function(err) { // on error
-            Log.error("Unable to load station storage: " + err);
         });
 
         // Main templates
