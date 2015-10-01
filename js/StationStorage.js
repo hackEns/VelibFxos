@@ -18,32 +18,47 @@ var StationStorage = function() {
     api.stations = null;
     api.starredStations = [];
 
+    // Private attribute holding callbacks waiting for loading
+    var onLoadCallbacks = [];
+
+    // Event emission
+    api.emitOnLoad = function() {
+        onLoadCallbacks.forEach(function(callback) {
+            callback();
+        });
+    };
+
     /**
-     * Initialy loads stations (to be overwritten)
-     * @param onsuccess callback Called without argument on success
-     * @param onerror Callback called with an error message if loading failed
+     * Initially loads stations (to be overwritten)
+     * MUST NOT be called more than once
+     * @return Promise on the loaded storage
      */
     api.load = function() {
         Log.debug("load", api.name);
-        return new Promise(function(resolve, reject) {
-            if (api.isLoaded()) {
-                resolve();
-            } else {
-                reject('No station found');
-            }
-        })
+        if (api.stations !== null) {
+            api.emitOnLoad();
+            return Promise.resolve(api);
+        } else {
+            return Promise.reject('No station found');
+        }
     };
 
-    api.ensureLoaded = function(){
-        Log.debug("ensureLoaded", api.name);
-        return new Promise(function(resolve, reject) {
-            if (api.isLoaded()) {
-                resolve();
-            } else {
-                return api.load();
-            }
-        });
-    };
+    /**
+     * Ensure that the storage has been loaded
+     * @return Promise
+     */
+    api.ready = function() {
+        Log.debug("ready", api.name);
+        if (api.isLoaded()) {
+            return Promise.resolve();
+        } else {
+            return new Promise(function(resolve, reject) {
+                onLoadCallbacks.push(function() {
+                    resolve(api)
+                });
+            });
+        }
+    }
 
     /**
      * @returns bool whether the storage has correctly been loaded
@@ -55,57 +70,51 @@ var StationStorage = function() {
 
     /**
      * Persistentely saves stations (to be overwritten)
-     * @param callback Called without argument
+     * @return Promise
      */
-    api.save = function(callback) {
-        callback();
+    api.save = function() {
+        return Promise.resolve();
     };
 
     /**
-     * @return promise
+     * @return Promise on full stations list
      */
     api.getStations = function() {
-        return new Promise(function(resolve, reject) {
-            return api.ensureLoaded()
-            .then(function() {
-                resolve(api.stations);
-            });
+    return api.ready()
+        .then(function() {
+            return api.stations;
         });
     };
 
     /**
-     * @return promise
+     * @return Promise on starred stations list
      */
     api.getStarredStations = function() {
-        return new Promise(function(resolve, reject) {
-            return api.ensureLoaded()
-            .then(function() {
-                resolve(api.starredStations);
-            });
+        return api.ready()
+        .then(function() {
+            return api.starredStations;
         });
     };
 
     /**
      * Get station by its Id
      * @param id Station id
-     * @return promise
+     * @return Promise on station whose number is `id`
      */
     api.getStationById = function(id) {
-        return new Promise(function(resolve, reject) {
-            return api.ensureLoaded()
-            .then(function() {
-                return api.getStations()
-            })
-            .then(function(allStations) {
-                var stations = $.grep(allStations, function(station) {
-                    return station.number == id;
-                });
-                if (stations.length > 0) {
-                    resolve(stations[0]);
-                } else {
-                    reject("Station not found wth id " + id);
-                }
+    return api.ready()
+        .then(function() {
+            return api.getStations()
+        })
+        .then(function(allStations) {
+            var stations = $.grep(allStations, function(station) {
+                return station.number == id;
             });
+            if (stations.length > 0) {
+                return Promise.resolve(stations[0]);
+            } else {
+                return Promise.reject("Station not found wth id " + id);
+            }
         });
     };
 
@@ -160,7 +169,8 @@ var AuthorityStationStorage = function() {
             $.getJSON(Config.stationsUrl, function(data, status, jqXHR) {
                 // TODO: look at status
                 api.stations = data.map(stationContract);
-                resolve();
+                api.emitOnLoad();
+                resolve(api);
             });
         });
     };
@@ -198,18 +208,20 @@ var LocalStationStorage = function() {
             if (api.starredStations == null) {
                 api.starredStations = [];
             }
-            resolve();
+            api.emitOnLoad();
+            resolve(api);
         });
     };
 
     /**
      * Serialize station list and save it back to local storage
      */
-    api.save = function(callback) {
+    api.save = function() {
         localStorage.setItem('stations', JSON.stringify(api.stations));
         localStorage.setItem('starredStations', JSON.stringify(api.starredStations));
         localStorage.setItem('lastStationsUpdate', Date.now());
-        callback();
+
+        return Promise.resolve();
     };
 
 
@@ -288,70 +300,41 @@ var StationStorageAdapter = function() {
      * List of available storage boxes tu use.
      */
     var substorages = [MockStationStorage(), LocalStationStorage(), AuthorityStationStorage()];
+
+    // Do not access this before ready() resolution
     var currentSubstorage = null;
 
-    var waitLoadCallbacks = [];
-    var startedLoading = false;  // lock while loading (avoid multiple calls to load)
-
-
-    api.ensureLoaded = function() {
-        return new Promise(function(resolve, reject) {
-            if (api.isLoaded()) {
-                resolve();
-            } else {
-                waitLoadCallbacks.push(function() {
-                    Log.debug("playing callback");
-                    resolve();
-                });
-            }
-        });
-    }
 
     /**
      * Reccursively loads storages until one of them is ok
      */
     api.load = function() {
         Log.debug("load", api.name);
-        var p = new Promise(function(resolve, reject) {
-            if (api.isLoaded()) {
-                resolve();
-                return;
-            }
+        if (api.isLoaded()) {
+            return Promise.resolve();
+        }
 
-            if (startedLoading) {
-                Log.error("should not append")
-                return;
-            }
+        // The "-1st" substrorage fails to load cause it doesn't exist
+        var loading = Promise.reject(Error("No substorage registered"));
 
-            startedLoading = true;
-            var recLoadSubstorage = function(i) {
-                if (!substorages[i]) {
-                    return reject("No storage available");
-                }
-                substorages[i].load()
-                .then(function() {  // If successfully loaded, return
-                    currentSubstorage = substorages[i];
-                    Log.info("Use storage " + currentSubstorage.name);
-                    resolve();
-                })
-                .catch(function(err) {  // Else, try the next substorage
-                    Log.warning("Could not load storage #" + i + ": " + err);
-                    recLoadSubstorage(i + 1);
-                });
-            };
-            recLoadSubstorage(0);
+        substorages.forEach(function(storage, i) {
+            // If previous substorage failed to load
+            loading = loading.catch(function(err){
+                if (i > 0) Log.warning("Could not load storage #" + (i - 1) + ": " + err);
+                return storage.load();
+            });
         });
 
-        return p
-        .then(function() {
-            var oldWaitLoadCallbacks = waitLoadCallbacks; // avoid loops if callbacks call waitPosition again
-            waitLoadCallbacks = [];
-            oldWaitLoadCallbacks.forEach(function(callback) {
-                callback();
-            });
+        loading = loading.then(function(storage) {
+            currentSubstorage = storage;
+            Log.info("Use storage " + currentSubstorage.name);
+
+            api.emitOnLoad();
 
             api.save();
-        })
+        });
+
+        return loading;
     };
 
 
@@ -364,44 +347,36 @@ var StationStorageAdapter = function() {
     };
 
 
-    // TODO: use Promise
     /**
      * Save to each substorage
      */
-    api.save = function(callback) {
-        callback = callback || function() {};
+    api.save = function() {
+        var savings = substorages.map(function(storage) {
+            storage.stations = currentSubstorage.stations;
+            storage.starredStations = currentSubstorage.starredStations;
+            storage.save();
+        });
 
-        var recSaveSubstorage = function(i) {
-            if (!substorages[i]) {
-                callback();
-                return;
-            }
-            substorages[i].stations = currentSubstorage.stations;
-            substorages[i].starredStations = currentSubstorage.starredStations;
-            substorages[i].save(function() {
-                recSaveSubstorage(i + 1);
-            });
-        };
-        recSaveSubstorage(0);
+        return Promise.all(savings);
     };
 
     api.getStations = function() {
         Log.debug("getStations");
-        return api.ensureLoaded()
+        return api.ready()
         .then(function() {
             return currentSubstorage.getStations();
         })
     };
 
     api.getStarredStations = function() {
-        return api.ensureLoaded()
+        return api.ready()
         .then(function() {
             return currentSubstorage.getStarredStations();
         });
     };
 
     api.getStationById = function(id) {
-        return api.ensureLoaded()
+        return api.ready()
         .then(function() {
             return currentSubstorage.getStationById(id);
         });
