@@ -231,12 +231,6 @@ var LocalStationStorage = function() {
      * Serialize station list and save it back to local storage
      */
     api.save = function() {
-        // Remove not cachable information
-        api.stations.forEach(function(station) {
-            station.availableStands = -1;
-            station.availableBikes  = -1;
-        });
-
         // Save only IDs (avoid data replication on persistent storage)
         var starredStationsIds = api.starredStations.map(function(station) {
             return station.number;
