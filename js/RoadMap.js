@@ -95,7 +95,7 @@ var RoadMap = (function() {
                 }
             );
 
-            marker.bindPopup('<a href="#/' + station.number + '">' + station.name + '</a>');
+            marker.bindPopup('<a href="#/station/' + station.number + '">' + station.name + '</a>');
 
             markers.push(marker);
         });

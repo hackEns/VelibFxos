@@ -292,7 +292,7 @@ var Views = (function() {
      * Enable station view
      * Gives details about a given station
      */
-    var station = function() {
+    api.station = function() {
         var stationId = window.location.hash.substr(10); // hash = #/station/{stationId}
         Log.debug("stationId : " + stationId);
 
@@ -305,6 +305,7 @@ var Views = (function() {
             var fstation = Stations.format(station);
 
             var dom = templates['station'].content
+            dom.querySelector('.name').textContent = fstation.address;
             dom.querySelector('.bikes').textContent = fstation.availableBikes;
             dom.querySelector('.stands').textContent = fstation.availableStands;
             dom.querySelector('.distance').textContent = fstation.distance;
