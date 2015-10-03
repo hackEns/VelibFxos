@@ -70,7 +70,7 @@ var RoadMap = (function() {
 
         stations = _stations;
 
-        var markers = [];
+        var markers = new L.MarkerClusterGroup();
 
         // build Markers
         stations.forEach(function(station) {
@@ -97,13 +97,12 @@ var RoadMap = (function() {
 
             marker.bindPopup('<a href="#/station/' + station.number + '">' + station.name + '</a>');
 
-            markers.push(marker);
+            markers.addLayer(marker);
         });
 
-        // insert all markers at once
-        markers.forEach(function(marker) {
-            marker.addTo(map);
-        });
+        map.addLayer(markers);
+
+        Log.info('RoadMap', 'addMarkers', 'done');
 
         return api;
     };
@@ -114,7 +113,7 @@ var RoadMap = (function() {
      * @param position where to place the position marker
      */
     api.setPositionMarker = function(position) {
-        Log.info('RoadMap', 'setPositionMarker', position);
+        //Log.info('RoadMap', 'setPositionMarker', position);
 
         var latlng = [position.latitude, position.longitude];
 

@@ -18,7 +18,7 @@ function dateDiff(date1){
     tmp = Math.floor((tmp-diff.hour)/24);
     diff.day = tmp;
 
-    console.log('utils.js', 'dateDiff', diff);
+    //console.log('utils.js', 'dateDiff', diff);
     return diff;
 }
 
