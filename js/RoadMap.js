@@ -14,6 +14,9 @@ var RoadMap = (function() {
     var positionMarker = null;
     var researchMarker = null;
 
+    // Change default icon path for Leaflet, as they are stored under the
+    // `img/leaflet` folder.
+    L.Icon.Default.imagePath = "img/leaflet/";
 
     /**
      * Init the global map
@@ -50,7 +53,7 @@ var RoadMap = (function() {
         // (Please document overwritten fields of leafletConfig in Config.js)
         var opts = Config.leafletConfig;
         opts.zoomControl = true;
-         
+
         map = L.map('map', opts).setView([position.latitude, position.longitude], 16);
 
         L.tileLayer(Config.tileProvider).addTo(map);
