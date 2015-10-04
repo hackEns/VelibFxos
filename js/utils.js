@@ -53,4 +53,45 @@ var distance = function(coords1, coords2) {
     return distance;
 };
 
-var noop = function(){};
+/**
+ * Pretty format durations.
+ * @param diff the duration to format, in DateDiff format.
+ */
+var formatTime = function(diff) {
+    var text = "";
+
+    if (diff.day > 1) {
+        text = diff.day + ' jours';
+    } else if (diff.day == 1) {
+        text = diff.day + ' jour';
+    } else if (diff.hour > 1) {
+        text = diff.hour + ' heures';
+    } else if (diff.hour == 1) {
+        text = diff.hour + ' heure';
+    } else if (diff.min > 1) {
+        text = diff.min + ' minutes';
+    } else if (diff.min == 1) {
+        text = diff.min + ' minute';
+    } else if (diff.sec > 1) {
+        text = diff.sec + ' secondes';
+    } else if (diff.sec == 1) {
+        text = diff.sec + ' seconde';
+    } else {
+        text = 'un instant';
+    }
+
+    return text;
+};
+
+/**
+ * Pretty format distances. Use kilometers or meters depending on the distance.
+ * @param dist the distance to format.
+ */
+var formatDistance = function(dist) {
+    var kmDistance = (dist / 1000.0).toFixed(2);
+    if (kmDistance > 1) {
+        return kmDistance + " km";
+    } else {
+        return Math.floor(kmDistance * 1000.0) + " m";
+    }
+};

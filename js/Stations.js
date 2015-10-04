@@ -55,32 +55,12 @@ var Stations = (function() {
         // Last update
         if(station.lastUpdate != null) {
             var diff = dateDiff(station.lastUpdate);
-            var text = "";
-
-            if (diff.day > 1)
-                text = diff.day + ' jours';
-            else if (diff.day == 1)
-                text = diff.day + ' jour';
-            else if (diff.hour > 1)
-                text = diff.hour + ' heures';
-            else if (diff.hour == 1)
-                text = diff.hour + ' heure';
-            else if (diff.min > 1)
-                text = diff.min + ' minutes';
-            else if (diff.min == 1)
-                text = diff.min + ' minute';
-            else if (diff.sec > 1)
-                text = diff.sec + ' secondes';
-            else if (diff.sec == 1)
-                text = diff.sec + ' seconde';
-            else
-                text = 'un instant';
-            formatted.lastUpdate = text;
+            formatted.lastUpdate = formatTime(diff);
         }
         // distance
         if (station.distance || coords !== undefined) {
             var dist = station.distance || distance(coords, station.position);
-            formatted.distance = (dist / 1000.0).toFixed(2) + " km";
+            formatted.distance = formatDistance(dist);
         } else {
             formatted.distance = "Chargement...";
         }
