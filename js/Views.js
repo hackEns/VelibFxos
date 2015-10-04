@@ -249,7 +249,7 @@ var Views = (function() {
     /**
      * Enable starred view
      * Show the list of user's starred stations and their availability
-     */    
+     */
     api.starred = function() {
         currentView = "starred";
         console.log('Views', currentView, "display page");
@@ -308,6 +308,13 @@ var Views = (function() {
             dom.querySelector('.name').textContent = fstation.address;
             dom.querySelector('.bikes').textContent = fstation.availableBikes;
             dom.querySelector('.stands').textContent = fstation.availableStands;
+            if (fstation.bonus) {
+                dom.querySelector('.vplus .entry--logo').style.display = "inline";
+                dom.querySelector('.vplus .entry--desc').textContent = "";
+            } else {
+                dom.querySelector('.vplus .entry--logo').style.display = "none";
+                dom.querySelector('.vplus .entry--desc').textContent = "Non";
+            }
             dom.querySelector('.distance').textContent = fstation.distance;
             dom.querySelector('.position').textContent = fstation.position;
             dom.querySelector('.last_update').textContent = fstation.lastUpdate;

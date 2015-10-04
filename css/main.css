@@ -246,9 +246,6 @@ table.starred tr:hover {
 .detail img.vplus {
     margin-top: 5px;
 }
-.detail img.vplus:hover {
-    cursor: pointer;
-}
 .detail {
     text-align: center;
 }
