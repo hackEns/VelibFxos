@@ -133,7 +133,17 @@ var RoadMap = (function() {
 
         positionMarker.addTo(map);
 
-        map.panTo(latlng);
+        var distanceFromCity = distance(
+            position,
+            {
+                "latitude": Config.defaultPosition[0],
+                "longitude": Config.defaultPosition[1]
+            }
+        );
+        if (distanceFromCity <= (config.maxDistanceFromCity * 1000)) {
+            // Prevent panning if too far from Paris
+            map.panTo(latlng);
+        }
 
         return api;
     };
