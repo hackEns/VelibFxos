@@ -154,7 +154,11 @@ var Views = (function() {
                     tile.querySelector('.name').textContent = fstation.address;
                     tile.querySelector('.bikes').textContent = fstation.availableBikes;
                     tile.querySelector('.dist').textContent = fstation.distance;
-                    tile.querySelector('.legend').innerHTML = 'vélos<br/>disponibles';
+                    if (fstation.availableBikes > 1) {
+                        tile.querySelector('.legend').innerHTML = 'vélos<br/>disponibles';
+                    } else {
+                        tile.querySelector('.legend').innerHTML = 'vélo<br/>disponible';
+                    }
 
                     // Activate first slide
                     if (first) {
@@ -220,7 +224,11 @@ var Views = (function() {
                     tile.querySelector('.stands').textContent = fstation.availableStands;
                     tile.querySelector('.dist').textContent = fstation.distance;
                     tile.querySelector('.vplus').style.visibility = fstation.bonus ? 'visible' : 'hidden';
-                    tile.querySelector('.legend').innerHTML = 'places<br/>libres';
+                    if (fstation.availableStands > 1) {
+                        tile.querySelector('.legend').innerHTML = 'places<br/>libres';
+                    } else {
+                        tile.querySelector('.legend').innerHTML = 'place<br/>libre';
+                    }
 
                     // Activate first slide
                     if (first) {
