@@ -28,7 +28,7 @@ var RoadMap = (function() {
         var opts = Config.leafletConfig;
         opts.zoomControl = false;
 
-        map = L.map('map', opts).setView(Config.defaultPosition, 16);
+        map = L.map('map', opts).setView(Config.defaultPosition, Config.defaultZoom);
 
         // search plugin
         Log.info('RoadMap', 'init', 'Search plugin is available');
