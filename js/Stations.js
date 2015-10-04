@@ -74,7 +74,7 @@ var Stations = (function() {
 
     /**
      * Sort and filter station list until a given limit.
-     * @param staions Station list
+     * @param stations Station list
      * @param coords Current position
      * @param limit Max amount of stations to return (optionnal)
      * @param filter Filtering function (optionnal)
@@ -84,7 +84,7 @@ var Stations = (function() {
         stations = sortByDistance(stations, coords);
 
         if (filter !== undefined) {
-            stations.filter(filter);
+            stations = stations.filter(filter);
         }
 
         if (limit !== undefined) {

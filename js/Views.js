@@ -144,7 +144,7 @@ var Views = (function() {
 
                 var first = true;
 
-                stations.forEach(function(station){
+                stations.forEach(function(station) {
                     var fstation = Stations.format(station, currentPosition);
 
                     // Construction du DOM
@@ -205,7 +205,7 @@ var Views = (function() {
                     allStations,
                     currentPosition,
                     10,
-                    function(item) { return item.availableBikes > 0; }
+                    function(item) { return item.availableStands > 0; }
                 );
 
                 var stationsList = document.getElementById('stations-list');
