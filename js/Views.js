@@ -25,11 +25,8 @@ var Views = (function() {
      */
     api.init = function() {
         stationStorage = StationStorageAdapter();
-        stationStorage.load()
-        .then(function() { // on success
-            Log.info("StationStorage loaded successfully");
-        });
-
+        stationStorage.load();
+        
         // Main templates
         templates['index'] = document.getElementById('index');
         templates['bikes'] = document.getElementById('bikes');
@@ -366,8 +363,10 @@ var Views = (function() {
         });
 
         stationStorage.on('stations', function(stations) {
+            console.log('#########################');
             RoadMap.addAllMarkers(stations);
         });
+        stationStorage.emitAllStation();
     };
 
     return api;

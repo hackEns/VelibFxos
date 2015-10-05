@@ -100,6 +100,15 @@ var RoadMap = (function() {
 
             marker.bindPopup('<a href="#/station/' + station.number + '">' + station.name + '</a>');
 
+            station.on('update', function() {
+                var myIcon = L.divIcon({
+                    className:  'mapIcon',
+                    html:       '<div class="available-bikes">' + station.availableBikes + '</div>' +
+                                '<div class="available-stands">' + station.availableStands + '</div>'
+                });
+                marker.setIcon(myIcon);
+            })
+
             markers.addLayer(marker);
         });
 
