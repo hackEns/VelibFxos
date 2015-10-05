@@ -97,6 +97,9 @@ var Views = (function() {
             // cleaning the content
             Log.debug("Cleaning view");
             $(mainSection).empty();
+            // Reset geolocation callbacks
+            Geolocation.noWatchPosition();
+            Geolocation.noWaitPosition();
         }
     };
 
@@ -334,7 +337,7 @@ var Views = (function() {
             Geolocation.waitPosition(function() {
                 var currentPosition = Geolocation.getPosition();
                 var fstation = Stations.format(station, currentPosition);
-                mainSection.querySelector(" .distance").textContent = fstation.distance;
+                mainSection.querySelector(".distance").textContent = fstation.distance;
             });
         })
         .catch(function(err) {

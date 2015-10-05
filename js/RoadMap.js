@@ -140,7 +140,7 @@ var RoadMap = (function() {
                 "longitude": Config.defaultPosition[1]
             }
         );
-        if (distanceFromCity <= (config.maxDistanceFromCity * 1000)) {
+        if (distanceFromCity <= (Config.maxDistanceFromCity * 1000)) {
             // Prevent panning if too far from Paris
             map.panTo(latlng);
         }

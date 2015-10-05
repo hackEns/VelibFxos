@@ -5,6 +5,8 @@
  ***************/
 
 var Geolocation = (function() {
+    var api = {};
+
     var coords = null;
     var timer = null;
 
@@ -56,7 +58,7 @@ var Geolocation = (function() {
         }
     };
 
-    var init = function() {
+    api.init = function() {
         if (navigator.geolocation) {
             navigator.geolocation.watchPosition(successFunction, errorFunction, Config.geolocation);
         } else {
@@ -69,7 +71,7 @@ var Geolocation = (function() {
      * @param callback Callback called as soon as the position is available
      * and takes the current coordinates as first argument.
      */
-    var waitPosition = function(callback) {
+    api.waitPosition = function(callback) {
         $('.station-info').html('<p class="center">Attente de la position…</p>');
         if (coords === null) {
             waitPositionCallbacks.push(callback);
@@ -83,7 +85,7 @@ var Geolocation = (function() {
      * @param callback Callback called as soon as the position is changed
      * and takes the current coordinates as first argument.
      */
-    var watchPosition = function(callback) {
+    api.watchPosition = function(callback) {
         if (coords === null) {
             watchPositionCallbacks.push(callback);
         } else {
@@ -94,22 +96,23 @@ var Geolocation = (function() {
     /**
      * Clear the list functions watching for position
      */
-    var noWatchPosition = function() {
+    api.noWatchPosition = function() {
         watchPositionCallbacks = [];
+    };
+
+    /**
+     * Clear the list functions waiting for position
+     */
+    api.noWaitPosition = function() {
+        waitPositionCallbacks = [];
     };
 
     /**
      * Returns the last recorded position
      */
-    var getPosition = function() {
+    api.getPosition = function() {
         return coords;
     };
 
-    return {
-        init: init,
-        waitPosition: waitPosition,
-        watchPosition: watchPosition,
-        noWatchPosition: noWatchPosition,
-        getPosition: getPosition
-    };
+    return api;
 })();
