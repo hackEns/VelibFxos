@@ -24,7 +24,7 @@ var Config = (function() {
         waitStationsTimeout: 1000,  // in ms
         localStationStorageTimeout: 30 * 24 * 3600 * 1000,  // in ms
         defaultPosition: [48.85666, 2.35083],  // default position if there is no geolocation
-        defaultZoom: 12,  // Default zoom level if there is no geolocation
+        defaultZoom: 16,  // Default zoom level if there is no geolocation
         maxDistanceFromCity: 10,  // in km, if further than this distance to defaultPosition, will not pan the map to current position
         leafletConfig: {  // Leafleat settings, `zoomControl` will be overwritten
             dragging: true,

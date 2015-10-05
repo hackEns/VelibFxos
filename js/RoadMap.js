@@ -68,8 +68,8 @@ var RoadMap = (function() {
      * Add station markers markers to the Map
      * @param _stations list of all stations to display
      */
-    api.addMarkers = function(_stations) {
-        Log.info('RoadMap', 'addMarkers');
+    api.addAllMarkers = function(_stations) {
+        Log.info('RoadMap', 'addAllMarkers');
 
         stations = _stations;
 
@@ -105,7 +105,7 @@ var RoadMap = (function() {
 
         map.addLayer(markers);
 
-        Log.info('RoadMap', 'addMarkers', 'done');
+        Log.info('RoadMap', 'addAllMarkers', 'done');
 
         return api;
     };

@@ -8,6 +8,8 @@
  * Utility functions handling stations
  */
 var Stations = (function() {
+    var api = {};
+
     /**
      * Decorate stations with their distance to a position
      * @param stations Station list
@@ -38,7 +40,7 @@ var Stations = (function() {
      * @param station Station to format
      * @param coords Current position (can be omitted or replace by station's `distance` field)
      */
-    var format = function(station, coords) {
+    api.format = function(station, coords) {
         var formatted = {};
 
         Log.debug(station);
@@ -80,7 +82,7 @@ var Stations = (function() {
      * @param filter Filtering function (optionnal)
      * @return sorted filtered sliced station list
      */
-    var filterClosestStations = function(stations, coords, limit, filter) {
+    api.filterClosestStations = function(stations, coords, limit, filter) {
         stations = sortByDistance(stations, coords);
 
         if (filter !== undefined) {
@@ -94,8 +96,5 @@ var Stations = (function() {
         }
     };
 
-    return {
-        format: format,
-        filterClosestStations: filterClosestStations
-    };
+    return api;
 })();

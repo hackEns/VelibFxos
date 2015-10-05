@@ -363,7 +363,7 @@ var Views = (function() {
 
         stationStorage.getStations()
         .then(function(stations) {
-            RoadMap.addMarkers(stations);
+            RoadMap.addAllMarkers(stations);
 
             // SetPositionMarker after roadMap initiated
             Geolocation.watchPosition(function() {

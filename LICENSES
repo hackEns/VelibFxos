@@ -1,7 +1,7 @@
-LICENCES
+LICENSES
 ========
 
-This file specifies the licence of the VelibFxos project. It also gathers the licences of exernal libraries as well as acknoledgment to those.
+This file specifies the license of the VelibFxos project. It also gathers the licenses of exernal libraries as well as acknoledgment to those.
 
 This list of libraries can also be used to keep track of dependencies and then update them.
 
@@ -9,7 +9,7 @@ This list of libraries can also be used to keep track of dependencies and then u
 VelibFxos
 ---------
 
-The licence has to be determined by the team. Consequently, it falls in the meantime to something kind of restrictive, but I can tell you that the final licence will allow you to use this freely for a lot of common purposes!
+The license has to be determined by the team. Consequently, it falls in the meantime to something kind of restrictive, but I can tell you that the final license will allow you to use this freely for a lot of common purposes!
 
 
 Leaflet
@@ -21,7 +21,7 @@ Link:
 
 http://leafletjs.com
 
-Licence: (2-clause BSD)
+License: (2-clause BSD)
 
 Copyright (c) 2010-2015, Vladimir Agafonkin
 Copyright (c) 2010-2011, CloudMade
@@ -57,7 +57,7 @@ Link:
 
 http://www.liedman.net/leaflet-routing-machine/
 
-Licence:
+License:
 
 Copyright (c) 2014, Per Liedman (per@liedman.net)
 Turn instruction icons Copyright (c) 2014, Mapbox (mapbox.com)
@@ -77,7 +77,7 @@ Link:
 
 https://github.com/Leaflet/Leaflet.markercluster
 
-Licence: (MIT)
+License: (MIT)
 
 Copyright 2012 David Leaver
 
@@ -110,7 +110,7 @@ Link:
 
 http://www.idangero.us/swiper/
 
-Licence: (MIT)
+License: (MIT)
 
 The MIT License (MIT)
 
@@ -143,7 +143,7 @@ Link:
 
 https://necolas.github.io/normalize.css/
 
-Licence: (MIT, not 80 characters wrapped for whatever reason, but I respect...)
+License: (MIT, not 80 characters wrapped for whatever reason, but I respect...)
 
 Copyright (c) Nicolas Gallagher and Jonathan Neal
 
