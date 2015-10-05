@@ -98,8 +98,7 @@ var Views = (function() {
             Log.debug("Cleaning view");
             $(mainSection).empty();
             // Reset geolocation callbacks
-            Geolocation.noWatchPosition();
-            Geolocation.noWaitPosition();
+            Geolocation.off('position');
         }
     };
 
@@ -361,16 +360,13 @@ var Views = (function() {
 
         RoadMap.init();
 
-        stationStorage.getStations()
-        .then(function(stations) {
+        // SetPositionMarker after roadMap initiated
+        Geolocation.on('position', function(pos) {
+            RoadMap.setPositionMarker(pos);
+        });
+
+        stationStorage.on('stations', function(stations) {
             RoadMap.addAllMarkers(stations);
-
-            // SetPositionMarker after roadMap initiated
-            Geolocation.watchPosition(function() {
-                var pos = Geolocation.getPosition();
-                RoadMap.setPositionMarker(pos);
-            });
-
         });
     };
 

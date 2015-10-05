@@ -5,46 +5,28 @@
  ***************/
 
 var Geolocation = (function() {
-    var api = {};
+    var api = window.evt(); // Implements Events interface from evt.js
 
     var coords = null;
     var timer = null;
-
-    /**
-     * List of callbacks waiting for a position information.
-     */
-    var waitPositionCallbacks = [];
-
-    /**
-     * List of callbacks watching for a position information.
-     * The difference with waiting callbacks is that they are called at each position change
-     */
-    var watchPositionCallbacks = [];
 
     /**
      * Called whenever the position has succesfully changed
      */
     var successFunction = function(position) {
         coords = position.coords;
+
+        // TODO: Move that DOM effect into the View code
         $('.info--content').html(parseFloat(coords.latitude).toFixed(3) + ' - ' + parseFloat(coords.longitude).toFixed(3));
 
-        // Call waiting functions
-        var oldWaitPositionCallbacks = waitPositionCallbacks; // avoid loops if callbacks call waitPosition again
-        waitPositionCallbacks = [];
-        oldWaitPositionCallbacks.forEach(function(callback) {
-            callback(coords);
-        });
-
-        // Call watching functions
-        watchPositionCallbacks.forEach(function(callback) {
-            callback(coords);
-        });
+        api.emit('position', coords);// Call waiting and watching functions
     };
 
     /**
      * Called whenever the position watcher failed
      */
     var errorFunction = function(error) {
+        // TODO: Move that DOM effect into the View code
         coords = null;
         switch (error.code) {
             case error.PERMISSION_DENIED:
@@ -62,6 +44,7 @@ var Geolocation = (function() {
         if (navigator.geolocation) {
             navigator.geolocation.watchPosition(successFunction, errorFunction, Config.geolocation);
         } else {
+            // TODO: Move that DOM effect into the View code
             $('.info--content').addClass('error').html("Votre navigateur ne supporte pas l'API de géolocalisation.");
         }
     };
@@ -72,9 +55,10 @@ var Geolocation = (function() {
      * and takes the current coordinates as first argument.
      */
     api.waitPosition = function(callback) {
+        // TODO: Move that DOM effect into the View code
         $('.station-info').html('<p class="center">Attente de la position…</p>');
         if (coords === null) {
-            waitPositionCallbacks.push(callback);
+            api.once('position', callback);
         } else {
             callback(coords);
         }
@@ -86,25 +70,10 @@ var Geolocation = (function() {
      * and takes the current coordinates as first argument.
      */
     api.watchPosition = function(callback) {
-        if (coords === null) {
-            watchPositionCallbacks.push(callback);
-        } else {
+        api.on('position', callback);
+        if (coords !== null) {
             callback(coords);
         }
-    };
-
-    /**
-     * Clear the list functions watching for position
-     */
-    api.noWatchPosition = function() {
-        watchPositionCallbacks = [];
-    };
-
-    /**
-     * Clear the list functions waiting for position
-     */
-    api.noWaitPosition = function() {
-        waitPositionCallbacks = [];
     };
 
     /**

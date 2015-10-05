@@ -11,22 +11,12 @@
  * is then used to access all of them depending on their availability.
  */
 var StationStorage = function() {
-    var api = {};
+    var api = window.evt(); // Implements Events interface from evt.js
 
     api.name = 'StationStorage';
 
     api.stations = null;
     api.starredStations = [];
-
-    // Private attribute holding callbacks waiting for loading
-    var onLoadCallbacks = [];
-
-    // Event emission
-    api.emitOnLoad = function() {
-        onLoadCallbacks.forEach(function(callback) {
-            callback();
-        });
-    };
 
     /**
      * Initially loads stations (to be overwritten)
@@ -36,7 +26,7 @@ var StationStorage = function() {
     api.load = function() {
         Log.debug("load", api.name);
         if (api.stations !== null) {
-            api.emitOnLoad();
+            api.emit('ready');
             return Promise.resolve(api);
         } else {
             return Promise.reject('No station found');
@@ -53,7 +43,7 @@ var StationStorage = function() {
             return Promise.resolve();
         } else {
             return new Promise(function(resolve, reject) {
-                onLoadCallbacks.push(function() {
+                api.once('ready', function() {
                     resolve(api)
                 });
             });
@@ -169,7 +159,8 @@ var AuthorityStationStorage = function() {
             $.getJSON(Config.stationsUrl, function(data, status, jqXHR) {
                 // TODO: look at status
                 api.stations = data.map(stationContract);
-                api.emitOnLoad();
+                api.emit('ready');
+                api.emit('stations', api.stations);
                 resolve(api);
             });
         });
@@ -222,7 +213,7 @@ var LocalStationStorage = function() {
             if (api.starredStations == null) {
                 api.starredStations = [];
             }
-            api.emitOnLoad();
+            api.emit('ready');
             resolve(api);
         });
     };
@@ -337,6 +328,14 @@ var StationStorageAdapter = function() {
             return Promise.resolve();
         }
 
+        // Forward events before loading not to miss them
+        // To be cleaned up
+        substorages.forEach(function(storage) {
+            storage.on('stations', function(ev) {
+                api.emit('stations', ev);
+            });
+        });
+
         // The "-1st" substrorage fails to load cause it doesn't exist
         var loading = Promise.reject(Error("No substorage registered"));
 
@@ -352,7 +351,7 @@ var StationStorageAdapter = function() {
             currentSubstorage = storage;
             Log.info("Use storage " + currentSubstorage.name);
 
-            api.emitOnLoad();
+            api.emit('ready');
 
             api.save();
         });
