@@ -73,7 +73,7 @@ var RoadMap = (function() {
 
         stations = _stations;
 
-        var markers = new L.MarkerClusterGroup({disableClusteringAtZoom: Config.defaultZoom});
+        var markers = new L.MarkerClusterGroup({disableClusteringAtZoom: Config.maxClusteringZoom});
 
         // build Markers
         stations.forEach(function(station) {

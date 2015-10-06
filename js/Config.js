@@ -26,6 +26,7 @@ var Config = (function() {
         defaultPosition: [48.85666, 2.35083],  // default position if there is no geolocation
         defaultZoom: 16,  // Default zoom level if there is no geolocation
         defaultCircleZoom: 16,  // Default zoom level for circle maps
+        maxClusteringZoom: 15,  // Higher zoom level at which clustering is enabled
         maxDistanceFromCity: 10,  // in km, if further than this distance to defaultPosition, will not pan the map to current position
         leafletConfig: {  // Leafleat settings, `zoomControl` will be overwritten
             dragging: true,
