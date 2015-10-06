@@ -20,7 +20,7 @@
  * Event emitted are:
  *
  *   * 'stations': providing an unordered list of stations
- *   * 'starredStationsIds': providing an unordered list of station IDs.
+ *   * 'starred-stations-ids': providing an unordered list of station IDs.
  */
 var StationProvider = function() {
     var api = window.evt(); // Implements Events interface from evt.js
@@ -148,8 +148,8 @@ var LocalStationProvider = function() {
 
         api.emit('stations', stations);
 
-        var starredStationsIds = JSON.parse(localStorage.getItem('starredStationsIds'));
-        api.emit('starredStationsIds', starredStationsIds);
+        var starredStationsIds = JSON.parse(localStorage.getItem('starred-stations-ids')) || [];
+        api.emit('starred-stations-ids', starredStationsIds);
     };
 
     return api;
@@ -208,7 +208,7 @@ var MockStationProvider = function() {
 
     api.start = function() {
         //api.emit('stations', stations);
-        //api.emit('starredStationsIds', starredStationsIds);
+        api.emit('starred-stations-ids', starredStationsIds);
     };
 
 

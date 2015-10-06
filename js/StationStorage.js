@@ -5,113 +5,6 @@
  ******************/
 
 
-/**
- * StationStorage is a basic station storage box.
- * Several boxes inherit from this one and StationStorageAdapter
- * is then used to access all of them depending on their availability.
- */
-var StationStorage = function() {
-    var api = window.evt(); // Implements Events interface from evt.js
-
-    api.name = 'StationStorage';
-
-    api.stations = null;
-    api.starredStations = [];
-
-    /**
-     * Initially loads stations (to be overwritten)
-     * MUST NOT be called more than once
-     * @return Promise on the loaded storage
-     */
-    api.load = function() {
-        Log.debug("load", api.name);
-        if (api.stations !== null) {
-            api.emit('ready');
-            return Promise.resolve(api);
-        } else {
-            return Promise.reject('No station found');
-        }
-    };
-
-    /**
-     * Ensure that the storage has been loaded
-     * @return Promise
-     */
-    api.ready = function() {
-        Log.debug("ready", api.name);
-        if (api.isLoaded()) {
-            return Promise.resolve();
-        } else {
-            return new Promise(function(resolve, reject) {
-                api.once('ready', function() {
-                    resolve(api)
-                });
-            });
-        }
-    }
-
-    /**
-     * @returns bool whether the storage has correctly been loaded
-     */
-    api.isLoaded = function() {
-        Log.debug("isLoaded", api.name);
-        return api.stations !== null;
-    };
-
-    /**
-     * Persistentely saves stations (to be overwritten)
-     * @return Promise
-     */
-    api.save = function() {
-        return Promise.resolve();
-    };
-
-    /**
-     * @return Promise on full stations list
-     */
-    api.getStations = function() {
-    return api.ready()
-        .then(function() {
-            return api.stations;
-        });
-    };
-
-    /**
-     * @return Promise on starred stations list
-     */
-    api.getStarredStations = function() {
-        return api.ready()
-        .then(function() {
-            return api.starredStations;
-        });
-    };
-
-    /**
-     * Get station by its Id
-     * @param id Station id
-     * @return Promise on station whose number is `id`
-     */
-    api.getStationById = function(id) {
-    return api.ready()
-        .then(function() {
-            return api.getStations()
-        })
-        .then(function(allStations) {
-            var stations = $.grep(allStations, function(station) {
-                return station.number == id;
-            });
-            if (stations.length > 0) {
-                return Promise.resolve(stations[0]);
-            } else {
-                return Promise.reject("Station not found wth id " + id);
-            }
-        });
-    };
-
-
-    return api;
-};
-
 
 /**
  * Minimalistic station object handling events
@@ -122,44 +15,40 @@ function StationEntry() {
 
 
 /**
- * StationStorageAdapter is an adapter gathering different sources of information,
- * e.g. JCDecaux OpenData, localStorage and mock test values.
+ * Add b fields to a object.
+ * @return true if a changed
  */
-var StationStorageAdapter = function() {
-    var api = StationStorage();
-
-    api.name = 'StationStorageAdapter';
-
-    var stationsDict = {};
-    var addToDict = function(stations) {
-        console.log(stations);
-        // Stations to send to StationStorage listeners
-        var newEntries = [];
-
-        stations.forEach(function(station) {
-            var isUpdated = false;
-            var stationEntry = stationsDict[station.number];
-            var isNew = stationEntry === undefined;
-
-
-            stationEntry = stationEntry || new StationEntry();
-
-            for (var key in station) {
-                if (stationEntry[key] != station[key]) {
-                    isUpdated = true;
-                    stationEntry[key] = station[key];
-                }
-            }
-
-            stationsDict[station.number] = stationEntry;
-            if (isUpdated) stationEntry.emit('update');
-            if (isNew) newEntries.push(stationEntry);
-        });
-
-        if (newEntries.length > 0) {
-            api.emit('stations', newEntries);
+function mixin(a, b) {
+    var update = false;
+    for (var key in b) {
+        if (a[key] != b[key]) {
+            update = true;
+            a[key] = b[key];
         }
     }
+    return update;
+}
+
+
+
+/**
+ * StationStorage is a basic station storage box.
+ * Several boxes inherit from this one and StationStorageAdapter
+ * is then used to access all of them depending on their availability.
+ */
+var StationStorage = function() {
+    var api = window.evt(); // Implements Events interface from evt.js
+
+    api.name = 'StationStorage';
+
+    /**
+     * Persistentely saves stations
+     * TODO
+     * @return Promise
+     */
+    api.save = function() {
+        return Promise.resolve();
+    };
 
     /**
      * List of available storage boxes tu use.
@@ -167,36 +56,146 @@ var StationStorageAdapter = function() {
     var providers = [MockStationProvider(), LocalStationProvider(), AuthorityStationProvider()];
 
     /**
+     * Internal private memory
+     */
+    var stationsPool = {};
+    var starredStationsPool = {}; // We use only the keys of this
+
+    /**
+     * Event handlers
+     */
+    var onNewStations = function(stations) {
+        // Stations to send to StationStorage listeners
+        var newEntries = [];
+
+        // For each new station, we add it to the internal hash if it does not
+        // exist yet and fire an 'update' event if it has been modified.
+        stations.forEach(function(station) {
+            var stationEntry = stationsPool[station.number];
+            var isNew = stationEntry === undefined;
+            stationEntry = stationEntry || new StationEntry();
+
+            // Update station entry
+            var isUpdated = mixin(stationEntry, station)
+
+            if (isUpdated) stationEntry.emit('update');
+            if (isNew) newEntries.push(stationEntry);
+
+            stationsPool[station.number] = stationEntry;
+        });
+
+        // Forward new entries only to listeners
+        if (newEntries.length > 0) {
+            api.emit('stations', newEntries);
+        }
+    };
+
+    var onNewStarredStationsIds = function(starredStationsIds) {
+        var newStations = [];
+        var unknownIds = [];
+
+        starredStationsIds.forEach(function(id) {
+            // If the corresponding station has not been loaded yet, postpone
+            if (stationsPool[id] === undefined) {
+                unknownIds.push(id);
+                return;
+            }
+
+            // If new star, forward to listeners
+            if (!starredStationsPool[id]) {
+                newStations.push(stationsPool[id]);
+            }
+
+            starredStationsPool[id] = true;
+        });
+
+        // Forward new entries only to listeners
+        if (newStations.length > 0) {
+            api.emit('starred-stations', newStations);
+        }
+
+        if (unknownIds.length > 0) {
+            // Handle remaining stations after new stations have been loaded
+            api.once('stations', function(stations) {
+                onNewStarredStationsIds(unknownIds);
+            });
+        }
+    };
+
+
+    /**
      * Reccursively loads storages until one of them is ok
      */
-    api.load = function() {
-        Log.debug("load", api.name);
-        if (api.isLoaded()) {
-            return Promise.resolve();
-        }
+    api.start = function() {
+        // When a new callback is attached, imadiately provide it the result of
+        // past events.
+        // Avoid firing empty events to avoid flushing `once` listeners.
+        api.on('attach-on-stations', function(cb) {
+            var stations = api.getStations();
+            if (stations != []) cb(stations);
+        });
+        api.on('attach-on-starred-stations', function(cb) {
+            var starredStations = api.getStarredStations();
+            if (starredStations != []) cb(starredStations);
+        });
 
         // Forward events before loading not to miss them
         providers.forEach(function(provider) {
-            provider.on('stations', function(stations) {
-                addToDict(stations);
-            });
-
-            provider.on('starredStationsIds', function(starredStationsIds) {
-                api.emit('starredStationsIds', starredStationsIds);
-            });
-
+            provider.on('stations', onNewStations);
+            provider.on('starred-stations-ids', onNewStarredStationsIds);
             provider.start();
         });
     };
 
-    // Debug function!
-    api.emitAllStation = function() {
+    /**
+     * If possible, avoid using this and listen to the 'stations' events that
+     * provides stations as soon as they arrive.
+     */
+    api.getStations = function() {
         var stations = [];
-        for (var key in stationsDict) {
-            stations.push(stationsDict[key]);
+        for (var key in stationsPool) {
+            stations.push(stationsPool[key]);
         }
-        api.emit('stations', stations);
-    }
+        return stations;
+    };
+
+    /**
+     * If possible, avoid using this and listen to the 'starred-stations' events that
+     * provides stations as soon as they arrive.
+     */
+    api.getStarredStations = function() {
+        var stations = [];
+        for (var key in starredStationsPool) {
+            stations.push(stationsPool[key]);
+        }
+        return stations;
+    };
+
+
+    /**
+     * Get station by its Id
+     * @param id Station id
+     * @return Promise on station whose number is `id`
+     */
+    api.getStationById = function(id) {
+        return new Promise(function(resolve, reject) {
+            var grepStation = function(stations) {
+                stations.forEach(function(station) {
+                    if (station.number == id) {
+                        api.off('stations', grepStation);
+                        resolve(station);
+                    };
+                })
+            };
+
+            api.on('stations', grepStation);
+
+            setTimeout(function() {
+                api.off('stations', grepStation);
+                reject('Search station by ID timed out (timeout: ' + Config.searchStationTimeout + ')');
+            }, Config.searchStationTimeout);
+        });
+    };
 
     return api;
 };

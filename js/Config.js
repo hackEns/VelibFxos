@@ -22,6 +22,7 @@ var Config = (function() {
         },
         waitPositionTimeout: 1000,  // in ms
         waitStationsTimeout: 1000,  // in ms
+        searchStationTimeout: 30*1000,  // in ms
         AuthorityStationProviderInterval: 120*1000,  // in ms
         localStationStorageTimeout: 30 * 24 * 3600 * 1000,  // in ms
         defaultPosition: [48.85666, 2.35083],  // default position if there is no geolocation
