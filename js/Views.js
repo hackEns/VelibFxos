@@ -24,8 +24,8 @@ var Views = (function() {
      * Initialize view system
      */
     api.init = function() {
-        stationStorage = StationStorageAdapter();
-        stationStorage.load();
+        stationStorage = StationStorage();
+        stationStorage.start();
         
         // Main templates
         templates['index'] = document.getElementById('index');
@@ -127,21 +127,23 @@ var Views = (function() {
         Geolocation.waitPosition(function() {
             var currentPosition = Geolocation.getPosition();
 
-            stationStorage.getStations()
-            .then(function(allStations) {
+            var stations = [];
+            var first = true;
+
+            stationStorage.on('stations', function(newStations) {
                 Log.debug("fill view");
 
-                var stations = Stations.filterClosestStations(
-                    allStations,
+                // Refilter with new stations
+                stations = Stations.filterClosestStations(
+                    stations.concat(newStations),
                     currentPosition,
                     10,
                     function(item) { return item.availableBikes > 0; }
                 );
 
+                // TODO: edit tiles instead of rebuilding from scratch
                 var stationsList = document.getElementById('stations-list');
                 $(stationsList).empty();
-
-                var first = true;
 
                 stations.forEach(function(station) {
                     var fstation = Stations.format(station, currentPosition);
@@ -196,23 +198,25 @@ var Views = (function() {
         Geolocation.waitPosition(function() {
             var currentPosition = Geolocation.getPosition();
 
-            stationStorage.getStations()
-            .then(function(allStations) {
+            var stations = [];
+            var first = true;
+
+            stationStorage.on('stations', function(newStations) {
                 Log.debug("fill view");
 
-                var stations = Stations.filterClosestStations(
-                    allStations,
+                // Refilter with new stations
+                stations = Stations.filterClosestStations(
+                    stations.concat(newStations),
                     currentPosition,
                     10,
-                    function(item) { return item.availableStands > 0; }
+                    function(item) { return item.availableBikes > 0; }
                 );
 
+                // TODO: edit tiles instead of rebuilding from scratch
                 var stationsList = document.getElementById('stations-list');
                 $(stationsList).empty();
 
-                var first = true;
-
-                stations.forEach(function(station){
+                stations.forEach(function(station) {
                     var fstation = Stations.format(station, currentPosition);
 
                     // Construction du DOM
@@ -267,28 +271,34 @@ var Views = (function() {
 
         var currentPosition = null;
 
-        stationStorage.getStarredStations()
-        .then(function(starredStations) {
+        stationStorage.on('starred-stations', function(starredStations) {
             Log.debug('Starred stations', starredStations);
             starredStations.forEach(function(station) {
-                var fstation = Stations.format(station, currentPosition);
 
                 // Construction du DOM
                 var row = templates['starredItem'].content.cloneNode(true);
                 row.querySelector('.starred-station').id = "starred-station-" + station.number;
-                row.querySelector('.link').href += fstation.number;
-                row.querySelector('.name').textContent = fstation.address;
-                row.querySelector('.bikes').textContent = fstation.availableBikes;
-                row.querySelector('.dist').textContent = 'Chargement…';
-                row.querySelector('.stands').textContent = fstation.availableStands;
                 starredList.appendChild(row);
 
-                Geolocation.waitPosition(function() {
+                // Update function
+                var updateView = function() {
                     currentPosition = Geolocation.getPosition();
-                    fstation = Stations.format(station, currentPosition);
-                    Log.debug(starredList)
-                    Log.debug(station.number);
-                    starredList.querySelector("#starred-station-" + station.number + " .dist").textContent = fstation.distance;
+                    var fstation = Stations.format(station, currentPosition);
+
+                    var entry = starredList.querySelector("#starred-station-" + station.number);
+                    entry.querySelector('.link').href += fstation.number;
+                    entry.querySelector('.name').textContent = fstation.address;
+                    entry.querySelector('.bikes').textContent = fstation.availableBikes;
+                    entry.querySelector('.dist').textContent = fstation.distance;
+                    entry.querySelector('.stands').textContent = fstation.availableStands;
+                }
+
+                updateView();
+                station.on('update', updateView);
+
+                // To be factorized
+                Geolocation.waitPosition(function() {
+                    station.emit('update');
                 });
             });
         });
@@ -335,8 +345,7 @@ var Views = (function() {
                 var fstation = Stations.format(station, currentPosition);
                 mainSection.querySelector(".distance").textContent = fstation.distance;
             });
-        })
-        .catch(function(err) {
+        }, function(err) {
             console.log(err);
             alert("La station n'existe pas !");
             Log.error("Views, station, station doesn't exist " + stationId);
@@ -363,10 +372,8 @@ var Views = (function() {
         });
 
         stationStorage.on('stations', function(stations) {
-            console.log('#########################');
             RoadMap.addAllMarkers(stations);
         });
-        stationStorage.emitAllStation();
     };
 
     return api;

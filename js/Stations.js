@@ -43,9 +43,7 @@ var Stations = (function() {
     api.format = function(station, coords) {
         var formatted = {};
 
-        Log.debug(station);
-
-        // Unchqnged fields
+        // Unchanged fields
         formatted.address = station.address;
         formatted.number = station.number;
         formatted.bonus = station.bonus;
@@ -60,7 +58,7 @@ var Stations = (function() {
             formatted.lastUpdate = formatTime(diff);
         }
         // distance
-        if (station.distance || coords !== undefined) {
+        if (station.distance || coords) {
             var dist = station.distance || distance(coords, station.position);
             formatted.distance = formatDistance(dist);
         } else {

@@ -7,6 +7,9 @@
  *
  * @version 0.3.3
  * @author Wilson Page <wilson.page@me.com>
+ *
+ * @edit by eliemichel <elie.michel@exppad.com>
+ * Add emission of events when attaching new callbacks
  */
 
 ;(function() {
@@ -33,6 +36,15 @@ function Events(obj) {
 }
 
 /**
+ * Common code for on and once
+ */
+proto._on = function(name, cb) {
+  this._cbs = this._cbs || {};
+  (this._cbs[name] || (this._cbs[name] = [])).push(cb);
+  return this;
+};
+
+/**
  * Registers a callback
  * with an event name.
  *
@@ -41,8 +53,8 @@ function Events(obj) {
  * @return {Event}
  */
 proto.on = function(name, cb) {
-  this._cbs = this._cbs || {};
-  (this._cbs[name] || (this._cbs[name] = [])).push(cb);
+  this._on(name, cb);
+  this.emit('attach-on-' + name, cb);
   return this;
 };
 
@@ -58,11 +70,13 @@ proto.on = function(name, cb) {
  * @public
  */
 proto.once = function(name, cb) {
-  this.on(name, one);
+  this._on(name, one);
+  this.emit('attach-once-' + name, cb);
   function one() {
     cb.apply(this, arguments);
     this.off(name, one);
   }
+  return this;
 };
 
 /**
