@@ -54,7 +54,7 @@ var RoadMap = (function() {
         var opts = Config.leafletConfig;
         opts.zoomControl = true;
 
-        map = L.map('map', opts).setView([position.latitude, position.longitude], 16);
+        map = L.map('map', opts).setView([position.latitude, position.longitude], Config.defaultCircleZoom);
 
         L.tileLayer(Config.tileProvider).addTo(map);
 
@@ -73,7 +73,7 @@ var RoadMap = (function() {
 
         stations = _stations;
 
-        var markers = new L.MarkerClusterGroup();
+        var markers = new L.MarkerClusterGroup({disableClusteringAtZoom: Config.defaultZoom});
 
         // build Markers
         stations.forEach(function(station) {
