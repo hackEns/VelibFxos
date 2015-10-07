@@ -350,7 +350,7 @@ var Views = (function() {
 
     /**
      * Enable search view
-     * It displays a map that allows users to looking for a station in the Parisian neighborhoods.
+     * It displays a map that allows users to look for a station in the Parisian neighborhoods.
      */
     api.search = function() {
         currentView = 'search';
