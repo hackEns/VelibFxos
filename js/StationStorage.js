@@ -41,19 +41,17 @@ var StationStorage = function() {
 
     api.name = 'StationStorage';
 
+    
     /**
-     * Persistentely saves stations
-     * TODO
-     * @return Promise
-     */
-    api.save = function() {
-        return Promise.resolve();
-    };
-
-    /**
-     * List of available storage boxes tu use.
+     * List of available provider boxes tu use.
      */
     var providers = [MockStationProvider(), LocalStationProvider(), AuthorityStationProvider()];
+
+    /**
+     * List of available saver boxes tu use.
+     */
+    var savers = [LocalStationSaver()];
+
 
     /**
      * Internal private memory
@@ -62,7 +60,7 @@ var StationStorage = function() {
     var starredStationsPool = {}; // We use only the keys of this
 
     /**
-     * Event handlers
+     * Internal event handlers
      */
     var onNewStations = function(stations) {
         // Stations to send to StationStorage listeners
@@ -124,9 +122,17 @@ var StationStorage = function() {
 
 
     /**
-     * Reccursively loads storages until one of them is ok
+     * Attach to all station providers
      */
     api.start = function() {
+        // Automatic saving
+        api.on('stations', function() {
+            api.saveStations();
+        });
+        api.on('starred-stations', function() {
+            api.saveStarredStationsIds();
+        });
+
         // When a new callback is attached, imadiately provide it the result of
         // past events.
         // Avoid firing empty events to avoid flushing `once` listeners.
@@ -139,13 +145,14 @@ var StationStorage = function() {
             if (starredStations != []) cb(starredStations);
         });
 
-        // Forward events before loading not to miss them
+        // Listen to raw providers
         providers.forEach(function(provider) {
             provider.on('stations', onNewStations);
             provider.on('starred-stations-ids', onNewStarredStationsIds);
             provider.start();
         });
     };
+
 
     /**
      * If possible, avoid using this and listen to the 'stations' events that
@@ -158,6 +165,20 @@ var StationStorage = function() {
         }
         return stations;
     };
+
+
+    /**
+     * If possible, avoid using this and listen to the 'starred-stations' events that
+     * provides stations as soon as they arrive.
+     */
+    api.getStarredStationsIds = function() {
+        var stations = [];
+        for (var key in starredStationsPool) {
+            stations.push(key);
+        }
+        return stations;
+    };
+
 
     /**
      * If possible, avoid using this and listen to the 'starred-stations' events that
@@ -196,6 +217,47 @@ var StationStorage = function() {
             }, Config.searchStationTimeout);
         });
     };
+
+
+    /**
+     * Persistentely saves stations to every registered savers
+     * @param stations to store (all stations if omitted)
+     * @return Promise
+     */
+    api.saveStations = function(stations) {
+        stations = stations || api.getStations();
+
+        return Promise.all(savers.map(function(saver) {
+            return saver.saveStations(stations);
+        }));
+    };
+
+
+    /**
+     * Persistentely saves starred stations to every registered savers
+     * @param stations ids to store to starred stations (all stations if omitted)
+     * @return Promise
+     */
+    api.saveStarredStationsIds = function(starredStationsIds) {
+        starredStationsIds = starredStationsIds || api.getStarredStationsIds();
+
+        return Promise.all(savers.map(function(saver) {
+            return saver.saveStarredStationsIds(starredStationsIds);
+        }));
+    };
+
+
+    /**
+     * Save all cached values
+     * @return Promise
+     */
+    api.save = function() {
+        return Promise.all([
+            api.saveStations(),
+            api.saveStarredStationsIds()
+        ]);
+    };
+
 
     return api;
 };
