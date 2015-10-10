@@ -148,7 +148,7 @@ var LocalStationProvider = function() {
 
         api.emit('stations', stations);
 
-        var starredStationsIds = JSON.parse(localStorage.getItem('starred-stations-ids')) || [];
+        var starredStationsIds = JSON.parse(localStorage.getItem('starredStationsIds')) || [];
         api.emit('starred-stations-ids', starredStationsIds);
     };
 
@@ -156,7 +156,23 @@ var LocalStationProvider = function() {
 };
 
 
+/**
+ * LocalStationSaver stores stations to localStorage for starred stations and faster access.
+ */
+var LocalStationSaver = function() {
+    var api = {};
 
+    api.saveStations = function(stations) {
+        localStorage.setItem('stations', JSON.stringify(stations));
+        localStorage.setItem('lastStationsUpdate', Date.now());
+    };
+
+    api.saveStarredStationsIds = function(starredStationsIds) {
+        localStorage.setItem('starredStationsIds', JSON.stringify(starredStationsIds));
+    };
+
+    return api;
+};
 
 
 /**
