@@ -89,6 +89,8 @@ var Views = (function() {
                 template = $(template).html();
                 mainSection.append(template);
             }
+
+            document.webL10n.translate();
         },
 
         clean: function() {
