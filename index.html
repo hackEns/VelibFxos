@@ -20,6 +20,9 @@
 
     <!-- Local style -->
     <link rel="stylesheet" href="css/main.css">
+
+    <!-- Locales -->
+    <link rel="prefetch" type="application/l10n" href="l10n/locales.ini" />
 </head>
 
 <body>
@@ -34,19 +37,23 @@
         </header>
         <div class="station-info">
             <a href="#/bikes" class="entry bikes">
-                <span>vélos<br/>disponibles</span>
+                <span>
+                    <span data-l10n-id="available_bikes">vélos<br/>disponibles</span>
+                </span>
                 <img class="entry--logo" alt="" src="img/velib.svg" />
             </a>
             <a href="#/stands" class="entry stands">
-                <span>places<br/>libres</span>
+                <span>
+                    <span data-l10n-id="free_stands">places<br/>libres</span>
+                </span>
                 <img class="entry--logo" alt="" src="img/stand.svg" />
             </a>
             <a href="#/starred" class="entry starred">
-                <span>Favoris</span>
+                <span data-l10n-id="Favorites">Favoris</span>
                 <img class="entry--logo" alt="" src="img/star.svg" />
             </a>
             <a href="#/search" class="entry search">
-                <span>Rechercher</span>
+                <span data-l10n-id="Search">Rechercher</span>
                 <img class="entry--logo" alt="" src="img/search.svg" />
             </a>
         </div>
@@ -57,14 +64,14 @@
         <section role="region" class="skin-bikes">
             <header id="app-bar" class="fixed">
                 <a href="#/">
-                    <span class="icon icon-back">back</span>
+                    <span class="icon icon-back" data-l10n-id="back">retour</span>
                 </a>
                 <menu type="toolbar">
                     <div>
                         <span class="icon icon-velib"></span>
                     </div>
                 </menu>
-                <h1>Vélos disponibles</h1>
+                <h1 data-l10n-id="Available_bikes">Vélos disponibles</h1>
             </header>
 
             <article class="content no-scrollable header footer">
@@ -84,7 +91,7 @@
                     <aside class="pack-end">
                         <span class="icon icon-plus-pink">+</span>
                     </aside>
-                    Informations
+                    <span data-l10n-id="Informations">Informations</span>
                 </a>
             </footer>
         </section>
@@ -114,14 +121,14 @@
         <section role="region" class="skin-stands">
             <header id="app-bar" class="fixed">
                 <a href="#/">
-                    <span class="icon icon-back">back</span>
+                    <span class="icon icon-back" data-l10n-id="back">retour</span>
                 </a>
                 <menu type="toolbar">
                     <div>
                         <span class="icon icon-stand"></span>
                     </div>
                 </menu>
-                <h1>Places libres</h1>
+                <h1 data-l10n-id="Free_Stands">Places libres</h1>
             </header>
 
             <article class="content no-scrollable header footer">
@@ -141,7 +148,7 @@
                     <aside class="pack-end">
                         <span class="icon icon-plus-blue">+</span>
                     </aside>
-                    Informations
+                    <span data-l10n-id="Informations">Informations</span>
                 </a>
             </footer>
         </section>
@@ -152,26 +159,26 @@
         <section role="region" class="skin-starred">
             <header id="app-bar" class="fixed">
                 <a href="#/">
-                    <span class="icon icon-back">back</span>
+                    <span class="icon icon-back" data-l10n-id="back">retour</span>
                 </a>
                 <menu type="toolbar">
                     <div>
                         <span class="icon icon-starred"></span>
                     </div>
                 </menu>
-                <h1>Favoris</h1>
+                <h1 data-l10n-id="Favorites">Favoris</h1>
             </header>
 
             <article class="content scrollable header footer">
                 <section data-type="list">
                     <header>
                         <aside class="pack-end">
-                            <span class="icon icon-stand-blue">Places</span>
+                            <span class="icon icon-stand-blue" data-l10n-id="Stands[many]">Places</span>
                         </aside>
                         <aside class="pack-end">
-                            <span class="icon icon-velib-pink">Vélos</span>
+                            <span class="icon icon-velib-pink" data-l10n-id="Bikes[many]">Vélos</span>
                         </aside>
-                        Station
+                        <span data-l10n-fr="Station[one]">Station</span>
                     </header>
                     <ul id="starred-list">
                     </ul>
@@ -183,7 +190,7 @@
                     <aside class="pack-end">
                         <span class="icon icon-plus-violet">+</span>
                     </aside>
-                    Ajouter
+                    <span data-l10n-fr="Add">Ajouter</span>
                 </a>
             </footer>
         </section>
@@ -205,14 +212,14 @@
         <section role="region" class="skin-search">
             <header id="app-bar" class="fixed">
                 <a href="#/">
-                    <span class="icon icon-back">back</span>
+                    <span class="icon icon-back" data-l10n-id="back">retour</span>
                 </a>
                 <menu type="toolbar">
                     <div>
                         <span class="icon icon-search"></span>
                     </div>
                 </menu>
-                <h1>Rechercher</h1>
+                <h1 data-l10n-id="Search">Rechercher</h1>
             </header>
 
             <article class="content no-scrollable header footer full-width">
@@ -230,43 +237,43 @@
         <section role="region" class="skin-station">
             <header id="app-bar" class="fixed">
                 <a href="#/">
-                    <span class="icon icon-back">back</span>
+                    <span class="icon icon-back" data-l10n-id="back">retour</span>
                 </a>
                 <menu type="toolbar">
                     <a class="link" href="#/">
                         <span class="icon icon-station"></span>
                     </a>
                 </menu>
-                <h1 class="name">Détails</h1>
+                <h1 class="name" data-l10n-id="Details">Détails</h1>
             </header>
 
             <article class="content scrollable header full-width">
                 <section class="station-details">
                     <div class="station-details--item detail">
-                        <p class="detail--title">Vélos disponibles</p>
+                        <p class="detail--title" data-l10n-id="Available_bikes">Vélos disponibles</p>
                         <p class="bikes">0</p>
                     </div>
                     <div class="station-details--item detail">
-                        <p class="detail--title">Places Libres</p>
+                        <p class="detail--title" data-l10n-id="Free_stands">Places Libres</p>
                         <p class="stands">0</p>
                     </div>
                     <div class="station-details--item detail">
-                        <p class="detail--title">Station V+</p>
+                        <p class="detail--title" data-l10n-id="V+_Station">Station V+</p>
                         <p class="vplus">
                             <img class="entry--logo" alt="" src="img/v-plus.svg" />
                             <span class="entry--desc"></span>
                         </p>
                     </div>
                     <div class="station-details--item detail">
-                        <p class="detail--title">Distance</p>
+                        <p class="detail--title" data-l10n-id="Distance">Distance</p>
                         <p class="distance">0 km</p>
                     </div>
                     <div class="station-details--item detail">
-                        <p class="detail--title">Position</p>
+                        <p class="detail--title" data-l10n-id="Position">Position</p>
                         <p class="position">00.00</p>
                     </div>
                     <div class="station-details--item detail">
-                        <p class="detail--title">Mise à jour</p>
+                        <p class="detail--title" data-l10n-id="Update">Mise à jour</p>
                         <p>Il y a <span class="last_update"></span></p>
                     </div>
                 </section>
@@ -275,6 +282,7 @@
     </template>
 
     <script src="js/lib/jquery.min.js"></script>
+    <script type="text/javascript" src="js/lib/l10n.js" defer></script>
     <script src="js/lib/idangerous.swiper.min.js"></script>
     <script src="js/lib/idangerous.swiper.hashnav.min.js"></script>
     <script src="js/lib/leaflet.min.js"></script>
