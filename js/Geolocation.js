@@ -19,7 +19,7 @@ var Geolocation = (function() {
         // TODO: Move that DOM effect into the View code
         $('.info--content').html(parseFloat(coords.latitude).toFixed(3) + ' - ' + parseFloat(coords.longitude).toFixed(3));
 
-        api.emit('position', coords);// Call waiting and watching functions
+        api.emit('position', coords); // Call waiting and watching functions
     };
 
     /**

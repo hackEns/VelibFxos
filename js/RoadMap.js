@@ -125,20 +125,16 @@ var RoadMap = (function() {
      * @param position where to place the position marker
      */
     api.setPositionMarker = function(position) {
-        //Log.info('RoadMap', 'setPositionMarker', position);
+        Log.info('RoadMap', 'setPositionMarker', position);
 
         var latlng = [position.latitude, position.longitude];
 
-        if (!positionMarker) {
-            positionMarker = L.marker(latlng, {
-                clickable: false,
-                draggable: false,
-                title: "Moi",
-                alt: "Vous êtes ici !"
-            });
-        } else {
-            positionMarker.setLatLng(latlng);
-        }
+        positionMarker = L.marker(latlng, {
+            clickable: false,
+            draggable: false,
+            title: "Moi",
+            alt: "Vous êtes ici !"
+        });
 
         positionMarker.addTo(map);
 

@@ -26,7 +26,7 @@ var Views = (function() {
     api.init = function() {
         stationStorage = StationStorage();
         stationStorage.start();
-        
+
         // Main templates
         templates['index'] = document.getElementById('index');
         templates['bikes'] = document.getElementById('bikes');
