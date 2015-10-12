@@ -132,8 +132,8 @@ var RoadMap = (function() {
         positionMarker = L.marker(latlng, {
             clickable: false,
             draggable: false,
-            title: "Moi",
-            alt: "Vous êtes ici !"
+            title: document.webL10n.get("Me"),
+            alt: document.webL10n.get("You_are_here")
         });
 
         positionMarker.addTo(map);
@@ -167,8 +167,8 @@ var RoadMap = (function() {
             researchMarker = L.marker(latlng, {
                 clickable: false,
                 draggable: false,
-                title: "Station recherchée",
-                alt: "Je veux aller ici"
+                title: document.webL10n.get("Searched_station"),
+                alt: document.webL10n.get("I_want_to_go_there")
             });
         } else {
             researchMarker.setLatLng(latlng);

@@ -30,12 +30,12 @@ var Geolocation = (function() {
         coords = null;
         switch (error.code) {
             case error.PERMISSION_DENIED:
-                $('.info--content').addClass('error').html("Accès refusé.");
+                $('.info--content').addClass('error').html(document.webL10n.get("Permission_denied"));
                 break;
 
             case error.POSITION_UNAVAILABLE:
             default:
-                $('.info--content').addClass('error').html("Position irrécupérable.");
+                $('.info--content').addClass('error').html(document.webL10n.get("Position_unavailable"));
                 break;
         }
     };
@@ -45,7 +45,7 @@ var Geolocation = (function() {
             navigator.geolocation.watchPosition(successFunction, errorFunction, Config.geolocation);
         } else {
             // TODO: Move that DOM effect into the View code
-            $('.info--content').addClass('error').html("Votre navigateur ne supporte pas l'API de géolocalisation.");
+            $('.info--content').addClass('error').html(document.webL10n.get("Unsupported_geolocation"));
         }
     };
 
@@ -56,7 +56,7 @@ var Geolocation = (function() {
      */
     api.waitPosition = function(callback) {
         // TODO: Move that DOM effect into the View code
-        $('.station-info').html('<p class="center">Attente de la position…</p>');
+        $('.station-info').html('<p class="center">' + document.webL10n.get("Waiting_for_position") + '</p>');
         if (coords === null) {
             api.once('position', callback);
         } else {

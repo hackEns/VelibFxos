@@ -23,7 +23,7 @@ if (!Array.prototype.reduce) {
             throw new TypeError('Array.prototype.reduce appelé sur null ou undefined');
         }
         if (typeof callback !== 'function') {
-            throw new TypeError(callback + ' n est pas une fonction');
+            throw new TypeError(callback + ' is not a function.');
         }
         var t = Object(this), len = t.length >>> 0, k = 0, value;
         if (arguments.length == 2) {
@@ -33,7 +33,7 @@ if (!Array.prototype.reduce) {
                 k++;
             }
             if (k >= len) {
-                throw new TypeError('Réduction de tableau vide sans valeur initiale');
+                throw new TypeError('Empty array reduction without initial value.');
             }
         value = t[k++];
         }
@@ -65,7 +65,7 @@ if (!Array.prototype.forEach) {
         var len = O.length >>> 0;
 
         if (typeof callback !== "function") {
-            throw new TypeError(callback + ' n est pas une fonction');
+            throw new TypeError(callback + ' is not a function.');
         }
 
         if (arguments.length > 1) {

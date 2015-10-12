@@ -58,6 +58,7 @@ var Views = (function() {
           paginationClickable: true,
           createPagination: true,
           onSlideChangeStart: function(swiper){
+              // TODO: Remove commented-out code
               //body.update();
               //RoadMap.initCircle(Geolocation.getPosition());
               var stationId = $(swiper.activeSlide()).find('.station').attr('id').substr("station-".length);
@@ -155,11 +156,7 @@ var Views = (function() {
                     tile.querySelector('.name').textContent = fstation.address;
                     tile.querySelector('.bikes').textContent = fstation.availableBikes;
                     tile.querySelector('.dist').textContent = fstation.distance;
-                    if (fstation.availableBikes > 1) {
-                        tile.querySelector('.legend').innerHTML = 'vélos<br/>disponibles';
-                    } else {
-                        tile.querySelector('.legend').innerHTML = 'vélo<br/>disponible';
-                    }
+                    tile.querySelector('.legend').innerHTML = document.webL10n.get('available_bikes', { "n": fstation.availableBikes});
 
                     // Activate first slide
                     if (first) {
@@ -171,6 +168,7 @@ var Views = (function() {
                     stationsList.appendChild(tile);
 
                     // This requires the tile to be added to the DOM
+                    // TODO: Remove commented out code
                     //RoadMap.initCircle(station.position);
 
                     if (first) {
@@ -227,11 +225,7 @@ var Views = (function() {
                     tile.querySelector('.stands').textContent = fstation.availableStands;
                     tile.querySelector('.dist').textContent = fstation.distance;
                     tile.querySelector('.vplus').style.visibility = fstation.bonus ? 'visible' : 'hidden';
-                    if (fstation.availableStands > 1) {
-                        tile.querySelector('.legend').innerHTML = 'places<br/>libres';
-                    } else {
-                        tile.querySelector('.legend').innerHTML = 'place<br/>libre';
-                    }
+                    tile.querySelector('.legend').innerHTML = document.webL10n.get("free_stands", { n: fstation.availableStands });
 
                     // Activate first slide
                     if (first) {
@@ -243,6 +237,7 @@ var Views = (function() {
                     stationsList.appendChild(tile);
 
                     // This requires the tile to be added to the DOM
+                    // TODO: Remove commented-out code
                     //RoadMap.initCircle(station.position);
 
                     if (first) {
@@ -310,7 +305,7 @@ var Views = (function() {
      * Gives details about a given station
      */
     api.station = function() {
-        var stationId = window.location.hash.substr(10); // hash = #/station/{stationId}
+        var stationId = window.location.hash.substr(10);
         Log.debug("stationId : " + stationId);
 
         stationStorage.getStationById(stationId)
@@ -347,7 +342,7 @@ var Views = (function() {
             });
         }, function(err) {
             console.log(err);
-            alert("La station n'existe pas !");
+            alert(document.webL10n.get("Unknown_station"));
             Log.error("Views, station, station doesn't exist " + stationId);
             window.location.hash = "/index";
         });

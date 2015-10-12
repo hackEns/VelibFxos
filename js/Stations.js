@@ -62,7 +62,7 @@ var Stations = (function() {
             var dist = station.distance || distance(coords, station.position);
             formatted.distance = formatDistance(dist);
         } else {
-            formatted.distance = "Chargement...";
+            formatted.distance = document.webL10n.get("Loading");
         }
 
         // latitude - longitude

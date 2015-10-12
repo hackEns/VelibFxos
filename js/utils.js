@@ -60,24 +60,16 @@ var distance = function(coords1, coords2) {
 var formatTime = function(diff) {
     var text = "";
 
-    if (diff.day > 1) {
-        text = diff.day + ' jours';
-    } else if (diff.day == 1) {
-        text = diff.day + ' jour';
+    if (diff.day >= 1) {
+        text = document.webL10n.get("days", { n: diff.day});
     } else if (diff.hour > 1) {
-        text = diff.hour + ' heures';
-    } else if (diff.hour == 1) {
-        text = diff.hour + ' heure';
+        text = document.webL10n.get("hours", { n: diff.hour});
     } else if (diff.min > 1) {
-        text = diff.min + ' minutes';
-    } else if (diff.min == 1) {
-        text = diff.min + ' minute';
+        text = document.webL10n.get("minutes", { n: diff.min});
     } else if (diff.sec > 1) {
-        text = diff.sec + ' secondes';
-    } else if (diff.sec == 1) {
-        text = diff.sec + ' seconde';
+        text = document.webL10n.get("seconds", { n: diff.sec});
     } else {
-        text = 'un instant';
+        text = document.webL10n.get("moment_ago");
     }
 
     return text;

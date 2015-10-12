@@ -41,7 +41,7 @@ L.Control.OSMGeocoder = L.Control.extend({
 
 		var input = this._input = document.createElement('input');
 		input.type = "text";
-		input.placeholder = "Rechercher";
+		input.placeholder = document.webL10n.get('Search');
 
 		var submit = document.createElement('input');
 		submit.id = "submit";
