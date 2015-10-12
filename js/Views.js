@@ -90,7 +90,7 @@ var Views = (function() {
                 mainSection.append(template);
             }
 
-            document.webL10n.translate();
+            // document.webL10n.setLanguage("fr");  // TODO: Translation
         },
 
         clean: function() {
