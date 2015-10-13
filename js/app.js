@@ -11,12 +11,10 @@ document.addEventListener("localized", function() {
         Views.init();
         Geolocation.init();
         Router.route();
-        document.webL10n.translate();  // Retranslate the new view
     });
 });
 
 
 $(window).on('hashchange', function() {
     Router.route();
-    document.webL10n.translate();  // Retranslate the new view
 });

@@ -109,6 +109,8 @@ var Views = (function() {
         currentView = "index";
         body.update();
 
+        document.webL10n.translate();  // Retranslate the new view
+
         // clean by removing stations swiper
         $('.swiper-wrapper, .pagination').empty().attr('style', '');
 
@@ -124,6 +126,7 @@ var Views = (function() {
     api.bikes = function() {
         currentView = "bikes";
         body.update();
+        document.webL10n.translate();  // Retranslate the new view
 
         Geolocation.waitPosition(function() {
             var currentPosition = Geolocation.getPosition();
@@ -178,6 +181,8 @@ var Views = (function() {
                 });
 
                 initSwiper();
+
+                document.webL10n.translate();  // Retranslate the new view
             });
         });
     };
@@ -192,6 +197,7 @@ var Views = (function() {
         currentView = "stands";
 
         body.update();
+        document.webL10n.translate();  // Retranslate the new view
 
         Geolocation.waitPosition(function() {
             var currentPosition = Geolocation.getPosition();
@@ -247,6 +253,8 @@ var Views = (function() {
                 });
 
                 initSwiper();
+
+                document.webL10n.translate();  // Retranslate the new view
             });
         });
     };
@@ -260,6 +268,7 @@ var Views = (function() {
         currentView = "starred";
         console.log('Views', currentView, "display page");
         body.update();
+        document.webL10n.translate();  // Retranslate the new view
 
         var starredList = document.getElementById('starred-list');
         $(starredList).empty();
@@ -286,6 +295,8 @@ var Views = (function() {
                     entry.querySelector('.bikes').textContent = fstation.availableBikes;
                     entry.querySelector('.dist').textContent = fstation.distance;
                     entry.querySelector('.stands').textContent = fstation.availableStands;
+
+                    document.webL10n.translate(document.getElementById("starred-station-" + station.number));  // Retranslate the new view
                 }
 
                 updateView();
@@ -334,6 +345,7 @@ var Views = (function() {
 
 
             body.update();
+            document.webL10n.translate(document.getElementById(stationId));  // Retranslate the new view
 
             Geolocation.waitPosition(function() {
                 var currentPosition = Geolocation.getPosition();
@@ -356,6 +368,7 @@ var Views = (function() {
     api.search = function() {
         currentView = 'search';
         body.update();
+        document.webL10n.translate();  // Retranslate the new view
 
         Log.info('Views', 'search', "display page");
 
