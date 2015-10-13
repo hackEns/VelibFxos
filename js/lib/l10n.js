@@ -979,8 +979,8 @@ document.webL10n = (function(window, document, undefined) {
     }
 
     // translate element itself if necessary
-    if (element.nodeType != 11) {
-        translateElement(element);
+    if (element.nodeType === 1) {
+      translateElement(element);
     }
   }
 
