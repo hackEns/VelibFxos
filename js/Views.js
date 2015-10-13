@@ -93,8 +93,10 @@ var Views = (function() {
                 mainSection.appendChild(document.importNode(template, true));
             } else {
                 Log.warning('template is NOT supported');
-                var template = $(template).html();
-                mainSection.append(template);
+                var template = $(templates[currentView]).html();
+                mainSection.innerHTML = mainSection.innerHTML + template;
+                // Translation should be done explicitly
+                document.webL10n.translate(mainSection);
             }
         },
 
