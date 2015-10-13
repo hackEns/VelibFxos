@@ -9,9 +9,7 @@ var Views = (function() {
 
     var currentView = '';
     var body = {};
-    var template = '';
     var defaultMainClass = '';
-
 
     var swiper = null;
     var templates = {};
@@ -44,6 +42,16 @@ var Views = (function() {
 
 
     /**
+     * Get a localized copy of a template (private method)
+     */
+    var getLocalizedTemplate = function(currentView) {
+        var tpl = templates[currentView].content.cloneNode(true);
+        document.webL10n.translate(tpl);
+        return tpl;
+    };
+
+
+    /**
      * Initialize swiper (private method)
      */
     var initSwiper = function() {
@@ -68,7 +76,7 @@ var Views = (function() {
               //RoadMap.addMarker(Geolocation.getPosition(), activeStation, currentView);
           }
       });
-    }
+    };
 
 
     // TODO: clear that
@@ -80,13 +88,12 @@ var Views = (function() {
 
             mainSection.className = currentView;
 
-            template = templates[currentView];
-
             if ('content' in document.createElement('template')) {
-                mainSection.appendChild(document.importNode(template.content.cloneNode(true), true));
+                var template = getLocalizedTemplate(currentView);
+                mainSection.appendChild(document.importNode(template, true));
             } else {
                 Log.warning('template is NOT supported');
-                template = $(template).html();
+                var template = $(template).html();
                 mainSection.append(template);
             }
         },
@@ -109,8 +116,6 @@ var Views = (function() {
         currentView = "index";
         body.update();
 
-        document.webL10n.translate();  // Retranslate the new view
-
         // clean by removing stations swiper
         $('.swiper-wrapper, .pagination').empty().attr('style', '');
 
@@ -126,7 +131,6 @@ var Views = (function() {
     api.bikes = function() {
         currentView = "bikes";
         body.update();
-        document.webL10n.translate();  // Retranslate the new view
 
         Geolocation.waitPosition(function() {
             var currentPosition = Geolocation.getPosition();
@@ -153,7 +157,7 @@ var Views = (function() {
                     var fstation = Stations.format(station, currentPosition);
 
                     // Construction du DOM
-                    var tile = templates['stationTile'].content.cloneNode(true);
+                    var tile = getLocalizedTemplate('stationTile');
                     tile.querySelector('.station').id = "station-" + station.number;
                     //tile.querySelector('.link').href += fstation.number;
                     tile.querySelector('.name').textContent = fstation.address;
@@ -181,8 +185,6 @@ var Views = (function() {
                 });
 
                 initSwiper();
-
-                document.webL10n.translate();  // Retranslate the new view
             });
         });
     };
@@ -197,7 +199,6 @@ var Views = (function() {
         currentView = "stands";
 
         body.update();
-        document.webL10n.translate();  // Retranslate the new view
 
         Geolocation.waitPosition(function() {
             var currentPosition = Geolocation.getPosition();
@@ -224,7 +225,7 @@ var Views = (function() {
                     var fstation = Stations.format(station, currentPosition);
 
                     // Construction du DOM
-                    var tile = templates['stationTile'].content.cloneNode(true);
+                    var tile = getLocalizedTemplate['stationTile'];
                     tile.querySelector('.station').id = "station-" + station.number;
                     //tile.querySelector('.link').href += fstation.number;
                     tile.querySelector('.name').textContent = fstation.address;
@@ -253,8 +254,6 @@ var Views = (function() {
                 });
 
                 initSwiper();
-
-                document.webL10n.translate();  // Retranslate the new view
             });
         });
     };
@@ -268,7 +267,6 @@ var Views = (function() {
         currentView = "starred";
         console.log('Views', currentView, "display page");
         body.update();
-        document.webL10n.translate();  // Retranslate the new view
 
         var starredList = document.getElementById('starred-list');
         $(starredList).empty();
@@ -280,7 +278,7 @@ var Views = (function() {
             starredStations.forEach(function(station) {
 
                 // Construction du DOM
-                var row = templates['starredItem'].content.cloneNode(true);
+                var row = getLocalizedTemplate('starredItem');
                 row.querySelector('.starred-station').id = "starred-station-" + station.number;
                 starredList.appendChild(row);
 
@@ -295,8 +293,6 @@ var Views = (function() {
                     entry.querySelector('.bikes').textContent = fstation.availableBikes;
                     entry.querySelector('.dist').textContent = fstation.distance;
                     entry.querySelector('.stands').textContent = fstation.availableStands;
-
-                    document.webL10n.translate(document.getElementById("starred-station-" + station.number));  // Retranslate the new view
                 }
 
                 updateView();
@@ -327,7 +323,7 @@ var Views = (function() {
 
             var fstation = Stations.format(station);
 
-            var dom = templates['station'].content
+            var dom = templates['station'].content;
             dom.querySelector('.name').textContent = fstation.address;
             dom.querySelector('.bikes').textContent = fstation.availableBikes;
             dom.querySelector('.stands').textContent = fstation.availableStands;
@@ -345,7 +341,6 @@ var Views = (function() {
 
 
             body.update();
-            document.webL10n.translate(document.getElementById(stationId));  // Retranslate the new view
 
             Geolocation.waitPosition(function() {
                 var currentPosition = Geolocation.getPosition();
@@ -368,7 +363,6 @@ var Views = (function() {
     api.search = function() {
         currentView = 'search';
         body.update();
-        document.webL10n.translate();  // Retranslate the new view
 
         Log.info('Views', 'search', "display page");
 

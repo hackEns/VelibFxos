@@ -979,7 +979,9 @@ document.webL10n = (function(window, document, undefined) {
     }
 
     // translate element itself if necessary
-    translateElement(element);
+    if (element.constructor.name != "DocumentFragment") {
+        translateElement(element);
+    }
   }
 
 
