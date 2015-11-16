@@ -165,7 +165,7 @@ var Views = (function() {
                     tile.querySelector('.name').textContent = fstation.address;
                     tile.querySelector('.bikes').textContent = fstation.availableBikes;
                     tile.querySelector('.dist').textContent = fstation.distance;
-                    tile.querySelector('.legend').innerHTML = document.webL10n.get('available_bikes', { "n": fstation.availableBikes});
+                    tile.querySelector('.legend').innerHTML = document.webL10n.get('available_bikes.innerHTML', { "n": fstation.availableBikes});
 
                     // Activate first slide
                     if (first) {
@@ -177,10 +177,8 @@ var Views = (function() {
                     stationsList.appendChild(tile);
 
                     // This requires the tile to be added to the DOM
-                    // TODO: Remove commented out code
-                    //RoadMap.initCircle(station.position);
-
                     if (first) {
+                        RoadMap.initCircle(station.position);
                         //RoadMap.addMarker(Geolocation.getPosition(), station, currentView);
                         first = false;
                     }
@@ -234,7 +232,7 @@ var Views = (function() {
                     tile.querySelector('.stands').textContent = fstation.availableStands;
                     tile.querySelector('.dist').textContent = fstation.distance;
                     tile.querySelector('.vplus').style.visibility = fstation.bonus ? 'visible' : 'hidden';
-                    tile.querySelector('.legend').innerHTML = document.webL10n.get("free_stands", { n: fstation.availableStands });
+                    tile.querySelector('.legend').innerHTML = document.webL10n.get("free_stands.innerHTML", { n: fstation.availableStands });
 
                     // Activate first slide
                     if (first) {
