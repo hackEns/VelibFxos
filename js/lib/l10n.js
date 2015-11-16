@@ -807,10 +807,6 @@ document.webL10n = (function(window, document, undefined) {
     if (isNaN(n))
       return str;
 
-    // TODO: support other properties (l20n still doesn't...)
-    if (prop != gTextProp)
-      return str;
-
     // initialize _pluralRules
     if (!gMacros._pluralRules) {
       gMacros._pluralRules = getPluralRules(gLanguage);
