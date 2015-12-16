@@ -49,7 +49,8 @@ var MockStationProvider = function() {
         }
     ];
 
-    var starredStationsIds = stations.map(function(s) {return s.number});
+    //var starredStationsIds = stations.map(function(s) {return s.number});
+    var starredStationsIds = [5013, 5004, 5015, 22403, 14020, 14115, 14021];
 
     api.start = function() {
         //api.emit('stations', stations);
