@@ -129,12 +129,16 @@ var RoadMap = (function() {
 
         var latlng = [position.latitude, position.longitude];
 
-        positionMarker = L.marker(latlng, {
-            clickable: false,
-            draggable: false,
-            title: document.webL10n.get("Me"),
-            alt: document.webL10n.get("You_are_here")
-        });
+        if (!positionMarker) {
+            positionMarker = L.marker(latlng, {
+                clickable: false,
+                draggable: false,
+                title: document.webL10n.get("Me"),
+                alt: document.webL10n.get("You_are_here")
+            });
+        } else {
+            positionMarker.setLatLng(latlng);
+        }
 
         positionMarker.addTo(map);
 
