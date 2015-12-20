@@ -332,7 +332,7 @@ var Views = (function() {
                 dom.querySelector('.vplus .entry--desc').textContent = "";
             } else {
                 dom.querySelector('.vplus .entry--logo').style.display = "none";
-                dom.querySelector('.vplus .entry--desc').textContent = "Non";
+                dom.querySelector('.vplus .entry--desc').textContent = document.webL10n.get("No");
             }
             dom.querySelector('.distance').textContent = fstation.distance;
             dom.querySelector('.position').textContent = fstation.position;

@@ -61,13 +61,13 @@ var formatTime = function(diff) {
     var text = "";
 
     if (diff.day >= 1) {
-        text = document.webL10n.get("days", { n: diff.day});
+        text = diff.day + " " + document.webL10n.get("days", { n: diff.day});
     } else if (diff.hour > 1) {
-        text = document.webL10n.get("hours", { n: diff.hour});
+        text = diff.hour + " " + document.webL10n.get("hours", { n: diff.hour});
     } else if (diff.min > 1) {
-        text = document.webL10n.get("minutes", { n: diff.min});
+        text = diff.min + " " + document.webL10n.get("minutes", { n: diff.min});
     } else if (diff.sec > 1) {
-        text = document.webL10n.get("seconds", { n: diff.sec});
+        text = diff.sec + " " + document.webL10n.get("seconds", { n: diff.sec});
     } else {
         text = document.webL10n.get("moment_ago");
     }
