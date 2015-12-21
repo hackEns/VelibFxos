@@ -128,6 +128,7 @@ var RoadMap = (function() {
         Log.info('RoadMap', 'setPositionMarker', position);
 
         var latlng = [position.latitude, position.longitude];
+		var shouldPanTo = false;
 
         if (!positionMarker) {
             positionMarker = L.marker(latlng, {
@@ -136,11 +137,11 @@ var RoadMap = (function() {
                 title: document.webL10n.get("Me"),
                 alt: document.webL10n.get("You_are_here")
             });
+			positionMarker.addTo(map);
+			shouldPanTo = true;
         } else {
             positionMarker.setLatLng(latlng);
         }
-
-        positionMarker.addTo(map);
 
         var distanceFromCity = distance(
             position,
@@ -149,7 +150,8 @@ var RoadMap = (function() {
                 "longitude": Config.defaultPosition[1]
             }
         );
-        if (distanceFromCity <= (Config.maxDistanceFromCity * 1000)) {
+        if (shouldPanTo &&
+			distanceFromCity <= (Config.maxDistanceFromCity * 1000)) {
             // Prevent panning if too far from Paris
             map.panTo(latlng);
         }
