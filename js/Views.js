@@ -214,7 +214,7 @@ var Views = (function() {
                     stations.concat(newStations),
                     currentPosition,
                     10,
-                    function(item) { return item.availableBikes > 0; }
+                    function(item) { return item.availableStands > 0; }
                 );
 
                 // TODO: edit tiles instead of rebuilding from scratch
