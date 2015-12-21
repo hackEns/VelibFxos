@@ -225,7 +225,7 @@ var Views = (function() {
                     var fstation = Stations.format(station, currentPosition);
 
                     // Construction du DOM
-                    var tile = getLocalizedTemplate['stationTile'];
+                    var tile = getLocalizedTemplate('stationTile');
                     tile.querySelector('.station').id = "station-" + station.number;
                     //tile.querySelector('.link').href += fstation.number;
                     tile.querySelector('.name').textContent = fstation.address;
