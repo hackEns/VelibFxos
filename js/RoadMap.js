@@ -52,7 +52,8 @@ var RoadMap = (function() {
 
         // (Please document overwritten fields of leafletConfig in Config.js)
         var opts = Config.leafletConfig;
-        opts.zoomControl = true;
+        opts.zoomControl = false;
+		opts.attributionControl = false;
 
         map = L.map('map', opts).setView([position.latitude, position.longitude], Config.defaultCircleZoom);
 
