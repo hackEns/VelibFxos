@@ -41,7 +41,7 @@ var StationStorage = function() {
 
     api.name = 'StationStorage';
 
-    
+
     /**
      * List of available provider boxes tu use.
      */
@@ -76,7 +76,7 @@ var StationStorage = function() {
             // Update station entry
             var isUpdated = mixin(stationEntry, station)
 
-            if (isUpdated) stationEntry.emit('update');
+            //TODO: buggy if (isUpdated) stationEntry.emit('update');
             if (isNew) newEntries.push(stationEntry);
 
             stationsPool[station.number] = stationEntry;
